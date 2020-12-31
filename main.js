@@ -587,25 +587,25 @@ class judoisoftControll extends utils.Adapter {
     }
 
     async setCommandState(command, state) {
-                switch (command) {             
-                    case 'Regeneration':
-                        this.log.debug("Regeneration " + state);
-                        await axios.get(baseUrl + "settings&command=regeneration&msgnumber=1&token=" + _token + "&parameter=start", { httpsAgent: agent });   
-                        break;
-                    case 'WaterStop':
-                        this.log.debug("WaterStop " + state);
-                        if (state) {                            
-                            const val = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _token + "&parameter=close", { httpsAgent: agent });
-                            this.setState("WaterStopStatus", val.data.parameter, true);
-                        } else {
-                            const val = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _token + "&parameter=open", { httpsAgent: agent });
-                            this.setState("WaterStopStatus", val.data.parameter, true);
-                        }
-
-                        this.setState("lastInfoUpdate", Date.now(), true);
-                        break;                        
-                     default:
+        switch (command) {             
+            case 'Regeneration':
+                this.log.debug("Regeneration " + state);
+                await axios.get(baseUrl + "settings&command=regeneration&msgnumber=1&token=" + _token + "&parameter=start", { httpsAgent: agent });   
+                break;
+            case 'WaterStop':
+                this.log.debug("WaterStop " + state);
+                if (state) {                            
+                    const val = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _token + "&parameter=close", { httpsAgent: agent });
+                    this.setState("WaterStopStatus", val.data.parameter, true);
+                } else {
+                    const val = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _token + "&parameter=open", { httpsAgent: agent });
+                    this.setState("WaterStopStatus", val.data.parameter, true);
                 }
+
+                this.setState("lastInfoUpdate", Date.now(), true);
+                break;                        
+             default:
+        }
    }
 
    async initialization() {
