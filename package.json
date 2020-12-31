@@ -1,0 +1,67 @@
+{
+  "_from": "https://github.com/arteck/iobroker.judoisoft/tarball/220268d58ac4d6aa7a3c6895492851474c1e30c7",
+  "_id": "iobroker.judoisoft@0.0.1",
+  "_inBundle": false,
+  "_integrity": "sha512-4SyNBF4n3ZYpMpjk22c1N3fgpH18DAodUtETU1jRArXnK6t7hU22IFH2couCwa0gYItVNJnOY5j7OTvbmgTSTg==",
+  "_location": "/iobroker.judoisoft",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "remote",
+    "raw": "https://github.com/arteck/iobroker.judoisoft/tarball/220268d58ac4d6aa7a3c6895492851474c1e30c7",
+    "rawSpec": "https://github.com/arteck/iobroker.judoisoft/tarball/220268d58ac4d6aa7a3c6895492851474c1e30c7",
+    "saveSpec": "https://github.com/arteck/iobroker.judoisoft/tarball/220268d58ac4d6aa7a3c6895492851474c1e30c7",
+    "fetchSpec": "https://github.com/arteck/iobroker.judoisoft/tarball/220268d58ac4d6aa7a3c6895492851474c1e30c7"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://github.com/arteck/iobroker.judoisoft/tarball/220268d58ac4d6aa7a3c6895492851474c1e30c7",
+  "_shasum": "bb041102fa4d9001a198451ad7ac4c1889b30eac",
+  "_spec": "https://github.com/arteck/iobroker.judoisoft/tarball/220268d58ac4d6aa7a3c6895492851474c1e30c7",
+  "_where": "J:\\source\\ioBroker\\SmartHome2",
+  "author": {
+    "name": "Arthur Rupp",
+    "email": "arteck@outlook.com"
+  },
+  "bugs": {
+    "url": "https://github.com/arteck/ioBroker.judoisoft/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "@iobroker/adapter-core": "^2.4.0",
+    "axios": "^0.20.0-0",
+    "loglevel": "^1.5.1"
+  },
+  "deprecated": false,
+  "description": "Manage yours judo i-soft",
+  "devDependencies": {
+    "@iobroker/testing": "^1.1.10",
+    "chai": "^4.1.2",
+    "gulp": "^3.9.1",
+    "mocha": "^4.1.0"
+  },
+  "engines": {
+    "node": ">=8"
+  },
+  "homepage": "https://github.com/arteck/ioBroker.judoisoft#readme",
+  "keywords": [
+    "judo",
+    "isoft",
+    "iobroker"
+  ],
+  "license": "MIT",
+  "main": "main.js",
+  "name": "iobroker.judoisoft",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arteck/ioBroker.judoisoft.git"
+  },
+  "scripts": {
+    "test": "npm run test:package && npm run test:unit",
+    "test:integration": "mocha test/integration --exit",
+    "test:package": "mocha test/package --exit",
+    "test:unit": "mocha test/unit --exit"
+  },
+  "version": "0.0.1"
+}

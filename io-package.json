@@ -1,0 +1,64 @@
+{
+  "common": {
+    "name": "judoisoft",
+    "version": "0.0.1",
+    "news": {
+      "0.0.1": {
+        "en": "init",
+        "de": "init",
+        "ru": "init"
+      }
+    },
+    "title": "judoisoft",
+    "titleLang": {
+      "en": "judoisoft",
+      "de": "judoisoft",
+      "ru": "judoisoft",
+      "pt": "judoisoft",
+      "nl": "judoisoft",
+      "fr": "judoisoft",
+      "it": "judoisoft ",
+      "es": "judoisoft",
+      "pl": "judoisoft"
+    },
+    "desc": {
+      "en": "Manage yours judo i-soft",
+      "de": "Verwalte dein Judo i-soft",
+      "ru": "Управляй своим дзюдо i-soft",
+      "pt": "Administre o seu judô i-soft",
+      "nl": "Beheer de jouwe judo i-soft",
+      "fr": "Gérez le vôtre judo i-soft",
+      "it": "Gestisci il tuo judo i-soft",
+      "es": "Maneja el tuyo judo i-soft",
+      "pl": "Zarządzaj swoim judo i-soft",
+      "zh-cn": "管理您的柔道i-soft"
+    },
+    "authors": [
+      "arteck <arteck@outlook.com>"
+    ],
+    "materialize": true,
+    "compact": true,
+    "license": "MIT",
+    "platform": "Javascript/Node.js",
+    "mode": "daemon",
+    "enabled": false,
+    "readme": "https://github.com/arteck/ioBroker.judoisoft/blob/master/README.md",
+    "loglevel": "info",
+    "restartAdapters": [
+      "fullyBrowser"
+    ],
+    "keywords": [
+      "judo",
+      "isoft",
+      "judoisoft"
+    ],
+    "icon": "judo.png",
+    "extIcon": "https://raw.githubusercontent.com/arteck/ioBroker.judo/master/admin/judo.png",
+    "type": "hardware",
+    "singletonHost": true
+  },
+  "native": {
+    "interval": 300
+  },
+  "objects": []
+}
