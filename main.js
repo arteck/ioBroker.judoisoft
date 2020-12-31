@@ -151,6 +151,8 @@ class judoisoftControll extends utils.Adapter {
     async getInfos() {
         this.log.debug("get Information ");
 
+        this.setState("lastInfoUpdate", Date.now(), true);
+        
         try {
             const responses = await axios.all([
                 //WaterCurrent
@@ -211,8 +213,6 @@ class judoisoftControll extends utils.Adapter {
             } else {
                 this.setState(`WaterStop`, true, false);
             }
-            
-            this.setState("lastInfoUpdate", Date.now(), true);
 
             requestTimeout = setTimeout(async () => {
                 this.getInfos();
