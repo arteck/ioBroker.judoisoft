@@ -13,8 +13,10 @@
 judoisoft Adapter for ioBroker
 ------------------------------------------------------------------------------
 
-
 A small excerpt just of the command options:
+
+![möglichkeiten](https://github.com/arteck/iobroker.judoisoft/blob/master/doku/datenpunkte.png)
+
 
 
 <b>NodeJs >> 8.x.x </b>
