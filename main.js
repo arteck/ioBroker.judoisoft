@@ -152,7 +152,7 @@ class judoisoftControll extends utils.Adapter {
         this.log.debug("get Information ");
 
         // check loged in
-        let stats = await axios.get(baseUrl + "register&command=plumber%20address&msgnumber=1&token=" + _token, { httpsAgent: agent }),
+        let stats = await axios.get(baseUrl + "register&command=plumber%20address&msgnumber=1&token=" + _token, { httpsAgent: agent });
         
         if (stats.data.status == 'error') {
             this.log.info("reconnect " + Date.now()); 
