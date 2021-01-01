@@ -213,12 +213,13 @@ class judoisoftControll extends utils.Adapter {
                    }
                     
                    const monat = splWassJahr[b]; 
-                   if (monat < 0) {
-                     monat = 0;    
+                   if (monat > 0) {
+                      monat = monat / 1000;                    
                    } else {
-                     monat = monat / 1000;
+                      monat = 0;      
                    }
                     
+                   this.log.debug(`WaterYearly.${a} ${monat}`); 
                    this.setState(`WaterYearly.${a}`, monat, true);
                 }
 
