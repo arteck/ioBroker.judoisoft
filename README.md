@@ -17,7 +17,9 @@ A small excerpt just of the command options:
 
 ![möglichkeiten](https://github.com/arteck/iobroker.judoisoft/blob/master/doku/datenpunkte.png)
 
+Settings available:
 
+![möglichkeiten](https://github.com/arteck/iobroker.judoisoft/blob/master/doku/settings.png)
 
 <b>NodeJs >> 8.x.x </b>
 
