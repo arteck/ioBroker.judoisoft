@@ -211,7 +211,15 @@ class judoisoftControll extends utils.Adapter {
                    if (a < 10) {
                      a = '0' + a;
                    }
-                   this.setState(`WaterYearly.${a}`, splWassJahr[b] / 1000, true);
+                    
+                   const monat = splWassJahr[b]; 
+                   if (monat < 0) {
+                     monat = 0;    
+                   } else {
+                     monat = monat / 1000;
+                   }
+                    
+                   this.setState(`WaterYearly.${a}`, monat, true);
                 }
 
                 this.setState(`WaterStopStatus`, responses[10].data.data, true);
