@@ -151,69 +151,79 @@ class judoisoftControll extends utils.Adapter {
     async getInfos() {
         this.log.debug("get Information ");
 
-        this.setState("lastInfoUpdate", Date.now(), true);
+        // check loged in
+        let stats = await axios.get(baseUrl + "register&command=plumber%20address&msgnumber=1&token=" + _token, { httpsAgent: agent }),
         
-        try {
-            const responses = await axios.all([
-                //WaterCurrent
-                await axios.get(baseUrl + "consumption&command=water%20current&msgnumber=1&token=" + _token, { httpsAgent: agent }),
-                //SaltRange
-                await axios.get(baseUrl + "consumption&command=salt%20range&msgnumber=1&token=" + _token, { httpsAgent: agent }),
-                //SaltQuantity
-                await axios.get(baseUrl + "consumption&command=salt%20quantity&msgnumber=1&token=" + _token, { httpsAgent: agent }),
-                //WaterAverage
-                await axios.get(baseUrl + "consumption&command=water%20average&msgnumber=1&token=" + _token, { httpsAgent: agent }),
-                //ResidualHardness
-                await axios.get(baseUrl + "settings&command=residual%20hardness&msgnumber=1&token=" + _token, { httpsAgent: agent }),
-                //NaturalHardness
-                await axios.get(baseUrl + "info&command=natural%20hardness&msgnumber=1&token=" + _token, { httpsAgent: agent }),
-                //FlowRate
-                await axios.get(baseUrl + "waterstop&command=flow%20rate&msgnumber=1&token=" + _token, { httpsAgent: agent }),
-                //Quantity
-                await axios.get(baseUrl + "waterstop&command=quantity&msgnumber=1&token=" + _token, { httpsAgent: agent }),                                
+        if (stats.data.status == 'error') {
+            this.log.info("reconnect " + Date.now()); 
+            _token = await this.getTokenFirst();
+        } 
+     
+        if (_token) {        
+            try {
                 
-                //WaterTotal
-                await axios.get(baseUrl + "consumption&command=water%20total&msgnumber=1&token=" + _token, { httpsAgent: agent }),
-                 //WaterYearly
-                await axios.get(baseUrl + "consumption&command=water%20yearly&msgnumber=1&token=" + _token, { httpsAgent: agent }),
+                this.setState("lastInfoUpdate", Date.now(), true);
+                const responses = await axios.all([
+                    //WaterCurrent
+                    await axios.get(baseUrl + "consumption&command=water%20current&msgnumber=1&token=" + _token, { httpsAgent: agent }),
+                    //SaltRange
+                    await axios.get(baseUrl + "consumption&command=salt%20range&msgnumber=1&token=" + _token, { httpsAgent: agent }),
+                    //SaltQuantity
+                    await axios.get(baseUrl + "consumption&command=salt%20quantity&msgnumber=1&token=" + _token, { httpsAgent: agent }),
+                    //WaterAverage
+                    await axios.get(baseUrl + "consumption&command=water%20average&msgnumber=1&token=" + _token, { httpsAgent: agent }),
+                    //ResidualHardness
+                    await axios.get(baseUrl + "settings&command=residual%20hardness&msgnumber=1&token=" + _token, { httpsAgent: agent }),
+                    //NaturalHardness
+                    await axios.get(baseUrl + "info&command=natural%20hardness&msgnumber=1&token=" + _token, { httpsAgent: agent }),
+                    //FlowRate
+                    await axios.get(baseUrl + "waterstop&command=flow%20rate&msgnumber=1&token=" + _token, { httpsAgent: agent }),
+                    //Quantity
+                    await axios.get(baseUrl + "waterstop&command=quantity&msgnumber=1&token=" + _token, { httpsAgent: agent }),                                
+
+                    //WaterTotal
+                    await axios.get(baseUrl + "consumption&command=water%20total&msgnumber=1&token=" + _token, { httpsAgent: agent }),
+                     //WaterYearly
+                    await axios.get(baseUrl + "consumption&command=water%20yearly&msgnumber=1&token=" + _token, { httpsAgent: agent }),
+
+                    //ValveState
+                    await axios.get(baseUrl + "waterstop&command=valve&msgnumber=4&&token=" + _token, { httpsAgent: agent })
+                ]);
+
+                for (const key in responses) {
+                    this.log.debug("position " + key + " " + JSON.stringify(responses[key].data))
+                }
+
+                this.setState(`WaterCurrent`, responses[0].data.data, true);
+                this.setState(`SaltRange`, responses[1].data.data, true);
+                this.setState(`SaltQuantity`, responses[2].data.data, true);
+                this.setState(`WaterAverage`, responses[3].data.data, true);
+                this.setState(`ResidualHardness`, responses[4].data.data, true);
+                this.setState(`NaturalHardness`, responses[5].data.data, true);
+                this.setState(`FlowRate`, responses[6].data.data, true);
+                this.setState(`Quantity`, responses[7].data.data, true);
+
+                let splWass = responses[8].data.data.split(" ");
+                this.setState(`WaterTotal`, splWass[1] / 1000, true);
+
+                let splWassJahr = responses[9].data.data.split(" ");
+                for (var b = 1; b < 13; b++) {
+                   let a = b;
+                   if (a < 10) {
+                     a = '0' + a;
+                   }
+                   this.setState(`WaterYearly.${a}`, splWassJahr[b] / 1000, true);
+                }
+
+                this.setState(`WaterStopStatus`, responses[10].data.data, true);
+
+                if (responses[10].data.data == 'opened') {
+                    this.setState(`WaterStop`, false, false);
+                } else {
+                    this.setState(`WaterStop`, true, false);
+                }
+            } // if _token
             
-                //ValveState
-                await axios.get(baseUrl + "waterstop&command=valve&msgnumber=4&&token=" + _token, { httpsAgent: agent })
-            ]);
-
-            for (const key in responses) {
-                this.log.debug("position " + key + " " + JSON.stringify(responses[key].data))
-            }
-
-            this.setState(`WaterCurrent`, responses[0].data.data, true);
-            this.setState(`SaltRange`, responses[1].data.data, true);
-            this.setState(`SaltQuantity`, responses[2].data.data, true);
-            this.setState(`WaterAverage`, responses[3].data.data, true);
-            this.setState(`ResidualHardness`, responses[4].data.data, true);
-            this.setState(`NaturalHardness`, responses[5].data.data, true);
-            this.setState(`FlowRate`, responses[6].data.data, true);
-            this.setState(`Quantity`, responses[7].data.data, true);
-            
-            let splWass = responses[8].data.data.split(" ");
-            this.setState(`WaterTotal`, splWass[1] / 1000, true);
-
-            let splWassJahr = responses[9].data.data.split(" ");
-            for (var b = 1; b < 13; b++) {
-               let a = b;
-               if (a < 10) {
-                 a = '0' + a;
-               }
-               this.setState(`WaterYearly.${a}`, splWassJahr[b] / 1000, true);
-            }
-            
-            this.setState(`WaterStopStatus`, responses[10].data.data, true);
-
-            if (responses[10].data.data == 'opened') {
-                this.setState(`WaterStop`, false, false);
-            } else {
-                this.setState(`WaterStop`, true, false);
-            }
-
             requestTimeout = setTimeout(async () => {
                 this.getInfos();
             }, interval);
