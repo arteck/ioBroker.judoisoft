@@ -149,7 +149,7 @@ class judoisoftControll extends utils.Adapter {
     }
 
     async getInfos() {
-        this.log.debug("get Information ");
+        this.log.debug("get Consumption data ");
 
         // check loged in
         let stats = await axios.get(baseUrl + "register&command=plumber%20address&msgnumber=1&token=" + _token, { httpsAgent: agent });
@@ -211,15 +211,17 @@ class judoisoftControll extends utils.Adapter {
                    if (a < 10) {
                      a = '0' + a;
                    }
-                    
-                   const monat = splWassJahr[b]; 
+
+                   let monat = splWassJahr[b];
+
+                   this.log.debug(`WaterYearly.${a} ${monat} ${splWassJahr[b]}`);
+
                    if (monat > 0) {
-                      monat = monat / 1000;                    
+                      monat = monat / 1000;
                    } else {
-                      monat = 0;      
+                      monat = 0;
                    }
-                    
-                   this.log.debug(`WaterYearly.${a} ${monat}`); 
+
                    this.setState(`WaterYearly.${a}`, monat, true);
                 }
 
