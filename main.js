@@ -175,7 +175,7 @@ class judoisoftControll extends utils.Adapter {
                 //SaltQuantity
                 result = await axios.get(baseUrl + "consumption&command=salt%20quantity&msgnumber=1&token=" + _token, { httpsAgent: agent });
                 let sq = result.data.data;
-                sq = (sq/50000)*100;
+                sq = Math.round((sq/50000)*100);
                     
                 this.setState(`SaltQuantity`, sq, true);
                 
