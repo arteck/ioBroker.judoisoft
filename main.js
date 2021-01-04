@@ -651,8 +651,8 @@ class judoisoftControll extends utils.Adapter {
                 callback();
             }
 
-            if (this.config.serial === undefined) {
-                this.log.debug(`serial undefined`);
+            if (this.config.password === undefined) {
+                this.log.debug(`password undefined`);
                 callback();
             }
             try {
