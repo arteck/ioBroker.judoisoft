@@ -45,7 +45,7 @@
     "readme": "https://github.com/arteck/ioBroker.judoisoft/blob/master/README.md",
     "loglevel": "info",
     "restartAdapters": [
-      "fullyBrowser"
+      "judoisoft"
     ],
     "keywords": [
       "judo",
@@ -55,7 +55,7 @@
     "icon": "judo.png",
     "extIcon": "https://raw.githubusercontent.com/arteck/ioBroker.judo/master/admin/judo.png",
     "type": "hardware",
-    "singletonHost": true
+    "singletonHost": false
   },
   "native": {
     "interval": 300
