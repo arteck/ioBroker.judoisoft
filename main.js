@@ -619,8 +619,7 @@ class judoisoftControll extends utils.Adapter {
             },
             native: {},
         });
-
-       this.subscribeStates(`Vacation`);
+       
        this.subscribeStates(`WaterStop`);
        this.subscribeStates(`Regeneration`);
        this.subscribeStates(`ResidualHardness`);
