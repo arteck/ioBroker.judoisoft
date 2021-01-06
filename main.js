@@ -166,8 +166,10 @@ class judoisoftControll extends utils.Adapter {
                 let result;
                 //WaterCurrent
                 result = await axios.get(baseUrl + "consumption&command=water%20current&msgnumber=1&token=" + _token, { httpsAgent: agent });
-                this.setState(`WaterCurrent`, result.data.data, true);    
-                    
+                let splWassCur = result.data.data.split(" ");
+                this.setState(`WaterCurrent`, splWassCur[1], true);
+                this.setState(`WaterCurrentOut`, splWassCur[2], true);
+                                   
                 //SaltRange
                 result = await axios.get(baseUrl + "consumption&command=salt%20range&msgnumber=1&token=" + _token, { httpsAgent: agent });
                 this.setState(`SaltRange`, result.data.data, true);                    
@@ -202,8 +204,9 @@ class judoisoftControll extends utils.Adapter {
                 //WaterTotal
                 result = await axios.get(baseUrl + "consumption&command=water%20total&msgnumber=1&token=" + _token, { httpsAgent: agent });
                     
-                let splWass = result.data.data.split(" ");
-                this.setState(`WaterTotal`, splWass[1] / 1000, true);
+                let splWassTot = result.data.data.split(" ");
+                this.setState(`WaterTotal`, splWassTot[1] / 1000, true);
+                this.setState(`WaterTotalOut`, splWassTot[2] / 1000, true);
                 
                  //WaterYearly
                 result = await axios.get(baseUrl + "consumption&command=water%20yearly&msgnumber=1&token=" + _token, { httpsAgent: agent });
@@ -351,7 +354,21 @@ class judoisoftControll extends utils.Adapter {
             },
             native: {},
         });
-
+       
+        this.extendObjectAsync(`WaterCurrentOut`, {
+            type: 'state',
+            common: {
+                name: `WaterCurrentOut`,
+                type: 'number',
+                read: true,
+                write: false,
+                def: 0,
+                role: 'info',
+                unit: 'l'
+            },
+            native: {},
+        });
+       
         this.extendObjectAsync(`WaterYearly`, {
             type: 'channel',
             common: {
@@ -486,6 +503,20 @@ class judoisoftControll extends utils.Adapter {
             },
             native: {},
         });
+       
+        this.extendObjectAsync(`WaterTotalOut`, {
+            type: 'state',
+            common: {
+                name: `WaterTotalOut`,
+                type: 'number',
+                read: true,
+                write: false,
+                def: 0,
+                role: 'info',
+                unit: 'm3'
+            },
+            native: {},
+        });       
 
         this.extendObjectAsync(`WaterAverage`, {
             type: 'state',
