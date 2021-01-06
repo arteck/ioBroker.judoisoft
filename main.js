@@ -623,7 +623,7 @@ class judoisoftControll extends utils.Adapter {
        this.subscribeStates(`Vacation`);
        this.subscribeStates(`WaterStop`);
        this.subscribeStates(`Regeneration`);
-       
+       this.subscribeStates(`ResidualHardness`);
        this.setState('info.connection', true, true);
    }
     
@@ -663,7 +663,11 @@ class judoisoftControll extends utils.Adapter {
                 }
 
                 this.setState("lastInfoUpdate", Date.now(), true);
-                break;                        
+                break;   
+             case 'ResidualHardness':
+                this.log.debug("ResidualHardness " + state);
+                const val = await axios.get(baseUrl + "settings&command=residual%20hardness&msgnumber=1&token=" + _token + '&parameter=' + state, { httpsAgent: agent });                
+                break;
              default:
         }
    }
