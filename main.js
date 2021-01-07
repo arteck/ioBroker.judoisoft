@@ -196,6 +196,10 @@ class judoisoftControll extends utils.Adapter {
                 //FlowRate
                 result = await axios.get(baseUrl + "waterstop&command=flow%20rate&msgnumber=1&token=" + _token, { httpsAgent: agent });
                 this.setState(`FlowRate`, result.data.data, true);
+                
+                //StandBy
+                result = await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _token, { httpsAgent: agent });
+                this.setState(`StandBy`, result.data.data, true);                
                     
                 //Quantity
                 result = await axios.get(baseUrl + "waterstop&command=quantity&msgnumber=1&token=" + _token, { httpsAgent: agent });                             
@@ -676,6 +680,10 @@ class judoisoftControll extends utils.Adapter {
 
                 this.setState("lastInfoUpdate", Date.now(), true);
                 break;   
+            case 'StandBy':
+                this.log.debug("StandBy " + state);
+                const val = await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _token + '&parameter=' + state, { httpsAgent: agent });      
+                break; 
              case 'ResidualHardness':
                 this.log.debug("ResidualHardness " + state);
                 const val = await axios.get(baseUrl + "settings&command=residual%20hardness&msgnumber=1&token=" + _token + '&parameter=' + state, { httpsAgent: agent });                
