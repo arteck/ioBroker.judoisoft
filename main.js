@@ -581,7 +581,19 @@ class judoisoftControll extends utils.Adapter {
             },
             native: {},
         });              
-       
+        this.extendObjectAsync(`StandBy`, {
+            type: 'state',
+            common: {
+                name: `StandBy`,
+                type: 'number',
+                read: true,
+                write: true,
+                def: 0,
+                role: 'info',
+                unit: 'h'
+            },
+            native: {},
+        });     
        this.extendObjectAsync(`Regeneration`, {
             type: 'state',
             common: {
@@ -623,6 +635,7 @@ class judoisoftControll extends utils.Adapter {
        this.subscribeStates(`WaterStop`);
        this.subscribeStates(`Regeneration`);
        this.subscribeStates(`ResidualHardness`);
+       this.subscribeStates(`StandBy`);
        this.setState('info.connection', true, true);
    }
     
