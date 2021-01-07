@@ -682,11 +682,11 @@ class judoisoftControll extends utils.Adapter {
                 break;   
             case 'StandBy':
                 this.log.debug("StandBy " + state);
-                const val = await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _token + '&parameter=' + state, { httpsAgent: agent });      
+                await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _token + '&parameter=' + state, { httpsAgent: agent });      
                 break; 
              case 'ResidualHardness':
                 this.log.debug("ResidualHardness " + state);
-                const val = await axios.get(baseUrl + "settings&command=residual%20hardness&msgnumber=1&token=" + _token + '&parameter=' + state, { httpsAgent: agent });                
+                await axios.get(baseUrl + "settings&command=residual%20hardness&msgnumber=1&token=" + _token + '&parameter=' + state, { httpsAgent: agent });                
                 break;
              default:
         }
