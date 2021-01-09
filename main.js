@@ -210,12 +210,12 @@ class judoisoftControll extends utils.Adapter {
                 this.log.debug("-> Quantity");
                 
                 //WaterTotal
-                result = await axios.get(baseUrl + "consumption&command=water%20total&msgnumber=1&token=" + _token, { httpsAgent: agent });
-                    
+                result = await axios.get(baseUrl + "consumption&command=water%20total&msgnumber=1&token=" + _token, { httpsAgent: agent });             
+                
                 let splWassTot = result.data.data.split(" ");
                 this.setState(`WaterTotal`, splWassTot[1] / 1000, true);
                 this.setState(`WaterTotalOut`, splWassTot[2] / 1000, true);
-                this.log.debug("-> WaterTotal");
+                this.log.debug("-> WaterTotal " + result.data.data);
                 
                  //WaterYearly
                 result = await axios.get(baseUrl + "consumption&command=water%20yearly&msgnumber=1&token=" + _token, { httpsAgent: agent });
