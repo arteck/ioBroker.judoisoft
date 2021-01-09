@@ -193,7 +193,7 @@ class judoisoftControll extends utils.Adapter {
                 
                 //ResidualHardness
                 result = await axios.get(baseUrl + "settings&command=residual%20hardness&msgnumber=1&token=" + _token, { httpsAgent: agent });
-                this.setState(`ResidualHardness`, result.data.data, true);
+                this.setState(`ResidualHardness`, result.data.data, false);
                 this.log.debug("-> ResidualHardness");
                 
                 //NaturalHardness
