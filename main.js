@@ -322,8 +322,10 @@ class judoisoftControll extends utils.Adapter {
 
         this.log.debug("getURL: " + baseUrl + "register&command=login&msgnumber=1&name=login&user=" + this.config.user);
        
+        let tokenObject;
+       
         try {       
-            const tokenObject = await axios.get(statusURL, { httpsAgent: agent });
+            tokenObject = await axios.get(statusURL, { httpsAgent: agent });
             this.log.debug("getToken: " + JSON.stringify(tokenObject.data));    
            
             _token = tokenObject.data.token;
