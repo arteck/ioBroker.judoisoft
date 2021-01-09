@@ -100,8 +100,7 @@ class judoisoftControll extends utils.Adapter {
             let tmp = id.split('.');
             let command = tmp.pop();
             
-            if (state.ack != null) {
-                if (!state.ack) {                   
+            if (state && !state.ack) {          
                     this.setCommandState(command, state.val);
                 }
             }
@@ -133,14 +132,14 @@ class judoisoftControll extends utils.Adapter {
                 this.log.debug("get Information Static " + key + " " + JSON.stringify(responses[key].data))
             }
 
-            this.setState("SoftwareVersion", responses[0].data.data);
-            this.setState("HardwareVersion", responses[1].data.data);
+            this.setState("SoftwareVersion", responses[0].data.data, true);
+            this.setState("HardwareVersion", responses[1].data.data, true);
             
             const inst = await this.timeConverter(responses[2].data.data);
-            this.setState("InstallationDate", inst);
+            this.setState("InstallationDate", inst, true);
             
             const serv = await this.timeConverter(responses[3].data.data);
-            this.setState("ServiceDate", serv);
+            this.setState("ServiceDate", serv, true);
                        
         } catch (err) {
             this.log.debug('getInfoStatic ERROR' + JSON.stringify(err));
@@ -167,8 +166,8 @@ class judoisoftControll extends utils.Adapter {
                 //WaterCurrent
                 result = await axios.get(baseUrl + "consumption&command=water%20current&msgnumber=1&token=" + _token, { httpsAgent: agent });
                 let splWassCur = result.data.data.split(" ");
-                this.setState(`WaterCurrent`, splWassCur[0]);
-                this.setState(`WaterCurrentOut`, splWassCur[1]);                               
+                this.setState(`WaterCurrent`, splWassCur[0], true);
+                this.setState(`WaterCurrentOut`, splWassCur[1], true);                               
                 this.log.debug("-> WaterCurrent");
                                
                 //ResidualHardness
@@ -178,7 +177,7 @@ class judoisoftControll extends utils.Adapter {
                 
                 //SaltRange
                 result = await axios.get(baseUrl + "consumption&command=salt%20range&msgnumber=1&token=" + _token, { httpsAgent: agent });
-                this.setState(`SaltRange`, result.data.data);                    
+                this.setState(`SaltRange`, result.data.data, true);                    
                 
                 this.log.debug("-> SaltRange");
                 
@@ -187,40 +186,40 @@ class judoisoftControll extends utils.Adapter {
                 let sq = result.data.data;
                 sq = Math.round((sq/50000)*100);
                     
-                this.setState(`SaltQuantity`, sq);
+                this.setState(`SaltQuantity`, sq, true);
                 this.log.debug("-> SaltQuantity");
                 
                 //WaterAverage
                 result = await axios.get(baseUrl + "consumption&command=water%20average&msgnumber=1&token=" + _token, { httpsAgent: agent });
-                this.setState(`WaterAverage`, result.data.data);
+                this.setState(`WaterAverage`, result.data.data, true);
                 this.log.debug("-> WaterAverage");
                 
                 //NaturalHardness
                 result = await axios.get(baseUrl + "info&command=natural%20hardness&msgnumber=1&token=" + _token, { httpsAgent: agent });
-                this.setState(`NaturalHardness`, result.data.data);
+                this.setState(`NaturalHardness`, result.data.data, true);
                 this.log.debug("-> NaturalHardness");
                 
                 //FlowRate
                 result = await axios.get(baseUrl + "waterstop&command=flow%20rate&msgnumber=1&token=" + _token, { httpsAgent: agent });
-                this.setState(`FlowRate`, result.data.data);
+                this.setState(`FlowRate`, result.data.data, true);
                 this.log.debug("-> FlowRate");
                 
                 //StandBy
                 result = await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _token, { httpsAgent: agent });
-                this.setState(`StandByValue`, result.data.data);                                   
+                this.setState(`StandByValue`, result.data.data, true);                                   
                 this.log.debug("-> StandBy");
                 
                 //Quantity
                 result = await axios.get(baseUrl + "waterstop&command=quantity&msgnumber=1&token=" + _token, { httpsAgent: agent });                             
-                this.setState(`Quantity`, result.data.data);
+                this.setState(`Quantity`, result.data.data, true);
                 this.log.debug("-> Quantity");
                 
                 //WaterTotal
                 result = await axios.get(baseUrl + "consumption&command=water%20total&msgnumber=1&token=" + _token, { httpsAgent: agent });
                     
                 let splWassTot = result.data.data.split(" ");
-                this.setState(`WaterTotal`, splWassTot[1] / 1000);
-                this.setState(`WaterTotalOut`, splWassTot[2] / 1000);
+                this.setState(`WaterTotal`, splWassTot[1] / 1000, true);
+                this.setState(`WaterTotalOut`, splWassTot[2] / 1000, true);
                 this.log.debug("-> WaterTotal");
                 
                  //WaterYearly
@@ -242,13 +241,13 @@ class judoisoftControll extends utils.Adapter {
                       monat = 0;
                    }
 
-                   this.setState(`WaterYearly.${a}`, monat);
+                   this.setState(`WaterYearly.${a}`, monat, true);
                 }
                 this.log.debug("-> WaterYearly");
                 
                 //ValveState
                 result = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _token, { httpsAgent: agent });
-                this.setState(`WaterStopStatus`, result.data.data);                
+                this.setState(`WaterStopStatus`, result.data.data, true);                
 
                 if (result.data.data == 'opened') {
                     this.setState(`WaterStop`, false, true);
@@ -318,7 +317,7 @@ class judoisoftControll extends utils.Adapter {
            
             _token = tokenObject.data.token;
             
-            this.setState("token", _token);  
+            this.setState("token", _token, true);  
              //Serial
             const serResult = await axios.get(baseUrl + "register&command=show&msgnumber=2&token=" + _token, { httpsAgent: agent });
             this.log.debug("getSerialnumber : " + JSON.stringify(serResult.data));
@@ -326,18 +325,18 @@ class judoisoftControll extends utils.Adapter {
             const wtuType = serResult.data.data[0]["wtuType"];
             const serialN = serResult.data.data[0]["serial number"];
 
-            this.setState("wtuType", wtuType);
-            this.setState("SerialNumber", serialN);
+            this.setState("wtuType", wtuType, true);
+            this.setState("SerialNumber", serialN, true);
             
             //Connect            
             const conResult = await axios.get(baseUrl + "register&command=connect&msgnumber=1&token=" + _token + "&parameter=" + wtuType + "&serial%20number=" + serialN, { httpsAgent: agent });
             this.log.debug("connect Result: " + JSON.stringify(conResult.data));
              
-            this.setState("Connection status", conResult.data.status);
+            this.setState("Connection status", conResult.data.status, true);
             
             return _token;
         } catch (err) {
-           this.setState("Connection status", "ERROR");
+           this.setState("Connection status", "ERROR", true);
            this.log.debug("getToken: " + JSON.stringify(tokenObject.data));      
            this.setState('info.connection', false, false);
            return null;
