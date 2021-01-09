@@ -247,7 +247,7 @@ class judoisoftControll extends utils.Adapter {
                 this.log.debug("-> WaterYearly");
                 
                 //ValveState
-                result = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=4&&token=" + _token, { httpsAgent: agent });
+                result = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _token, { httpsAgent: agent });
                 let valveOld = this.getState(`WaterStopStatus`).val;
                 
                 if (valveOld !== result.data.data) {
@@ -270,7 +270,7 @@ class judoisoftControll extends utils.Adapter {
 
         } catch (err) {
             this.setState('info.connection', false, true);
-            this.log.debug('getInfos ERROR' + JSON.stringify(result));
+            this.log.debug('getInfos ERROR' + JSON.stringify(result.data));
         }
     }
     async setCommandState(command, state) {
