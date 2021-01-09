@@ -25,7 +25,8 @@ const agent = new https.Agent({
 
 let baseUrl = "";
 let _token;
-let _pause = false;
+let _pauseValveState = false;
+let _pauseStandBy = false;
 
 class judoisoftControll extends utils.Adapter {
 
@@ -239,15 +240,15 @@ class judoisoftControll extends utils.Adapter {
                 }
                 this.log.debug("-> WaterYearly");
 
-                if (!_pause) {
+                if (!_pauseStandBy) {
                     //StandBy
                     result = await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _token, { httpsAgent: agent });
                     this.setState(`StandByValue`, result.data.data, true);                                   
                     this.log.debug("-> StandBy");
-                    _pause = false;
+                    _pauseStandBy = false;
                 }
                 
-                if (!_pause) {
+                if (!_pauseValveState) {
                     //ValveState
                     result = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _token, { httpsAgent: agent });
                     this.setState(`WaterStopStatus`, result.data.data, true);                
@@ -259,7 +260,7 @@ class judoisoftControll extends utils.Adapter {
                     }
 
                     this.log.debug("-> ValveState");
-                    _pause = false;
+                    _pauseValveState = false;
                 }
                 this.setState("lastInfoUpdate", Date.now(), true);   
                 
@@ -282,7 +283,7 @@ class judoisoftControll extends utils.Adapter {
                 break;
             case 'WaterStop':
                 this.log.debug("set WaterStop " + state);
-                _pause = true;     // für getInfo
+                _pauseValveState = true;     // für getInfo
                 if (state) {                            
                     const val = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _token + "&parameter=close", { httpsAgent: agent });
                     this.setState("WaterStopStatus", val.data.parameter, true);
@@ -295,7 +296,7 @@ class judoisoftControll extends utils.Adapter {
                 break;   
             case 'StandBy':
                 this.log.debug("set StandBy " + state);
-                _pause = true;    // für getInfo
+                _pauseStandBy = true;    // für getInfo
                 if (state) {  
                     await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _token + '&parameter=start', { httpsAgent: agent }); 
                 } else {
