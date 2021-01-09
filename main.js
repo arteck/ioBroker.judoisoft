@@ -278,10 +278,10 @@ class judoisoftControll extends utils.Adapter {
                 this.log.debug("set WaterStop " + state);
                 if (state) {                            
                     const val = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _token + "&parameter=close", { httpsAgent: agent });
-                    this.setState("WaterStopStatus", val.data.parameter);
+                    this.setState("WaterStopStatus", val.data.parameter, true);
                 } else {
                     const val = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _token + "&parameter=open", { httpsAgent: agent });
-                    this.setState("WaterStopStatus", val.data.parameter);
+                    this.setState("WaterStopStatus", val.data.parameter, true);
                 }
 
                 this.setState("lastInfoUpdate", Date.now(), true);
@@ -295,7 +295,7 @@ class judoisoftControll extends utils.Adapter {
                 }
                 //StandByValue
                 const valSt = await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _token, { httpsAgent: agent });
-                this.setState(`StandByValue`, valSt.data.data);  
+                this.setState(`StandByValue`, valSt.data.data, true);
                     
                 break; 
              case 'ResidualHardness':
