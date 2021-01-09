@@ -630,7 +630,9 @@ async setCommandState(command, state) {
                 type: 'number',
                 read: true,
                 write: false,
-                role: 'info'
+                def: 0,
+                role: 'info',
+                unit: 'h'
             },
             native: {},
         });       
