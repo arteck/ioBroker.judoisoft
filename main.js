@@ -167,9 +167,13 @@ class judoisoftControll extends utils.Adapter {
                 result = await axios.get(baseUrl + "consumption&command=water%20current&msgnumber=1&token=" + _token, { httpsAgent: agent });
                 let splWassCur = result.data.data.split(" ");
                 this.setState(`WaterCurrent`, splWassCur[0], true);
-                this.setState(`WaterCurrentOut`, splWassCur[1], true);
-                               
+                this.setState(`WaterCurrentOut`, splWassCur[1], true);                               
                 this.log.debug("-> WaterCurrent");
+                               
+                //ResidualHardness
+                result = await axios.get(baseUrl + "settings&command=residual%20hardness&msgnumber=1&token=" + _token, { httpsAgent: agent });
+                this.setState(`ResidualHardness`, result.data.data, false);
+                this.log.debug("-> ResidualHardness");                                                
                 
                 //SaltRange
                 result = await axios.get(baseUrl + "consumption&command=salt%20range&msgnumber=1&token=" + _token, { httpsAgent: agent });
@@ -189,11 +193,6 @@ class judoisoftControll extends utils.Adapter {
                 result = await axios.get(baseUrl + "consumption&command=water%20average&msgnumber=1&token=" + _token, { httpsAgent: agent });
                 this.setState(`WaterAverage`, result.data.data, true);
                 this.log.debug("-> WaterAverage");
-                
-                //ResidualHardness
-                result = await axios.get(baseUrl + "settings&command=residual%20hardness&msgnumber=1&token=" + _token, { httpsAgent: agent });
-                this.setState(`ResidualHardness`, result.data.data, false);
-                this.log.debug("-> ResidualHardness");
                 
                 //NaturalHardness
                 result = await axios.get(baseUrl + "info&command=natural%20hardness&msgnumber=1&token=" + _token, { httpsAgent: agent });
