@@ -257,7 +257,44 @@ class judoisoftControll extends utils.Adapter {
             this.log.debug('getInfos ERROR' + JSON.stringify(err));
         }
     }
+async setCommandState(command, state) {
+        switch (command) {             
+            case 'Regeneration':
+                this.log.debug("Regeneration " + state);
+                await axios.get(baseUrl + "settings&command=regeneration&msgnumber=1&token=" + _token + "&parameter=start", { httpsAgent: agent });   
+                break;
+            case 'WaterStop':
+                this.log.debug("WaterStop " + state);
+                if (state) {                            
+                    const val = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _token + "&parameter=close", { httpsAgent: agent });
+                    this.setState("WaterStopStatus", val.data.parameter, true);
+                } else {
+                    const val = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _token + "&parameter=open", { httpsAgent: agent });
+                    this.setState("WaterStopStatus", val.data.parameter, true);
+                }
 
+                this.setState("lastInfoUpdate", Date.now(), true);
+                break;   
+            case 'StandBy':
+                this.log.debug("StandBy " + state);
+                if (state) {  
+                    await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _token + '&parameter=start', { httpsAgent: agent }); 
+                } else {
+                    await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _token + '&parameter=stop', { httpsAgent: agent }); 
+                }
+                //StandByValue
+                const valSt = await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _token, { httpsAgent: agent });
+                this.setState(`StandByValue`, valSt.data.data, true);  
+                    
+                break; 
+             case 'ResidualHardness':
+                this.log.debug("ResidualHardness " + state);
+                await axios.get(baseUrl + "settings&command=residual%20hardness&msgnumber=1&token=" + _token + '&parameter=' + state, { httpsAgent: agent });                                 
+                break;
+             default:
+        }
+   }
+    
    async getTokenFirst() {
         const statusURL = baseUrl + "register&command=login&msgnumber=1&name=login&user=" + this.config.user + "&password=" + this.config.password + "&role=customer";
 
@@ -671,45 +708,7 @@ class judoisoftControll extends utils.Adapter {
 
       var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min;
       return time;
-    }
-
-    async setCommandState(command, state) {
-        switch (command) {             
-            case 'Regeneration':
-                this.log.debug("Regeneration " + state);
-                await axios.get(baseUrl + "settings&command=regeneration&msgnumber=1&token=" + _token + "&parameter=start", { httpsAgent: agent });   
-                break;
-            case 'WaterStop':
-                this.log.debug("WaterStop " + state);
-                if (state) {                            
-                    const val = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _token + "&parameter=close", { httpsAgent: agent });
-                    this.setState("WaterStopStatus", val.data.parameter, true);
-                } else {
-                    const val = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _token + "&parameter=open", { httpsAgent: agent });
-                    this.setState("WaterStopStatus", val.data.parameter, true);
-                }
-
-                this.setState("lastInfoUpdate", Date.now(), true);
-                break;   
-            case 'StandBy':
-                this.log.debug("StandBy " + state);
-                if (state) {  
-                    await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _token + '&parameter=start', { httpsAgent: agent }); 
-                } else {
-                    await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _token + '&parameter=stop', { httpsAgent: agent }); 
-                }
-                //StandByValue
-                const valSt = await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _token, { httpsAgent: agent });
-                this.setState(`StandByValue`, valSt.data.data, true);  
-                    
-                break; 
-             case 'ResidualHardness':
-                this.log.debug("ResidualHardness " + state);
-                await axios.get(baseUrl + "settings&command=residual%20hardness&msgnumber=1&token=" + _token + '&parameter=' + state, { httpsAgent: agent });                                 
-                break;
-             default:
-        }
-   }
+  }
 
    async initialization() {
         try {
