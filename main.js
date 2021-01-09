@@ -274,11 +274,11 @@ class judoisoftControll extends utils.Adapter {
     async setCommandState(command, state) {
         switch (command) {             
             case 'Regeneration':
-                this.log.debug("Regeneration " + state);
+                this.log.debug("set Regeneration " + state);
                 await axios.get(baseUrl + "settings&command=regeneration&msgnumber=1&token=" + _token + "&parameter=start", { httpsAgent: agent });   
                 break;
             case 'WaterStop':
-                this.log.debug("WaterStop " + state);
+                this.log.debug("set WaterStop " + state);
                 if (state) {                            
                     const val = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _token + "&parameter=close", { httpsAgent: agent });
                     this.setState("WaterStopStatus", val.data.parameter, true);
@@ -290,7 +290,7 @@ class judoisoftControll extends utils.Adapter {
                 this.setState("lastInfoUpdate", Date.now(), true);
                 break;   
             case 'StandBy':
-                this.log.debug("StandBy " + state);
+                this.log.debug("set StandBy " + state);
                 if (state) {  
                     await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _token + '&parameter=start', { httpsAgent: agent }); 
                 } else {
@@ -302,7 +302,7 @@ class judoisoftControll extends utils.Adapter {
                     
                 break; 
              case 'ResidualHardness':
-                this.log.debug("ResidualHardness " + state);
+                this.log.debug("set ResidualHardness " + state);
                 await axios.get(baseUrl + "settings&command=residual%20hardness&msgnumber=1&token=" + _token + '&parameter=' + state, { httpsAgent: agent });                                 
                 break;
              default:
