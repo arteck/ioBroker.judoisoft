@@ -158,11 +158,12 @@ class judoisoftControll extends utils.Adapter {
             _token = await this.getTokenFirst();
         } 
      
+        let result;
+        
         try {
             if (_token) {   
                 this.setState("lastInfoUpdate", Date.now(), true);
-                
-                let result;
+                                
                 //WaterCurrent
                 result = await axios.get(baseUrl + "consumption&command=water%20current&msgnumber=1&token=" + _token, { httpsAgent: agent });
                 let splWassCur = result.data.data.split(" ");
@@ -258,7 +259,9 @@ class judoisoftControll extends utils.Adapter {
                         this.setState(`WaterStop`, true, false);
                     }
                 }
-                this.log.debug("-> SaltQuantity");
+                
+                this.log.debug("-> ValveState");
+                
             } // if _token
 
             requestTimeout = setTimeout(async () => {
@@ -266,7 +269,7 @@ class judoisoftControll extends utils.Adapter {
             }, interval);
 
         } catch (err) {
-            this.log.debug('getInfos ERROR' + JSON.stringify(err));
+            this.log.debug('getInfos ERROR' + JSON.stringify(result));
         }
     }
     async setCommandState(command, state) {
