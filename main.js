@@ -101,8 +101,7 @@ class judoisoftControll extends utils.Adapter {
             let command = tmp.pop();
             
             if (state && !state.ack) {          
-                    this.setCommandState(command, state.val);
-                }
+                this.setCommandState(command, state.val);                
             }
     
         } else {
