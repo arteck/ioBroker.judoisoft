@@ -12,9 +12,6 @@
 const utils = require('@iobroker/adapter-core');
 const axios = require('axios');
 const https = require('https');
-const setStr = 'setStringSetting';
-const commandsStr = 'Commands';
-const infoStr = 'Info';
 
 let interval = 0;
 let requestTimeout = null;
