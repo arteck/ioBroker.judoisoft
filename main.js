@@ -269,6 +269,7 @@ class judoisoftControll extends utils.Adapter {
             }, interval);
 
         } catch (err) {
+            this.setState('info.connection', false, true);
             this.log.debug('getInfos ERROR' + JSON.stringify(result));
         }
     }
