@@ -53,7 +53,7 @@ class judoisoftControll extends utils.Adapter {
         await this.create_state();
         _token = await this.getTokenFirst();
         await this.getInfoStatic();
-        await this.getInfos();
+        this.getInfos();
     }
 
     /**
