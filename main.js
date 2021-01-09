@@ -95,7 +95,7 @@ class judoisoftControll extends utils.Adapter {
     onStateChange(id, state) {
 
         if (state) {
-            this.log.debug(`stateID ${id} changed: ${state.val} (ack = ${state.ack})`);
+            this.log.debug(`--> stateID ${id} changed: ${state.val} (ack = ${state.ack})`);
             
             let tmp = id.split('.');
             let command = tmp.pop();
