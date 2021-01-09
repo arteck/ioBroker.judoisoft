@@ -101,7 +101,9 @@ class judoisoftControll extends utils.Adapter {
             let command = tmp.pop();
 
             if (state.ack != null) {
-                this.setCommandState(command, state.val);
+                if (state && !state.ack) {
+                    this.setCommandState(command, state.val);
+                }
             }
     
         } else {
@@ -269,6 +271,8 @@ class judoisoftControll extends utils.Adapter {
         }
     }
     async setCommandState(command, state) {
+        
+        if 
         switch (command) {             
             case 'Regeneration':
                 this.log.debug("set Regeneration " + state);
