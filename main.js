@@ -641,7 +641,7 @@ async setCommandState(command, state) {
             common: {
                 name: `StandBy`,
                 type: 'boolean',
-                role: 'button',
+                role: 'info',
                 def: false,
                 read: true,
                 write: true
