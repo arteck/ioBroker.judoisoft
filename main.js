@@ -199,9 +199,7 @@ class judoisoftControll extends utils.Adapter {
                 
                 //StandBy
                 result = await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _token, { httpsAgent: agent });
-                this.setState(`StandByValue`, result.data.data, true);                
-                    
-                this.log.info("StandByValue " + JSON.stringify(result));
+                this.setState(`StandByValue`, result.data.data, true);                                   
                 
                 //Quantity
                 result = await axios.get(baseUrl + "waterstop&command=quantity&msgnumber=1&token=" + _token, { httpsAgent: agent });                             
@@ -259,7 +257,7 @@ class judoisoftControll extends utils.Adapter {
             this.log.debug('getInfos ERROR' + JSON.stringify(err));
         }
     }
-async setCommandState(command, state) {
+    async setCommandState(command, state) {
         switch (command) {             
             case 'Regeneration':
                 this.log.debug("Regeneration " + state);
