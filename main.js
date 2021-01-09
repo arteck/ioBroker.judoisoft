@@ -201,6 +201,8 @@ class judoisoftControll extends utils.Adapter {
                 result = await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _token, { httpsAgent: agent });
                 this.setState(`StandByValue`, result.data.data, true);                
                     
+                this.log.info("StandByValue " + JSON.stringify(result));
+                
                 //Quantity
                 result = await axios.get(baseUrl + "waterstop&command=quantity&msgnumber=1&token=" + _token, { httpsAgent: agent });                             
                 this.setState(`Quantity`, result.data.data, true);
