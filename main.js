@@ -248,20 +248,13 @@ class judoisoftControll extends utils.Adapter {
                 
                 //ValveState
                 result = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _token, { httpsAgent: agent });
-                
-                this.getState('WaterStopStatus', (err, state) => {   
-                    this.log.debug("-> ValveStateNow " + state.val);
-                    
-                    if (state.val !== result.data.data) {
-                        this.setState(`WaterStopStatus`, result.data.data, true);
+                this.setState(`WaterStopStatus`, result.data.data, true);                
 
-                        if (state.val == 'opened') {
-                            this.setState(`WaterStop`, false, false);
-                        } else {
-                            this.setState(`WaterStop`, true, false);
-                        }
-                    }
-                });             
+                if (result.data.data == 'opened') {
+                    this.setState(`WaterStop`, false, false);
+                } else {
+                    this.setState(`WaterStop`, true, false);
+                }
                 
                 this.log.debug("-> ValveState");
                 
