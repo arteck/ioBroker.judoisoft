@@ -99,11 +99,9 @@ class judoisoftControll extends utils.Adapter {
             
             let tmp = id.split('.');
             let command = tmp.pop();
-
+            
             if (state.ack != null) {
-                if (state && !state.ack) {
-                    
-                    this.log.debug("set state " + Json.stringify(state) + " " + state.ack);
+                if (state && !state.ack) {                   
                     this.setCommandState(command, state.val);
                 }
             }
