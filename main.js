@@ -249,7 +249,7 @@ class judoisoftControll extends utils.Adapter {
                 //ValveState
                 result = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _token, { httpsAgent: agent });
                 
-                getState('WaterStopStatus', (err, state) => {
+                this.getState('WaterStopStatus', (err, state) => {
                     const val = state ? !! state.val : "opened";
                     
                     this.log.debug("-> ValveState " + val);
