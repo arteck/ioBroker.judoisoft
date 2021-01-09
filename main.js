@@ -271,8 +271,6 @@ class judoisoftControll extends utils.Adapter {
         }
     }
     async setCommandState(command, state) {
-        
-        if 
         switch (command) {             
             case 'Regeneration':
                 this.log.debug("set Regeneration " + state);
