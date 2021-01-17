@@ -4,7 +4,6 @@
 
 ![Number of Installations](http://iobroker.live/badges/judoisoft-installed.svg) ![Number of Installations](http://iobroker.live/badges/judoisoft-stable.svg) [![NPM version](http://img.shields.io/npm/v/iobroker.judoisoft.svg)](https://www.npmjs.com/package/iobroker.judoisoft)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.judoisoft.svg)](https://www.npmjs.com/package/iobroker.judoisoft)
-[![Tests](https://travis-ci.org/arteck/iobroker.judoisoft.svg?branch=master)](https://travis-ci.org/arteck/iobroker.judoisoft)
 
 
 [![NPM](https://nodei.co/npm/iobroker.judoisoft.png?downloads=true)](https://nodei.co/npm/iobroker.judoisoft/)
