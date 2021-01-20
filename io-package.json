@@ -1,8 +1,13 @@
 {
   "common": {
     "name": "judoisoft",
-    "version": "0.0.9",
+    "version": "1.0.0",
     "news": {
+      "1.0.": {
+        "en": "ready",
+        "de": "ready",
+        "ru": "ready",
+      },
       "0.0.1": {
         "en": "init",
         "de": "init",
