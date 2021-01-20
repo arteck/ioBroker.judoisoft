@@ -23,6 +23,9 @@ Settings available:
 <b>NodeJs >> 8.x.x </b>
 
 ## Changelog
+### 1.0.0  (2021-01-20)
+* (arteck) new js-controller upd
+
 ### 0.0.1 (2020-12-26)
 * (arteck) refactoring
 
