@@ -42,7 +42,7 @@
       "arteck <arteck@outlook.com>"
     ],
     "materialize": true,
-    "compact": false,
+    "compact": true,
     "license": "MIT",
     "platform": "Javascript/Node.js",
     "mode": "daemon",
