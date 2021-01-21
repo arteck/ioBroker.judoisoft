@@ -58,9 +58,18 @@
       "judoisoft"
     ],
     "icon": "judo.png",
-    "extIcon": "https://raw.githubusercontent.com/arteck/ioBroker.judo/master/admin/judo.png",
+    "extIcon": "https://raw.githubusercontent.com/arteck/ioBroker.judoisoft/master/admin/judo.png",
     "type": "hardware",
-    "singletonHost": false
+    "singletonHost": false,
+    "logTransporter": true,   
+    "main": "main.js",
+    "connectionType": "local",
+    "dataSource": "push",
+    "dependencies": [
+        {
+            "js-controller": ">=3.1.0"
+        }
+    ]
   },
   "native": {
     "interval": 300
