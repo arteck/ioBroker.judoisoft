@@ -1,10 +1,36 @@
-test
-tmp
-.travis.yml
-appveyor.yml
-gulpfile.js
-admin/i18n
-node_modules
 .git
+.idea
+node_modules/
+nbproject/
+.vs*/
+*.code-workspace
+Thumbs.db
+gulpfile.js
 /node_modules
 /doku
+
+test/
+travis/
+.travis.yml
+appveyor.yml
+.travis.yaml
+appveyor.yaml
+.gitignore
+.npmignore
+.github
+.snyk
+
+.eslintrc.json
+.eslintrc.js
+
+# npm package files
+iobroker.*.tgz
+package-lock.json
+
+# i18n intermediate files
+admin/i18n
+
+# maintenance scripts
+maintenance/**
+
+
