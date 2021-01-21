@@ -1,1 +1,12 @@
 
+.git
+.idea
+*.code-workspace
+node_modules
+nbproject
+
+# npm package files
+iobroker.*.tgz
+
+Thumbs.db
+
