@@ -12,6 +12,7 @@
 const utils = require('@iobroker/adapter-core');
 const axios = require('axios');
 const https = require('https');
+const CryptoJS = require('md5');
 
 let interval = 0;
 let requestTimeout = null;
