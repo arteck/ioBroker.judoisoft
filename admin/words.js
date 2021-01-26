@@ -58,6 +58,18 @@ systemDictionary = {
         "es": "IP Address",
         "pl": "IP Address"
     },
+    "ipcloud": {
+        "en": "blank when cloud checkbox is checked",
+        "de": "leer, wenn das Kontrollkästchen Cloud aktiviert ist",
+        "ru": "пусто, когда установлен флажок облака",
+        "pt": "em branco quando a caixa de seleção da nuvem é marcada",
+        "nl": "blanco als het selectievakje Cloud is aangevinkt",
+        "fr": "vide lorsque la case Cloud est cochée",
+        "it": "vuoto quando la casella di controllo cloud è selezionata",
+        "es": "en blanco cuando la casilla de verificación de la nube está marcada",
+        "pl": "puste, gdy pole wyboru w chmurze jest zaznaczone",
+        "zh-cn": "选中云复选框时为空白"
+    },
     "port": {
         "en": "Port",
         "de": "Port",

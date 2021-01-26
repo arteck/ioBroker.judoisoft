@@ -318,7 +318,14 @@ class judoisoftControll extends utils.Adapter {
    }
     
    async getTokenFirst() {
-        const statusURL = baseUrl + "register&command=login&msgnumber=1&name=login&user=" + this.config.user + "&password=" + this.config.password + "&role=customer";
+
+       const statusURL = "";
+
+        if (this.config.ip) {
+            statusURL = baseUrl + "register&command=login&msgnumber=1&name=login&user=" + this.config.user + "&password=" + CryptoJS.MD5(this.config.password) + "&role=customer";
+        } else {
+            statusURL = baseUrl + "register&command=login&msgnumber=1&name=login&user=" + this.config.user + "&password=" + this.config.password + "&role=customer";
+        }
 
         this.log.debug("getURL: " + baseUrl + "register&command=login&msgnumber=1&name=login&user=" + this.config.user);
        
@@ -738,15 +745,20 @@ class judoisoftControll extends utils.Adapter {
 
    async initialization() {
         try {
+            if (this.config.cloud) {
+                this.config.ip = "https://www.myjudo.eu/";
+            }
+
             if (this.config.ip === undefined) {
-                if (this.config.cloud) {
-                    baseUrl = "https://www.myjudo.eu/interface/?group=";
-                } else {
                     this.log.debug(`ip undefined`);
                     callback();
-                }
             } else {
-                baseUrl = "https://" + this.config.ip + ":8124/?group=";
+                if (this.config.cloud) {
+                    baseUrl = "https://www.myjudo.eu/interface/?group=";
+
+                } else {
+                    baseUrl = "https://" + this.config.ip + ":8124/?group=";
+                }
             }
 
             if (this.config.user === undefined) {
