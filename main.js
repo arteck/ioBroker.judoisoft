@@ -739,7 +739,12 @@ class judoisoftControll extends utils.Adapter {
    async initialization() {
         try {
             if (this.config.ip === undefined) {
-                baseUrl = "https://www.myjudo.eu/interface/?group=";
+                if (this.config.cloud) {
+                    baseUrl = "https://www.myjudo.eu/interface/?group=";
+                } else {
+                    this.log.debug(`ip undefined`);
+                    callback();
+                }
             } else {
                 baseUrl = "https://" + this.config.ip + ":8124/?group=";
             }
