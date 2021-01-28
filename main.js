@@ -320,7 +320,7 @@ class judoisoftControll extends utils.Adapter {
     
    async getTokenFirst() {
 
-       const statusURL = "";
+        let statusURL = "";
 
         if (this.config.ip) {
             statusURL = baseUrl + "register&command=login&msgnumber=1&name=login&user=" + this.config.user + "&password=" + md5(this.config.password) + "&role=customer";
