@@ -81,7 +81,10 @@
     ]
   },
   "native": {
-    "interval": 300
+    "interval": 300,
+    "ipaddress" : "0.0.0.0",
+    "user": "user",
+    "password" : "password"
   },
   "instanceObjects": [
         {
