@@ -55,7 +55,6 @@
     "compact": true,
     "license": "MIT",
     "platform": "Javascript/Node.js",
-    "mode": "daemon",
     "enabled": false,
     "readme": "https://github.com/arteck/ioBroker.judoisoft/blob/master/README.md",
     "loglevel": "info",
