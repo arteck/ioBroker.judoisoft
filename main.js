@@ -742,19 +742,16 @@ class judoisoftControll extends utils.Adapter {
         try {
             if (this.config.ip === undefined) {
                 this.log.debug(`ip undefined`);
-                callback();
             } else {
                 baseUrl = "https://" + this.config.ip + ":8124/?group=";
             }
 
             if (this.config.user === undefined) {
                 this.log.debug(`user undefined`);
-                callback();
             }
 
             if (this.config.password === undefined) {
                 this.log.debug(`password undefined`);
-                callback();
             }
             try {
                 interval = parseInt(this.config.interval * 1000, 10);
