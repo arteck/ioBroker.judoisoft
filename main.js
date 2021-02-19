@@ -1,32 +1,35 @@
 /**
  *
- *      ioBroker bydbatt Adapter
+ *      ioBroker judoisoft Adapter
  *
- *      (c) 2014-2020 arteck <arteck@outlook.com>
+ *      (c) 2014-2018 arteck <arteck@outlook.com>
  *
  *      MIT License
  *
  */
-
 'use strict';
- 
+
 const utils = require('@iobroker/adapter-core');
-const { default: AxiosDigestAuth } = require('@mhoc/axios-digest-auth');
+const axios = require('axios');
+const https = require('https');
+const md5 = require('md5');
 
-
-let _batteryNum = 0;
-let _arrayNum = 0;
-let requestTimeout = null;
 let interval = 0;
+let requestTimeout = null;
+ 
 
-let PASSWORD = "";
-const USERNAME = "user";
+// At request level
+const agent = new https.Agent({  
+    rejectUnauthorized: false
+});
 
-let digestAuth = null;
 
+let baseUrl = "";
+let _token;
+let _pauseValveState = false;
+let _pauseStandBy = false;
 
-
-class bydbattControll extends utils.Adapter {
+class judoisoftControll extends utils.Adapter {
 
     /**
      * @param {Partial<utils.AdapterOptions>} [options={}]
@@ -34,11 +37,13 @@ class bydbattControll extends utils.Adapter {
     constructor(options) {
         super({
             ...options,
-            name: 'bydbatt',
+            name: 'judoisoft',
         });
         this.on('ready', this.onReady.bind(this));
+        this.on('objectChange', this.onObjectChange.bind(this));
+        this.on('stateChange', this.onStateChange.bind(this));
+        //  this.on('message', this.onMessage.bind(this));
         this.on('unload', this.onUnload.bind(this));
-
     }
 
     /**
@@ -49,7 +54,9 @@ class bydbattControll extends utils.Adapter {
 
         await this.initialization();
         await this.create_state();
-        await this.getInfos();
+        _token = await this.getTokenFirst();
+        await this.getInfoStatic();
+        this.getInfos();
     }
 
     /**
@@ -68,586 +75,305 @@ class bydbattControll extends utils.Adapter {
         }
     }
 
+    /**
+     * Is called if a subscribed object changes
+     * @param {string} id
+     * @param {ioBroker.Object | null | undefined} obj
+     */
+    onObjectChange(id, obj) {
+        if (obj) {
+            // The object was changed
+            this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
+        } else {
+            // The object was deleted
+            this.log.info(`object ${id} deleted`);
+        }
+    }
 
-     async getInfos() {
-        this.log.debug(`get Information`);
+    /**
+     * Is called if a subscribed state changes
+     * @param {string} id
+     * @param {ioBroker.State | null | undefined} state
+     */
+    onStateChange(id, state) {
 
-        if (requestTimeout) clearTimeout(requestTimeout);
-
-        for (var a = 1; a < _arrayNum+1; a++) {
-           let htmlHome = await this.getDatenHome(this.config.ip);
-           const resHome  = await this.updateDeviceHome(htmlHome.data);
-
-           for (var b = 1; b < _batteryNum+1; b++) {
-                const htmlDataTmp = await this.getDatenGet(this.config.ip, htmlHome.headers);
-                const htmlDataSet = await this.getDatenSet(this.config.ip, a, b, htmlHome.headers);
-                const htmlData    = await this.getDatenGet(this.config.ip, htmlHome.headers);
-
-                const resData  = await this.updateDevice(htmlData.data, a, b);
+        if (state) {
+            this.log.debug(`--> stateID ${id} changed: ${state.val} (ack = ${state.ack})`);
+            
+            let tmp = id.split('.');
+            let command = tmp.pop();
+            
+            if (state && !state.ack) {          
+                this.setCommandState(command, state.val); 
             }
+    
+        } else {
+            // The state was deleted
+            this.log.info(`state ${id} deleted`);
         }
-
-        requestTimeout = setTimeout(async () => {
-            this.getInfos();
-        }, interval);
-
     }
 
-     async getDatenHome(ip) {
-        const statusURLHome = `http://${ip}/asp/Home.asp`;
-
-        const requestOptsAnfr = {
-          headers: { Accept: "application/json" },
-          method: "GET",
-          url: statusURLHome,
-        };
-
-        let res = await digestAuth.request(requestOptsAnfr);
-
-//        this.log.debug('datenHome' + JSON.stringify(res.data));
-        return res;
-    }
-
-
-    async getDatenGet(ip, head) {
-        this.log.debug('getDatenGet GO');
-
-        const statusURLGet = `http://${ip}/asp/RunData.asp`;
-
-        const requestOpts = {
-          headers: head,
-          method: "GET",
-          url: statusURLGet,
-        };
-
-        let res = await digestAuth.request(requestOpts);
-
-//        this.log.debug('datenGet ' + res.data);
-        return res;
-    }
-
-
-  async getDatenSet(ip, arrNum, battNum, head) {
-        this.log.debug('getDatenSet!! GO');
-
-        const statusURLSet = `http://${ip}/goform/SetRunData`;
-
-        const dat = `ArrayNum=${arrNum}&SeriesBatteryNum=${battNum}`;
-
-        head.Referer = 'http://${ip}/asp/RunData.asp';
-
-        const requestOpts = {
-          headers: head,
-          method: "POST",
-          url: statusURLSet,
-          data: dat,
-        };
-
-         let res = "";
-         try {
-            res = await digestAuth.request(requestOpts);
-
-        } catch (err) {
-           this.log.debug('error request-- ' + JSON.stringify(err.headers));
-        }
-
-//        this.log.debug('datenSet-- ' + res.data);
-        return res;
-    }
-
-
-    async updateDeviceHome(htmlHome) {
-        let htmlText2 = (htmlHome || '').toString().replace(/\r\n|[\r\n]/g, ' ');
-            htmlText2 = (htmlText2 || '').toString().replace(/\t|[\t]/g, ' ');
-
-        const g2 = /value=\w*>/g;   // suche status
-
-        var contents = htmlText2.match(g2);
-        contents = contents.filter(function(el){
-            return el;
-        })
-
-        let wert = contents[0];
-            wert = wert.replace("value=", "").replace(">", "");
-
-        this.setState('RunStatus', wert, true);
-
-    }
-    async updateDevice(htmlData, arrNum, battNum) {
-        const arrNumNow = arrNum;
-        const battNumNow = battNum;
-        let serialNumPosi = "";
-
-
-        let htmlText2 = (htmlData || '').toString().replace(/\r\n|[\r\n]/g, ' ');
-            htmlText2 = (htmlText2 || '').toString().replace(/\t|[\t]/g, ' ');
-
-        const g1 = /<td(>|[^>]+>)((?:.(?!<\/td>))*.?)<\/td>/g;                       // suche alle td
-        const g2 = /[a-zA-Z ]+:|[a-zA-Z]+(\[(?:\[??[^\[]*?\])):|value=-?\d*\.?\d*/g;   // suche alle bezeichnungnen und values
-        const g3 = /\w*\d*-\w*\d*/g; // suche serialnummer
+    
+    async getInfoStatic() {
+        this.log.debug("get Information Static");
 
         try {
+                       
+            const responses = await axios.all([
+                    //SoftwareVersion
+                await axios.get(baseUrl + "version&command=software%20version&msgnumber=1&token=" + _token, { httpsAgent: agent }),
+                    //HardwareVersion
+                await axios.get(baseUrl + "version&command=hardware%20version&msgnumber=1&token=" + _token, { httpsAgent: agent }),
+                    //InstallationDate
+                await axios.get(baseUrl + "contract&command=init%20date&msgnumber=1&token=" + _token, { httpsAgent: agent }),
+                    //ServiceDate
+                await  axios.get(baseUrl + "contract&command=service%20date&msgnumber=1&token=" + _token, { httpsAgent: agent })               
+            ]);
 
-            var contents = htmlText2.match(g1);
-            contents = contents.filter(function(el){
-                if (el.indexOf("SerialNumber") > 1) {
-                    serialNumPosi = el;
-                }
-                return el.indexOf(":") || el.indexOf("value");
-            })
-
-            const balanceCtrl = contents[contents.length-1];
-            let balanceArray = balanceCtrl.split(';">');
-
-            const serialNumValue = contents[contents.indexOf(serialNumPosi)+1].match(g3).toString();
-
-            let treffer = contents.toString();
-            var contents = treffer.match(g2);
-
-            contents = contents.filter(function(r1){
-                return r1.indexOf(":") > 0 || r1.length > 6;
-            })
-
-            const stateArray = await this.getObjectViewAsync('system', 'state', {startkey: this.namespace + '.', endkey: this.namespace +  '.BattNum.1' + '\u9999'})
-
-            if (stateArray && stateArray.rows.length > 0) {
-                for (let i = 0; i < stateArray.rows.length; i++) {
-                    if (contents.length < 1) {    // wenn nix mehgr zur vergleich dann raus hier
-                        break;
-                    }
-
-                    if (stateArray.rows[i].id) {
-                        let id = stateArray.rows[i].id;
-                     
-                        this.log.debug("stateArray " + id );
-
-                        id = id.replace("ArrayNum.1", "ArrayNum."+ arrNumNow).replace("BattNum.1", "BattNum." + battNumNow);  // tausche array auf aktuell
-
-                        if (id.indexOf("lastInfoUpdate") > 0) {
-                            await this.setState(id, Date.now(), true);
-                        }
-
-                        var idx = 0;
-
-                        for (; idx < contents.length;) {
-                            let idCon = contents[idx];
-
-                            this.log.debug("contents " + idCon );
-                         
-                            if (idCon.indexOf(" ") > 0) {
-                                contents.splice(idx, 1);
-                                continue;
-                            }
-
-                            if (idCon.indexOf("value=") !== 0) {
-                                idCon = idCon.replace(":", "").replace("[", "").replace("]", "");
-
-                                if (id.indexOf(idCon) > 0) {
-
-                                    if (idCon == "BalanceCtrl") {
-                                        let idKurz = id.substring(0, id.length - 2);
-                                        for (let i = 0; i < 16; i++) {
-                                            let wert = false;
-                                            if (balanceArray[i].indexOf("CHECKED") > 0) {
-                                                wert = true;
-                                            }
-                                            let idIdx = i +1;
-
-                                            await this.setState(idKurz + '.' + idIdx, wert, true);
-                                            this.log.debug(idKurz + '.' + idIdx, wert);
-                                        }
-                                        contents.splice(idx, 1);
-                                        break;
-                                    } else {
-                                        let wert = contents[idx + 1];
-                                        wert = wert.replace("value=", "");
-
-                                        if (idCon == "SerialNumber") {
-                                            wert = serialNumValue;   // serialnummer sonderlocke
-                                        }
-                                        await this.setState(id, wert, true);
-                                        this.log.debug(id + ' ' + wert);
-
-                                        wert = contents[idx + 1];
-                                        if (wert.indexOf("e=") > 0) {    // suche nach value und wenn gefunden dann lösche die punkte
-                                            contents.splice(idx, 2);
-                                        }
-                                        break;
-                                    }
-                                }
-                            }
-                            idx++;
-                        }
-                    }
-                }
+            for (const key in responses) {
+                this.log.debug("get Information Static " + key + " " + JSON.stringify(responses[key].data))
             }
+
+            await this.setState("SoftwareVersion", responses[0].data.data, true);
+            await this.setState("HardwareVersion", responses[1].data.data, true);
+            
+            const inst = await this.timeConverter(responses[2].data.data);
+            await this.setState("InstallationDate", inst, true);
+            
+            const serv = await this.timeConverter(responses[3].data.data);
+            await this.setState("ServiceDate", serv, true);
+                       
         } catch (err) {
-            this.log.debug(`update problem`);
+            this.log.debug('getInfoStatic ERROR' + JSON.stringify(err));
         }
     }
 
+    async getInfos() {
+        this.log.debug("get Consumption data ");
 
-    async create_state() {
+        // check loged in
+        let stats = await axios.get(baseUrl + "register&command=plumber%20address&msgnumber=1&token=" + _token, { httpsAgent: agent });
+        
+        if (stats.data.status == 'error') {
+            this.log.info("reconnect " + Date.now()); 
+            _token = await this.getTokenFirst();
+        } 
+     
+        let result;
+        
+        try {
+            if (_token) {   
+                                
+                //WaterCurrent
+                result = await axios.get(baseUrl + "consumption&command=water%20current&msgnumber=1&token=" + _token, { httpsAgent: agent });
+                let splWassCur = result.data.data.split(" ");
+                await this.setState(`WaterCurrent`, splWassCur[0], true);
+                await this.setState(`WaterCurrentOut`, splWassCur[1], true);                               
+                this.log.debug("-> WaterCurrent");
+                               
+                //ResidualHardness
+                result = await axios.get(baseUrl + "settings&command=residual%20hardness&msgnumber=1&token=" + _token, { httpsAgent: agent });
+                await this.setState(`ResidualHardness`, result.data.data, true);
+                this.log.debug("-> ResidualHardness");                                                
+                
+                //SaltRange
+                result = await axios.get(baseUrl + "consumption&command=salt%20range&msgnumber=1&token=" + _token, { httpsAgent: agent });
+                await this.setState(`SaltRange`, result.data.data, true);                    
+                
+                this.log.debug("-> SaltRange");
+                
+                //SaltQuantity
+                result = await axios.get(baseUrl + "consumption&command=salt%20quantity&msgnumber=1&token=" + _token, { httpsAgent: agent });
+                let sq = result.data.data;
+                sq = Math.round((sq/50000)*100);
+                    
+                await this.setState(`SaltQuantity`, sq, true);
+                this.log.debug("-> SaltQuantity");
+                
+                //WaterAverage
+                result = await axios.get(baseUrl + "consumption&command=water%20average&msgnumber=1&token=" + _token, { httpsAgent: agent });
+                await this.setState(`WaterAverage`, result.data.data, true);
+                this.log.debug("-> WaterAverage");
+                
+                //NaturalHardness
+                result = await axios.get(baseUrl + "info&command=natural%20hardness&msgnumber=1&token=" + _token, { httpsAgent: agent });
+                await this.setState(`NaturalHardness`, result.data.data, true);
+                this.log.debug("-> NaturalHardness");
+                
+                //FlowRate
+                result = await axios.get(baseUrl + "waterstop&command=flow%20rate&msgnumber=1&token=" + _token, { httpsAgent: agent });
+                await this.setState(`FlowRate`, result.data.data, true);
+                this.log.debug("-> FlowRate");
+                                
+                //Quantity
+                result = await axios.get(baseUrl + "waterstop&command=quantity&msgnumber=1&token=" + _token, { httpsAgent: agent });                             
+                await this.setState(`Quantity`, result.data.data, true);
+                this.log.debug("-> Quantity");
+                
+                //WaterTotal
+                result = await axios.get(baseUrl + "consumption&command=water%20total&msgnumber=1&token=" + _token, { httpsAgent: agent });             
+                
+                let splWassTot = result.data.data.split(" ");
+                await this.setState(`WaterTotal`, splWassTot[1] / 1000, true);
+                await this.setState(`WaterTotalOut`, splWassTot[2] / 1000, true);
+                this.log.debug("-> WaterTotaal " + result.data.data);
+                
+                 //WaterYearly
+                result = await axios.get(baseUrl + "consumption&command=water%20yearly&msgnumber=1&token=" + _token, { httpsAgent: agent });
+                let splWassJahr = result.data.data.split(" ");
+                for (var b = 1; b < 13; b++) {
+                   let a = b;
+                   if (a < 10) {
+                     a = '0' + a;
+                   }
+
+                   let monat = splWassJahr[b];
+
+                   this.log.debug(`WaterYearly.${a} ${monat} ${splWassJahr[b]}`);
+
+                   if (monat > 0) {
+                      monat = monat / 1000;
+                   } else {
+                      monat = 0;
+                   }
+
+                   await this.setState(`WaterYearly.${a}`, monat, true);
+                }
+                this.log.debug("-> WaterYearly");
+
+                if (!_pauseStandBy) {
+                    //StandBy
+                    result = await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _token, { httpsAgent: agent });
+                    await this.setState(`StandByValue`, result.data.data, true);                                   
+                    this.log.debug("-> StandBy");
+                    _pauseStandBy = false;
+                }
+                
+                if (!_pauseValveState) {
+                    //ValveState
+                    result = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _token, { httpsAgent: agent });
+                    await this.setState(`WaterStopStatus`, result.data.data, true);                
+
+                    if (result.data.data == 'opened') {
+                        await this.setState(`WaterStop`, false, true);
+                    } else {
+                        await this.setState(`WaterStop`, true, true);
+                    }
+
+                    this.log.debug("-> ValveState");
+                    _pauseValveState = false;
+                }
+                await this.setState("lastInfoUpdate", Date.now(), true);   
+                
+            } // if _token
+            
+            requestTimeout = setTimeout(async () => {
+                this.getInfos();
+            }, interval);
+
+        } catch (err) {
+            this.setState('info.connection', false, true);
+            this.log.error('getInfos ERROR' + JSON.stringify(result.data));
+        }
+    }
+    async setCommandState(command, state) {
+        switch (command) {             
+            case 'Regeneration':
+                this.log.debug("set Regeneration " + state);
+                await axios.get(baseUrl + "settings&command=regeneration&msgnumber=1&token=" + _token + "&parameter=start", { httpsAgent: agent });   
+                break;
+            case 'WaterStop':
+                this.log.debug("set WaterStop " + state);
+                _pauseValveState = true;     // für getInfo
+                if (state) {                            
+                    const val = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _token + "&parameter=close", { httpsAgent: agent });
+                    await this.setState("WaterStopStatus", val.data.parameter, true);
+                } else {
+                    const val = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _token + "&parameter=open", { httpsAgent: agent });
+                    await this.setState("WaterStopStatus", val.data.parameter, true);
+                }
+                _pauseValveState = false;
+
+                break;   
+            case 'StandBy':
+                this.log.debug("set StandBy " + state);
+                _pauseStandBy = true;    // für getInfo
+                if (state) {  
+                    await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _token + '&parameter=start', { httpsAgent: agent }); 
+                } else {
+                    await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _token + '&parameter=stop', { httpsAgent: agent }); 
+                }
+                //StandByValue
+                const valSt = await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _token, { httpsAgent: agent });
+                await this.setState(`StandByValue`, valSt.data.data, true);
+                _pauseStandBy = false;
+                
+                break; 
+             case 'ResidualHardness':
+                this.log.debug("set ResidualHardness " + state);
+                await axios.get(baseUrl + "settings&command=residual%20hardness&msgnumber=1&token=" + _token + '&parameter=' + state, { httpsAgent: agent });                                 
+                break;
+             default:
+
+        }
+   }
+    
+   async getTokenFirst() {
+
+        let statusURL = baseUrl + "register&command=login&msgnumber=1&name=login&user=" + this.config.user + "&password=" + this.config.password + "&role=customer";
+
+        this.log.debug("getURL: " + baseUrl + "register&command=login&msgnumber=1&name=login&user=" + this.config.user);
+       
+        let tokenObject;
+       
+        try {       
+            tokenObject = await axios.get(statusURL, { httpsAgent: agent });
+            this.log.debug("getToken: " + JSON.stringify(tokenObject.data));    
+           
+            _token = tokenObject.data.token;
+            
+            await this.setState("token", _token, true);  
+             //Serial
+            const serResult = await axios.get(baseUrl + "register&command=show&msgnumber=2&token=" + _token, { httpsAgent: agent });
+            this.log.debug("getSerialnumber : " + JSON.stringify(serResult.data));
+            
+            const wtuType = serResult.data.data[0]["wtuType"];
+            const serialN = serResult.data.data[0]["serial number"];
+
+            await this.setState("wtuType", wtuType, true);
+            await this.setState("SerialNumber", serialN, true);
+            
+            //Connect            
+            const conResult = await axios.get(baseUrl + "register&command=connect&msgnumber=1&token=" + _token + "&parameter=" + wtuType + "&serial%20number=" + serialN, { httpsAgent: agent });
+            this.log.debug("connect Result: " + JSON.stringify(conResult.data));
+             
+            await this.setState("Connection status", conResult.data.status, true);
+            
+            return _token;
+        } catch (err) {
+           this.setState("Connection status", "ERROR", true);
+           this.log.debug("getToken: " + JSON.stringify(tokenObject.data));      
+           this.setState('info.connection', false, false);
+           return null;
+        }
+   }
+
+   async create_state() {
         this.log.debug(`create state`);
 
-        try {
-            for (var i = 0; i < _arrayNum; i++) {
-                const res = await this.creArrayNum(i + 1);
-
-            }
-            this.setState('info.connection', true, true);
-        } catch (err) {
-            this.log.debug(`create state problem`);
-        }
-    }
-
-    async creArrayNum(a) {
-        this.extendObjectAsync(`RunStatus`, {
+        this.extendObjectAsync(`token`, {
             type: 'state',
             common: {
-                name: `RunStatus`,
+                name: `token`,
                 type: 'string',
                 read: true,
                 write: false,
                 role: 'info'
             },
-            native: {},
-        });
-        this.extendObjectAsync(`ArrayNum.${a}`, {
-            type: 'channel',
-            common: {
-                name: `ArrayNum`,
-            },
-            native: {},
+            native: { },
         });
 
-        this.extendObjectAsync(`ArrayNum.${a}.ArrayVoltage`, {
-            type: 'state',
-            common: {
-                name: `ArrayVoltage`,
-                type: 'number',
-                read: true,
-                write: false,
-                def: 0,
-                role: 'info',
-                unit: 'V'
-            },
-            native: {},
-        });
-
-        this.extendObjectAsync(`ArrayNum.${a}.PackVoltage`, {
-            type: 'state',
-            common: {
-                name: `PackVoltage`,
-                type: 'number',
-                read: true,
-                write: false,
-                def: 0,
-                role: 'info',
-                unit: 'V'
-            },
-            native: {},
-        });
-
-        this.extendObjectAsync(`ArrayNum.${a}.Current`, {
-            type: 'state',
-            common: {
-                name: `Current`,
-                type: 'number',
-                read: true,
-                write: false,
-                def: 0,
-                role: 'info',
-                unit: 'A'
-            },
-            native: {},
-        });
-
-        this.extendObjectAsync(`ArrayNum.${a}.SOC`, {
-            type: 'state',
-            common: {
-                name: `SOC`,
-                type: 'number',
-                read: true,
-                write: false,
-                def: 0,
-                role: 'battery.percent',
-                unit: '%'
-            },
-            native: {},
-        });
-        this.extendObjectAsync(`ArrayNum.${a}.SysTemp`, {
-            type: 'state',
-            common: {
-                name: `SysTemp`,
-                type: 'number',
-                read: true,
-                write: false,
-                def: 0,
-                role: 'value.temperature',
-                unit: '°C'
-            },
-            native: {},
-        });
-
-        this.extendObjectAsync(`ArrayNum.${a}.MaxCellVol`, {
-            type: 'state',
-            common: {
-                name: `MaxCellVol`,
-                type: 'number',
-                read: true,
-                write: false,
-                def: 0,
-                role: 'info',
-                unit: 'V'
-            },
-            native: {},
-        });
-        this.extendObjectAsync(`ArrayNum.${a}.MinCellVol`, {
-            type: 'state',
-            common: {
-                name: `MinCellVol`,
-                type: 'number',
-                read: true,
-                write: false,
-                def: 0,
-                role: 'info',
-                unit: 'V'
-            },
-            native: {},
-        });
-        this.extendObjectAsync(`ArrayNum.${a}.MaxCellTemp`, {
-            type: 'state',
-            common: {
-                name: `MaxCellTemp`,
-                type: 'number',
-                read: true,
-                write: false,
-                def: 0,
-                role: 'value.temperature',
-                unit: '°C'
-            },
-            native: {},
-        });
-        this.extendObjectAsync(`ArrayNum.${a}.MinCellTemp`, {
-            type: 'state',
-            common: {
-                name: `MinCellTemp`,
-                type: 'number',
-                read: true,
-                write: false,
-                def: 0,
-                role: 'value.temperature',
-                unit: '°C'
-            },
-            native: {},
-        });
-        this.extendObjectAsync(`ArrayNum.${a}.MaxVolPos`, {
-            type: 'state',
-            common: {
-                name: `MaxVolPos`,
-                type: 'number',
-                read: true,
-                write: false,
-                def: 0,
-                role: 'info'
-            },
-            native: {},
-        });
-        this.extendObjectAsync(`ArrayNum.${a}.MinVolPos`, {
-            type: 'state',
-            common: {
-                name: `MinVolPos`,
-                type: 'number',
-                read: true,
-                write: false,
-                def: 0,
-                role: 'info'
-            },
-            native: {},
-        });
-        this.extendObjectAsync(`ArrayNum.${a}.MaxTempPos`, {
-            type: 'state',
-            common: {
-                name: `MaxTempPos`,
-                type: 'number',
-                read: true,
-                write: false,
-                def: 0,
-                role: 'info'
-            },
-            native: {},
-        });
-        this.extendObjectAsync(`ArrayNum.${a}.MinTempPos`, {
-            type: 'state',
-            common: {
-                name: `MinTempPos`,
-                type: 'number',
-                read: true,
-                write: false,
-                def: 0,
-                role: 'info'
-            },
-            native: {},
-        });
-        this.extendObjectAsync(`ArrayNum.${a}.Power`, {
-            type: 'state',
-            common: {
-                name: `Power`,
-                type: 'number',
-                read: true,
-                write: false,
-                def: 0,
-                role: 'info',
-                unit: 'KW'
-            },
-            native: {},
-        });
-
-        for (var b = 0; b < _batteryNum; b++) {
-            await this.batteryNum(a, b+1);
-            await this.batteryBalance(a, b+1);
-        }
-    }
-
-    async batteryBalance(a, b) {
-        this.extendObjectAsync(`ArrayNum.${a}.BattNum.${b}.BalanceCtrl`, {
-            type: 'channel',
-            common: {
-                name: `BalanceCtrl`,
-            },
-            native: {},
-        });
-
-        for (var ba = 1; ba < 17; ba++) {
-            this.extendObjectAsync(`ArrayNum.${a}.BattNum.${b}.BalanceCtrl.${ba}`, {
-                type: 'state',
-                common: {
-                    name: `${ba}`,
-                    type: 'boolean',
-                    read: true,
-                    write: false,
-                    role: 'info'
-                },
-                native: {},
-            });
-        }
-    }
-
-    async batteryNum(a, b) {
-        this.extendObjectAsync(`ArrayNum.${a}.BattNum`, {
-            type: 'channel',
-            common: {
-                name: `BattNum`,
-            },
-            native: {},
-        });
-        this.extendObjectAsync(`ArrayNum.${a}.BattNum.${b}`, {
-            type: 'channel',
-            common: {
-                name: `BattNum`,
-            },
-            native: {},
-        });
-
-        this.extendObjectAsync(`ArrayNum.${a}.BattNum.${b}.SerialNumber`, {
-            type: 'state',
-            common: {
-                name: `SerialNumber`,
-                type: 'string',
-                read: true,
-                write: false,
-                role: 'info'
-            },
-            native: {},
-        });
-        this.extendObjectAsync(`ArrayNum.${a}.BattNum.${b}.BattVol`, {
-            type: 'state',
-            common: {
-                name: `BattVol`,
-                type: 'number',
-                read: true,
-                write: false,
-                def: 0,
-                role: 'info',
-                unit: 'V'
-            },
-            native: {},
-        });
-
-        for (var cell = 1; cell < 17; cell++) {
-            this.extendObjectAsync(`ArrayNum.${a}.BattNum.${b}.CellVol${cell}`, {
-                type: 'state',
-                common: {
-                    name: `CellVol${cell}`,
-                    type: 'number',
-                    read: true,
-                    write: false,
-                    def: 0,
-                    role: 'info',
-                    unit: 'V'
-                },
-                native: {},
-            });
-        }
-
-
-        this.extendObjectAsync(`ArrayNum.${a}.BattNum.${b}.CellVolDiff`, {
-            type: 'state',
-            common: {
-                name: `CellVolDiff`,
-                type: 'number',
-                read: true,
-                write: false,
-                def: 0,
-                role: 'info',
-                unit: 'V'
-            },
-            native: {},
-        });
-        this.extendObjectAsync(`ArrayNum.${a}.BattNum.${b}.CellVolMax`, {
-            type: 'state',
-            common: {
-                name: `CellVolMax`,
-                type: 'number',
-                read: true,
-                write: false,
-                def: 0,
-                role: 'info',
-                unit: 'V'
-            },
-            native: {},
-        });
-        this.extendObjectAsync(`ArrayNum.${a}.BattNum.${b}.CellVolMin`, {
-            type: 'state',
-            common: {
-                name: `CellVolMin`,
-                type: 'number',
-                read: true,
-                write: false,
-                def: 0,
-                role: 'info',
-                unit: 'V'
-            },
-            native: {},
-        });
-
-        for (var cell = 1; cell < 5; cell++) {
-            this.extendObjectAsync(`ArrayNum.${a}.BattNum.${b}.CellTemp${cell}`, {
-                type: 'state',
-                common: {
-                    name: `CellTemp${cell}`,
-                    type: 'number',
-                    read: true,
-                    write: false,
-                    def: 0,
-                    role: 'value.temperature',
-                    unit: '°C'
-                },
-                native: {},
-            });
-        }
-        this.extendObjectAsync(`ArrayNum.${a}.BattNum.${b}.lastInfoUpdate`, {
+        this.extendObjectAsync(`lastInfoUpdate`, {
             type: 'state',
             common: {
                 name: 'Date/Time of last information update',
@@ -659,42 +385,384 @@ class bydbattControll extends utils.Adapter {
             native: { },
         });
 
-    }
-    async initialization() {
-        try {
-            if (this.config.ip === undefined ) {
-                this.log.error(`initialization undefined no ip`);
-            }
-
-            if (this.config.arraynum !== undefined ) {
-                _arrayNum = Number(this.config.arraynum);
-            } else {
-                this.log.error(`initialization undefined arraynum undefined`);
-            }
-
-            if (this.config.batterynum !== undefined ) {
-                _batteryNum = Number(this.config.batterynum);
-            } else {
-                this.log.error(`initialization undefined batterynum undefined`);
-            }
-            interval = parseInt(this.config.interval * 1000, 10);
-            if (interval < 60000) {
-                interval = 60000;
-            }
-         
-            if (this.config.password !== undefined ) {
-              digestAuth = new AxiosDigestAuth({
-                 password: this.config.password,
-                 username: USERNAME,
-              });        
-            } else {
-                this.log.error(`initialization undefined password undefined`);
-            }
-        } catch (error) {
-            this.log.error('other problem');
-
+        this.extendObjectAsync(`InstallationDate`, {
+            type: 'state',
+            common: {
+                name: `InstallationDate`,
+                type: 'number',
+                role: 'value.time',
+                read: true,
+                write: false
+            },
+            native: {},
+        });
+        this.extendObjectAsync(`ServiceDate`, {
+            type: 'state',
+            common: {
+                name: `ServiceDate`,
+                type: 'number',
+                role: 'value.time',
+                read: true,
+                write: false
+            },
+            native: {},
+        });
+       
+        this.extendObjectAsync(`WaterCurrent`, {
+            type: 'state',
+            common: {
+                name: `WaterCurrent`,
+                type: 'number',
+                read: true,
+                write: false,
+                def: 0,
+                role: 'info',
+                unit: 'l'
+            },
+            native: {},
+        });
+       
+        this.extendObjectAsync(`WaterCurrentOut`, {
+            type: 'state',
+            common: {
+                name: `WaterCurrentOut`,
+                type: 'number',
+                read: true,
+                write: false,
+                def: 0,
+                role: 'info',
+                unit: 'l'
+            },
+            native: {},
+        });
+       
+        this.extendObjectAsync(`WaterYearly`, {
+            type: 'channel',
+            common: {
+                name: `WaterYearly`,
+            },
+            native: {},
+        });
+       
+       for (var b = 1; b < 13; b++) {
+           if (b < 10) {
+             b = '0' + b;
+           }
+           this.extendObjectAsync(`WaterYearly.${b}`, {
+                type: 'state',
+                common: {
+                    name: `${b}`,
+                    type: 'number',
+                    read: true,
+                    write: false,
+                    def: 0,
+                    role: 'info',
+                    unit: 'm3'
+                },
+                native: {},
+            });
         }
-    }
+
+        this.extendObjectAsync(`SaltRange`, {
+            type: 'state',
+            common: {
+                name: `SaltRange`,
+                type: 'number',
+                read: true,
+                write: false,
+                def: 0,
+                role: 'info',
+                unit: 'Tage'
+            },
+            native: {},
+        });
+
+        this.extendObjectAsync(`SaltQuantity`, {
+            type: 'state',
+            common: {
+                name: `SaltQuantity`,
+                type: 'number',
+                read: true,
+                write: false,
+                def: 0,
+                role: 'info',
+                unit: '%'
+            },
+            native: {},
+        });
+
+        this.extendObjectAsync(`ResidualHardness`, {
+            type: 'state',
+            common: {
+                name: `ResidualHardness`,
+                type: 'number',
+                read: true,
+                write: true,
+                def: 0,
+                role: 'info',
+                unit: '°dH'
+            },
+            native: {},
+        });
+
+
+        this.extendObjectAsync(`NaturalHardness`, {
+            type: 'state',
+            common: {
+                name: `NaturalHardness`,
+                type: 'number',
+                read: true,
+                write: false,
+                def: 0,
+                role: 'info',
+                unit: '°dH'
+            },
+            native: {},
+        });
+
+
+        this.extendObjectAsync(`FlowRate`, {
+            type: 'state',
+            common: {
+                name: `max flow rate per h`,
+                type: 'number',
+                read: true,
+                write: false,
+                def: 0,
+                role: 'info',
+                unit: 'l/h'
+            },
+            native: {},
+        });
+        this.extendObjectAsync(`SoftwareVersion`, {
+            type: 'state',
+            common: {
+                name: `SoftwareVersion`,
+                type: 'string',
+                read: true,
+                write: false,
+                role: 'info'
+            },
+            native: {},
+        });
+        this.extendObjectAsync(`HardwareVersion`, {
+            type: 'state',
+            common: {
+                name: `HardwareVersion`,
+                type: 'string',
+                read: true,
+                write: false,
+                role: 'info'
+            },
+            native: {},
+        });
+
+        this.extendObjectAsync(`WaterTotal`, {
+            type: 'state',
+            common: {
+                name: `WaterTotal`,
+                type: 'number',
+                read: true,
+                write: false,
+                def: 0,
+                role: 'info',
+                unit: 'm3'
+            },
+            native: {},
+        });
+       
+        this.extendObjectAsync(`WaterTotalOut`, {
+            type: 'state',
+            common: {
+                name: `WaterTotalOut`,
+                type: 'number',
+                read: true,
+                write: false,
+                def: 0,
+                role: 'info',
+                unit: 'm3'
+            },
+            native: {},
+        });       
+
+        this.extendObjectAsync(`WaterAverage`, {
+            type: 'state',
+            common: {
+                name: `WaterAverage`,
+                type: 'number',
+                read: true,
+                write: false,
+                def: 0,
+                role: 'info',
+                unit: 'l'
+            },
+            native: {},
+        });
+        
+        this.extendObjectAsync(`Quantity`, {
+            type: 'state',
+            common: {
+                name: `withdrawal quantity`,
+                type: 'number',
+                read: true,
+                write: false,
+                def: 0,
+                role: 'info',
+                unit: 'l'
+            },
+            native: {},
+        });
+
+        this.extendObjectAsync(`SerialNumber`, {
+            type: 'state',
+            common: {
+                name: `SerialNumber`,
+                type: 'number',
+                read: true,
+                write: false,
+                role: 'info'
+            },
+            native: {},
+        });
+       
+        this.extendObjectAsync(`wtuType`, {
+            type: 'state',
+            common: {
+                name: `wtuType`,
+                type: 'string',
+                read: true,
+                write: false,
+                role: 'info'
+            },
+            native: {},
+        });       
+       
+        this.extendObjectAsync(`Connection status`, {
+            type: 'state',
+            common: {
+                name: `Connection status`,
+                type: 'string',
+                read: true,
+                write: false,
+                role: 'info'
+            },
+            native: {},
+        });        
+       
+        this.extendObjectAsync(`StandByValue`, {
+            type: 'state',
+            common: {
+                name: `StandByValue`,
+                type: 'number',
+                read: true,
+                write: false,
+                def: 0,
+                role: 'info',
+                unit: 'h'
+            },
+            native: {},
+        });       
+        this.extendObjectAsync(`StandBy`, {
+            type: 'state',
+            common: {
+                name: `StandBy`,
+                type: 'boolean',
+                role: 'info',
+                def: false,
+                read: true,
+                write: true
+            },
+            native: {},
+        });     
+       this.extendObjectAsync(`Regeneration`, {
+            type: 'state',
+            common: {
+                name: `Regeneration`,
+                type: 'boolean',
+                role: 'button',
+                def: false,
+                read: true,
+                write: true
+            },
+            native: {},
+        });
+
+        this.extendObjectAsync(`WaterStopStatus`, {
+            type: 'state',
+            common: {
+                name: `WaterStopStatus`,
+                type: 'string',
+                read: true,
+                write: false,
+                role: 'info'
+            },
+            native: {},
+        });
+       
+        this.extendObjectAsync(`WaterStop`, {
+            type: 'state',
+            common: {
+                name: `WaterStop`,
+                type: 'boolean',
+                role: 'state',
+                def: false,
+                read: true,
+                write: true
+            },
+            native: {},
+        });
+       
+       this.subscribeStates(`WaterStop`);
+       this.subscribeStates(`Regeneration`);
+       this.subscribeStates(`ResidualHardness`);
+       this.subscribeStates(`StandBy`);
+       this.setState('info.connection', true, true);
+   }
+    
+    async timeConverter(tstmp) {
+      var a = new Date(tstmp * 1000);
+      var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var year = a.getFullYear();
+      var month = months[a.getMonth()];
+      var date = a.getDate();
+      var hour = a.getHours();
+      if (hour < 10) {
+          hour = '0' + hour;
+      }
+      var min = a.getMinutes();
+      if (min < 10) {
+          min = '0' + min;
+      }
+
+      var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min;
+      return time;
+  }
+
+   async initialization() {
+        try {
+            if (this.config.ip === undefined) {
+                this.log.debug(`ip undefined`);
+            } else {
+                baseUrl = "https://" + this.config.ip + ":8124/?group=";
+            }
+
+            if (this.config.user === undefined) {
+                this.log.debug(`user undefined`);
+            }
+
+            if (this.config.password === undefined) {
+                this.log.debug(`password undefined`);
+            }
+            try {
+                interval = parseInt(this.config.interval * 1000, 10);
+            } catch (err) {
+                interval = 600000
+            }
+
+        } catch (error) {
+            this.log.error('No one IP configured');
+        }
+   }
 
 }
 // @ts-ignore parent is a valid property on module
@@ -703,8 +771,8 @@ if (module.parent) {
     /**
      * @param {Partial<utils.AdapterOptions>} [options={}]
      */
-    module.exports = (options) => new bydbattControll(options);
+    module.exports = (options) => new judoisoftControll(options);
 } else {
     // otherwise start the instance directly
-    new bydbattControll();
+    new judoisoftControll();
 }
