@@ -134,14 +134,14 @@ class judoisoftControll extends utils.Adapter {
                 this.log.debug("get Information Static " + key + " " + JSON.stringify(responses[key].data))
             }
 
-            this.setState("SoftwareVersion", responses[0].data.data, true);
-            this.setState("HardwareVersion", responses[1].data.data, true);
+            await this.setState("SoftwareVersion", responses[0].data.data, true);
+            await this.setState("HardwareVersion", responses[1].data.data, true);
             
             const inst = await this.timeConverter(responses[2].data.data);
-            this.setState("InstallationDate", inst, true);
+            await this.setState("InstallationDate", inst, true);
             
             const serv = await this.timeConverter(responses[3].data.data);
-            this.setState("ServiceDate", serv, true);
+            await this.setState("ServiceDate", serv, true);
                        
         } catch (err) {
             this.log.debug('getInfoStatic ERROR' + JSON.stringify(err));
@@ -167,18 +167,18 @@ class judoisoftControll extends utils.Adapter {
                 //WaterCurrent
                 result = await axios.get(baseUrl + "consumption&command=water%20current&msgnumber=1&token=" + _token, { httpsAgent: agent });
                 let splWassCur = result.data.data.split(" ");
-                this.setState(`WaterCurrent`, splWassCur[0], true);
-                this.setState(`WaterCurrentOut`, splWassCur[1], true);                               
+                await this.setState(`WaterCurrent`, splWassCur[0], true);
+                await this.setState(`WaterCurrentOut`, splWassCur[1], true);                               
                 this.log.debug("-> WaterCurrent");
                                
                 //ResidualHardness
                 result = await axios.get(baseUrl + "settings&command=residual%20hardness&msgnumber=1&token=" + _token, { httpsAgent: agent });
-                this.setState(`ResidualHardness`, result.data.data, true);
+                await this.setState(`ResidualHardness`, result.data.data, true);
                 this.log.debug("-> ResidualHardness");                                                
                 
                 //SaltRange
                 result = await axios.get(baseUrl + "consumption&command=salt%20range&msgnumber=1&token=" + _token, { httpsAgent: agent });
-                this.setState(`SaltRange`, result.data.data, true);                    
+                await this.setState(`SaltRange`, result.data.data, true);                    
                 
                 this.log.debug("-> SaltRange");
                 
@@ -187,35 +187,35 @@ class judoisoftControll extends utils.Adapter {
                 let sq = result.data.data;
                 sq = Math.round((sq/50000)*100);
                     
-                this.setState(`SaltQuantity`, sq, true);
+                await this.setState(`SaltQuantity`, sq, true);
                 this.log.debug("-> SaltQuantity");
                 
                 //WaterAverage
                 result = await axios.get(baseUrl + "consumption&command=water%20average&msgnumber=1&token=" + _token, { httpsAgent: agent });
-                this.setState(`WaterAverage`, result.data.data, true);
+                await this.setState(`WaterAverage`, result.data.data, true);
                 this.log.debug("-> WaterAverage");
                 
                 //NaturalHardness
                 result = await axios.get(baseUrl + "info&command=natural%20hardness&msgnumber=1&token=" + _token, { httpsAgent: agent });
-                this.setState(`NaturalHardness`, result.data.data, true);
+                await this.setState(`NaturalHardness`, result.data.data, true);
                 this.log.debug("-> NaturalHardness");
                 
                 //FlowRate
                 result = await axios.get(baseUrl + "waterstop&command=flow%20rate&msgnumber=1&token=" + _token, { httpsAgent: agent });
-                this.setState(`FlowRate`, result.data.data, true);
+                await this.setState(`FlowRate`, result.data.data, true);
                 this.log.debug("-> FlowRate");
                                 
                 //Quantity
                 result = await axios.get(baseUrl + "waterstop&command=quantity&msgnumber=1&token=" + _token, { httpsAgent: agent });                             
-                this.setState(`Quantity`, result.data.data, true);
+                await this.setState(`Quantity`, result.data.data, true);
                 this.log.debug("-> Quantity");
                 
                 //WaterTotal
                 result = await axios.get(baseUrl + "consumption&command=water%20total&msgnumber=1&token=" + _token, { httpsAgent: agent });             
                 
                 let splWassTot = result.data.data.split(" ");
-                this.setState(`WaterTotal`, splWassTot[1] / 1000, true);
-                this.setState(`WaterTotalOut`, splWassTot[2] / 1000, true);
+                await this.setState(`WaterTotal`, splWassTot[1] / 1000, true);
+                await this.setState(`WaterTotalOut`, splWassTot[2] / 1000, true);
                 this.log.debug("-> WaterTotaal " + result.data.data);
                 
                  //WaterYearly
@@ -237,14 +237,14 @@ class judoisoftControll extends utils.Adapter {
                       monat = 0;
                    }
 
-                   this.setState(`WaterYearly.${a}`, monat, true);
+                   await this.setState(`WaterYearly.${a}`, monat, true);
                 }
                 this.log.debug("-> WaterYearly");
 
                 if (!_pauseStandBy) {
                     //StandBy
                     result = await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _token, { httpsAgent: agent });
-                    this.setState(`StandByValue`, result.data.data, true);                                   
+                    await this.setState(`StandByValue`, result.data.data, true);                                   
                     this.log.debug("-> StandBy");
                     _pauseStandBy = false;
                 }
@@ -252,18 +252,18 @@ class judoisoftControll extends utils.Adapter {
                 if (!_pauseValveState) {
                     //ValveState
                     result = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _token, { httpsAgent: agent });
-                    this.setState(`WaterStopStatus`, result.data.data, true);                
+                    await this.setState(`WaterStopStatus`, result.data.data, true);                
 
                     if (result.data.data == 'opened') {
-                        this.setState(`WaterStop`, false, true);
+                        await this.setState(`WaterStop`, false, true);
                     } else {
-                        this.setState(`WaterStop`, true, true);
+                        await this.setState(`WaterStop`, true, true);
                     }
 
                     this.log.debug("-> ValveState");
                     _pauseValveState = false;
                 }
-                this.setState("lastInfoUpdate", Date.now(), true);   
+                await this.setState("lastInfoUpdate", Date.now(), true);   
                 
             } // if _token
             
@@ -287,10 +287,10 @@ class judoisoftControll extends utils.Adapter {
                 _pauseValveState = true;     // für getInfo
                 if (state) {                            
                     const val = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _token + "&parameter=close", { httpsAgent: agent });
-                    this.setState("WaterStopStatus", val.data.parameter, true);
+                    await this.setState("WaterStopStatus", val.data.parameter, true);
                 } else {
                     const val = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _token + "&parameter=open", { httpsAgent: agent });
-                    this.setState("WaterStopStatus", val.data.parameter, true);
+                    await this.setState("WaterStopStatus", val.data.parameter, true);
                 }
                 _pauseValveState = false;
 
@@ -305,7 +305,7 @@ class judoisoftControll extends utils.Adapter {
                 }
                 //StandByValue
                 const valSt = await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _token, { httpsAgent: agent });
-                this.setState(`StandByValue`, valSt.data.data, true);
+                await this.setState(`StandByValue`, valSt.data.data, true);
                 _pauseStandBy = false;
                 
                 break; 
@@ -332,7 +332,7 @@ class judoisoftControll extends utils.Adapter {
            
             _token = tokenObject.data.token;
             
-            this.setState("token", _token, true);  
+            await this.setState("token", _token, true);  
              //Serial
             const serResult = await axios.get(baseUrl + "register&command=show&msgnumber=2&token=" + _token, { httpsAgent: agent });
             this.log.debug("getSerialnumber : " + JSON.stringify(serResult.data));
@@ -340,14 +340,14 @@ class judoisoftControll extends utils.Adapter {
             const wtuType = serResult.data.data[0]["wtuType"];
             const serialN = serResult.data.data[0]["serial number"];
 
-            this.setState("wtuType", wtuType, true);
-            this.setState("SerialNumber", serialN, true);
+            await this.setState("wtuType", wtuType, true);
+            await this.setState("SerialNumber", serialN, true);
             
             //Connect            
             const conResult = await axios.get(baseUrl + "register&command=connect&msgnumber=1&token=" + _token + "&parameter=" + wtuType + "&serial%20number=" + serialN, { httpsAgent: agent });
             this.log.debug("connect Result: " + JSON.stringify(conResult.data));
              
-            this.setState("Connection status", conResult.data.status, true);
+            await this.setState("Connection status", conResult.data.status, true);
             
             return _token;
         } catch (err) {
