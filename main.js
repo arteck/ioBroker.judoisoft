@@ -273,7 +273,7 @@ class judoisoftControll extends utils.Adapter {
 
         } catch (err) {
             this.setState('info.connection', false, true);
-            this.log.error('getInfos ERROR' + JSON.stringify(err.data));
+            this.log.error('getInfos ERROR ' + JSON.stringify(err));
         }
     }
     async setCommandState(command, state) {
