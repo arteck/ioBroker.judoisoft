@@ -17,6 +17,8 @@ const md5 = require('md5');
 let interval = 0;
 let requestTimeout = null;
  
+axios.defaults.timeout = 5000;   // timeout 5 sec
+
 
 // At request level
 const agent = new https.Agent({  
