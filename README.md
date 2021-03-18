@@ -23,6 +23,9 @@ Settings available:
 <b>NodeJs >> 8.x.x </b>
 
 ## Changelog
+### 1.0.4  (2021-03-18)
+* (arteck) add timeout
+
 ### 1.0.3  (2021-02-06)
 * (arteck) the cloud infos are not available for collection, sry 
 * 
