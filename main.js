@@ -2,13 +2,14 @@
  *
  *      ioBroker judoisoft Adapter
  *
- *      (c) 2014-2018 arteck <arteck@outlook.com>
+ *      (c) 2014-2021 arteck <arteck@outlook.com>
  *
  *      MIT License
  *
  */
 'use strict';
 
+const judoConv = require('./lib/dataConverter');
 const utils = require('@iobroker/adapter-core');
 const axios = require('axios');
 const https = require('https');
@@ -16,7 +17,9 @@ const md5 = require('md5');
 
 let interval = 0;
 let requestTimeout = null;
- 
+
+axios.defaults.timeout = 10000;   // timeout 10 sec
+
 
 // At request level
 const agent = new https.Agent({  
@@ -25,7 +28,7 @@ const agent = new https.Agent({
 
 
 let baseUrl = "";
-let _token;
+let _tokenData;
 let _pauseValveState = false;
 let _pauseStandBy = false;
 
@@ -54,9 +57,14 @@ class judoisoftControll extends utils.Adapter {
 
         await this.initialization();
         await this.create_state();
-        _token = await this.getTokenFirst();
-        await this.getInfoStatic();
-        this.getInfos();
+        _tokenData = await this.getTokenFirst();
+
+        if (this.config.cloud) {
+            this.getInfosCloud();
+        } else {
+            await this.getInfoStaticLocal();
+            this.getInfosLocal();
+        }
     }
 
     /**
@@ -103,8 +111,12 @@ class judoisoftControll extends utils.Adapter {
             let tmp = id.split('.');
             let command = tmp.pop();
             
-            if (state && !state.ack) {          
-                this.setCommandState(command, state.val); 
+            if (state && !state.ack) {
+                if (this.config.cloud) {
+                    this.setCommandStateCloud(command, state.val);
+                } else {
+                    this.setCommandStateLocal(command, state.val);
+                }
             }
     
         } else {
@@ -113,21 +125,20 @@ class judoisoftControll extends utils.Adapter {
         }
     }
 
-    
-    async getInfoStatic() {
-        this.log.debug("get Information Static");
+    async getInfoStaticLocal() {
+        this.log.debug("get Information Static Local");
 
         try {
                        
             const responses = await axios.all([
                     //SoftwareVersion
-                await axios.get(baseUrl + "version&command=software%20version&msgnumber=1&token=" + _token, { httpsAgent: agent }),
+                await axios.get(baseUrl + "version&command=software%20version&msgnumber=1&token=" + _tokenData, { httpsAgent: agent }),
                     //HardwareVersion
-                await axios.get(baseUrl + "version&command=hardware%20version&msgnumber=1&token=" + _token, { httpsAgent: agent }),
+                await axios.get(baseUrl + "version&command=hardware%20version&msgnumber=1&token=" + _tokenData, { httpsAgent: agent }),
                     //InstallationDate
-                await axios.get(baseUrl + "contract&command=init%20date&msgnumber=1&token=" + _token, { httpsAgent: agent }),
+                await axios.get(baseUrl + "contract&command=init%20date&msgnumber=1&token=" + _tokenData, { httpsAgent: agent }),
                     //ServiceDate
-                await  axios.get(baseUrl + "contract&command=service%20date&msgnumber=1&token=" + _token, { httpsAgent: agent })               
+                await  axios.get(baseUrl + "contract&command=service%20date&msgnumber=1&token=" + _tokenData, { httpsAgent: agent })               
             ]);
 
             for (const key in responses) {
@@ -144,46 +155,117 @@ class judoisoftControll extends utils.Adapter {
             await this.setState("ServiceDate", serv, true);
                        
         } catch (err) {
-            this.log.debug('getInfoStatic ERROR' + JSON.stringify(err));
+            this.log.debug('getInfoStaticLocal ERROR' + JSON.stringify(err));
         }
     }
 
-    async getInfos() {
-        this.log.debug("get Consumption data ");
+    async getInfosCloud() {
+        this.log.debug("get Consumption data Cloud");
+
+        / check data
+        let conResult = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data", { httpsAgent: agent });
+
+        this.log.debug("get Data " + JSON.stringify(conResult));
+
+        if (result.data.status == 'error') {
+            this.log.info("reconnect " + Date.now());
+            _tokenData = await this.getTokenFirst();
+            conResult = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data", { httpsAgent: agent });
+        }
+
+        let result;
+
+        try {
+            if (conResult.data.status == 'ok') {
+
+                this.log.debug("getSerialnumber : " + JSON.stringify(conResult.data[0].serialnumber));
+                const serialN = conResult.data[0].serialnumber;
+                await this.setState("SerialNumber", serialN, true);
+                await this.setState("wtuType", "cloud", true);
+
+                await this.setState("SoftwareVersion", conResult.data[0].sv, true);
+                await this.setState("HardwareVersion", conResult.data[0].hv, true);
+
+                const inst;
+                if (conResult.data[0].installation_date) {
+                    inst = await this.timeConverter(conResult.data[0].installation_date);
+                }
+                await this.setState("InstallationDate", inst, true);
+
+                await this.setState("Connection status", conResult.data[0].status, true);
+
+                const serv = await this.timeConverter(responses[3].data.data);
+                await this.setState("ServiceDate", serv, true);
+
+                //WaterTotal
+                result = getInValue(conResult.data[0].data[0].data, '8');
+                await this.setState(`WaterTotal`, result, true);
+                await this.setState(`WaterTotalOut`, 0, true);
+
+                //SaltRange
+                result = getInValue(conResult.data[0].data[0].data, '94');
+                await this.setState(`SaltRange`, result, true);
+
+                //SaltQuantity
+                let salzstand_rounded = 0;
+                let salzstand = result.split(':')[0] / 1000;
+                salzstand_rounded = parseInt(5 * Math.ceil(salzstand / 5));
+                let sq = salzstand_rounded * 100 / 50;
+                await this.setState(`SaltQuantity`, sq, true);
+
+                //FlowRate
+                let durchfluss = getInValue(conResult.data[0].data[0].data, '790_1617');
+                await this.setState(`FlowRate`, durchfluss, true);
+
+
+            }
+
+            requestTimeout = setTimeout(async () => {
+                this.getInfosCloud();
+            }, interval);
+
+        } catch (err) {
+            this.setState('info.connection', false, true);
+            this.log.error('getInfosCloud ERROR' + JSON.stringify(stats.data));
+        }
+    }
+
+    async getInfosLocal() {
+        this.log.debug("get Consumption data Local");
 
         // check loged in
-        let stats = await axios.get(baseUrl + "register&command=plumber%20address&msgnumber=1&token=" + _token, { httpsAgent: agent });
+        let stats = await axios.get(baseUrl + "register&command=plumber%20address&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });
         
         if (stats.data.status == 'error') {
             this.log.info("reconnect " + Date.now()); 
-            _token = await this.getTokenFirst();
+            _tokenData = await this.getTokenFirst();
         } 
      
         let result;
         
         try {
-            if (_token) {   
+            if (_tokenData) {   
                                 
                 //WaterCurrent
-                result = await axios.get(baseUrl + "consumption&command=water%20current&msgnumber=1&token=" + _token, { httpsAgent: agent });
+                result = await axios.get(baseUrl + "consumption&command=water%20current&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });
                 let splWassCur = result.data.data.split(" ");
                 await this.setState(`WaterCurrent`, splWassCur[0], true);
                 await this.setState(`WaterCurrentOut`, splWassCur[1], true);                               
                 this.log.debug("-> WaterCurrent");
                                
                 //ResidualHardness
-                result = await axios.get(baseUrl + "settings&command=residual%20hardness&msgnumber=1&token=" + _token, { httpsAgent: agent });
+                result = await axios.get(baseUrl + "settings&command=residual%20hardness&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });
                 await this.setState(`ResidualHardness`, result.data.data, true);
                 this.log.debug("-> ResidualHardness");                                                
                 
                 //SaltRange
-                result = await axios.get(baseUrl + "consumption&command=salt%20range&msgnumber=1&token=" + _token, { httpsAgent: agent });
-                await this.setState(`SaltRange`, result.data.data, true);                    
-                
+                result = await axios.get(baseUrl + "consumption&command=salt%20range&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });
+                await this.setState(`SaltRange`, result.data.data, true);
+
                 this.log.debug("-> SaltRange");
                 
                 //SaltQuantity
-                result = await axios.get(baseUrl + "consumption&command=salt%20quantity&msgnumber=1&token=" + _token, { httpsAgent: agent });
+                result = await axios.get(baseUrl + "consumption&command=salt%20quantity&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });
                 let sq = result.data.data;
                 sq = Math.round((sq/50000)*100);
                     
@@ -191,27 +273,27 @@ class judoisoftControll extends utils.Adapter {
                 this.log.debug("-> SaltQuantity");
                 
                 //WaterAverage
-                result = await axios.get(baseUrl + "consumption&command=water%20average&msgnumber=1&token=" + _token, { httpsAgent: agent });
+                result = await axios.get(baseUrl + "consumption&command=water%20average&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });
                 await this.setState(`WaterAverage`, result.data.data, true);
                 this.log.debug("-> WaterAverage");
-                
+
                 //NaturalHardness
-                result = await axios.get(baseUrl + "info&command=natural%20hardness&msgnumber=1&token=" + _token, { httpsAgent: agent });
+                result = await axios.get(baseUrl + "info&command=natural%20hardness&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });
                 await this.setState(`NaturalHardness`, result.data.data, true);
                 this.log.debug("-> NaturalHardness");
                 
                 //FlowRate
-                result = await axios.get(baseUrl + "waterstop&command=flow%20rate&msgnumber=1&token=" + _token, { httpsAgent: agent });
+                result = await axios.get(baseUrl + "waterstop&command=flow%20rate&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });
                 await this.setState(`FlowRate`, result.data.data, true);
                 this.log.debug("-> FlowRate");
-                                
+
                 //Quantity
-                result = await axios.get(baseUrl + "waterstop&command=quantity&msgnumber=1&token=" + _token, { httpsAgent: agent });                             
+                result = await axios.get(baseUrl + "waterstop&command=quantity&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });                             
                 await this.setState(`Quantity`, result.data.data, true);
                 this.log.debug("-> Quantity");
                 
                 //WaterTotal
-                result = await axios.get(baseUrl + "consumption&command=water%20total&msgnumber=1&token=" + _token, { httpsAgent: agent });             
+                result = await axios.get(baseUrl + "consumption&command=water%20total&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });             
                 
                 let splWassTot = result.data.data.split(" ");
                 await this.setState(`WaterTotal`, splWassTot[1] / 1000, true);
@@ -219,7 +301,7 @@ class judoisoftControll extends utils.Adapter {
                 this.log.debug("-> WaterTotaal " + result.data.data);
                 
                  //WaterYearly
-                result = await axios.get(baseUrl + "consumption&command=water%20yearly&msgnumber=1&token=" + _token, { httpsAgent: agent });
+                result = await axios.get(baseUrl + "consumption&command=water%20yearly&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });
                 let splWassJahr = result.data.data.split(" ");
                 for (var b = 1; b < 13; b++) {
                    let a = b;
@@ -243,7 +325,7 @@ class judoisoftControll extends utils.Adapter {
 
                 if (!_pauseStandBy) {
                     //StandBy
-                    result = await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _token, { httpsAgent: agent });
+                    result = await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });
                     await this.setState(`StandByValue`, result.data.data, true);                                   
                     this.log.debug("-> StandBy");
                     _pauseStandBy = false;
@@ -251,7 +333,7 @@ class judoisoftControll extends utils.Adapter {
                 
                 if (!_pauseValveState) {
                     //ValveState
-                    result = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _token, { httpsAgent: agent });
+                    result = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });
                     await this.setState(`WaterStopStatus`, result.data.data, true);                
 
                     if (result.data.data == 'opened') {
@@ -265,10 +347,10 @@ class judoisoftControll extends utils.Adapter {
                 }
                 await this.setState("lastInfoUpdate", Date.now(), true);   
                 
-            } // if _token
+            } // if _tokenData
             
             requestTimeout = setTimeout(async () => {
-                this.getInfos();
+                this.getInfosLocal();
             }, interval);
 
         } catch (err) {
@@ -276,20 +358,27 @@ class judoisoftControll extends utils.Adapter {
             this.log.error('getInfos ERROR' + JSON.stringify(result.data));
         }
     }
-    async setCommandState(command, state) {
+
+    async setCommandStateCloud(command, state) {
+
+
+
+    }
+
+    async setCommandStateLocal(command, state) {
         switch (command) {             
             case 'Regeneration':
                 this.log.debug("set Regeneration " + state);
-                await axios.get(baseUrl + "settings&command=regeneration&msgnumber=1&token=" + _token + "&parameter=start", { httpsAgent: agent });   
+                await axios.get(baseUrl + "settings&command=regeneration&msgnumber=1&token=" + _tokenData + "&parameter=start", { httpsAgent: agent });   
                 break;
             case 'WaterStop':
                 this.log.debug("set WaterStop " + state);
                 _pauseValveState = true;     // für getInfo
                 if (state) {                            
-                    const val = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _token + "&parameter=close", { httpsAgent: agent });
+                    const val = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _tokenData + "&parameter=close", { httpsAgent: agent });
                     await this.setState("WaterStopStatus", val.data.parameter, true);
                 } else {
-                    const val = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _token + "&parameter=open", { httpsAgent: agent });
+                    const val = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _tokenData + "&parameter=open", { httpsAgent: agent });
                     await this.setState("WaterStopStatus", val.data.parameter, true);
                 }
                 _pauseValveState = false;
@@ -299,19 +388,19 @@ class judoisoftControll extends utils.Adapter {
                 this.log.debug("set StandBy " + state);
                 _pauseStandBy = true;    // für getInfo
                 if (state) {  
-                    await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _token + '&parameter=start', { httpsAgent: agent }); 
+                    await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _tokenData + '&parameter=start', { httpsAgent: agent }); 
                 } else {
-                    await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _token + '&parameter=stop', { httpsAgent: agent }); 
+                    await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _tokenData + '&parameter=stop', { httpsAgent: agent }); 
                 }
                 //StandByValue
-                const valSt = await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _token, { httpsAgent: agent });
+                const valSt = await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });
                 await this.setState(`StandByValue`, valSt.data.data, true);
                 _pauseStandBy = false;
                 
                 break; 
              case 'ResidualHardness':
                 this.log.debug("set ResidualHardness " + state);
-                await axios.get(baseUrl + "settings&command=residual%20hardness&msgnumber=1&token=" + _token + '&parameter=' + state, { httpsAgent: agent });                                 
+                await axios.get(baseUrl + "settings&command=residual%20hardness&msgnumber=1&token=" + _tokenData + '&parameter=' + state, { httpsAgent: agent });                                 
                 break;
              default:
 
@@ -320,36 +409,50 @@ class judoisoftControll extends utils.Adapter {
     
    async getTokenFirst() {
 
-        let statusURL = baseUrl + "register&command=login&msgnumber=1&name=login&user=" + this.config.user + "&password=" + this.config.password + "&role=customer";
+       let statusURL = "";
 
-        this.log.debug("getURL: " + baseUrl + "register&command=login&msgnumber=1&name=login&user=" + this.config.user);
-       
-        let tokenObject;
+       if (this.config.cloud) {
+           statusURL = baseUrl + "?group=register&command=login&msgnumber=1&name=login&user=" + this.config.user + "&password=" + md5(this.config.password) + "&nohash=Service&role=customer";
+       } else {
+           statusURL = baseUrl + "register&command=login&msgnumber=1&name=login&user=" + this.config.user + "&password=" + this.config.password + "&role=customer";
+       }
+
+       this.log.debug("getURL: " + baseUrl + "register&command=login&msgnumber=1&name=login&user=" + this.config.user);
+
+       let tokenObject;
+       let token;
        
         try {       
             tokenObject = await axios.get(statusURL, { httpsAgent: agent });
             this.log.debug("getToken: " + JSON.stringify(tokenObject.data));    
            
-            _token = tokenObject.data.token;
+            token = tokenObject.data.token;
             
-            await this.setState("token", _token, true);  
+            await this.setState("token", token, true);
              //Serial
-            const serResult = await axios.get(baseUrl + "register&command=show&msgnumber=2&token=" + _token, { httpsAgent: agent });
-            this.log.debug("getSerialnumber : " + JSON.stringify(serResult.data));
-            
-            const wtuType = serResult.data.data[0]["wtuType"];
-            const serialN = serResult.data.data[0]["serial number"];
 
-            await this.setState("wtuType", wtuType, true);
-            await this.setState("SerialNumber", serialN, true);
-            
-            //Connect            
-            const conResult = await axios.get(baseUrl + "register&command=connect&msgnumber=1&token=" + _token + "&parameter=" + wtuType + "&serial%20number=" + serialN, { httpsAgent: agent });
-            this.log.debug("connect Result: " + JSON.stringify(conResult.data));
-             
-            await this.setState("Connection status", conResult.data.status, true);
-            
-            return _token;
+            const serResult;
+
+            if (!this.config.cloud) {
+                serResult = await axios.get(baseUrl + "register&command=show&msgnumber=2&token=" + token, {httpsAgent: agent});
+
+                this.log.debug("getSerialnumber : " + JSON.stringify(serResult.data));
+
+                const wtuType = serResult.data.data[0]["wtuType"];
+                const serialN = serResult.data.data[0]["serial number"];
+
+                await this.setState("wtuType", wtuType, true);
+                await this.setState("SerialNumber", serialN, true);
+
+                //Connect
+                const conResult = await axios.get(baseUrl + "register&command=connect&msgnumber=1&token=" + token + "&parameter=" + wtuType + "&serial%20number=" + serialN, {httpsAgent: agent});
+                this.log.debug("connect Result: " + JSON.stringify(conResult.data));
+
+                await this.setState("Connection status", conResult.data.status, true);
+            }
+
+            return token;
+
         } catch (err) {
            this.setState("Connection status", "ERROR", true);
            this.log.debug("getToken: " + JSON.stringify(tokenObject.data));      
@@ -739,29 +842,41 @@ class judoisoftControll extends utils.Adapter {
   }
 
    async initialization() {
-        try {
-            if (this.config.ip === undefined) {
-                this.log.debug(`ip undefined`);
-            } else {
-                baseUrl = "https://" + this.config.ip + ":8124/?group=";
-            }
+       try {
+           if (this.config.cloud) {
+               this.config.ip = "https://www.myjudo.eu/";
+           }
 
-            if (this.config.user === undefined) {
-                this.log.debug(`user undefined`);
-            }
+           if (this.config.ip === undefined) {
+               this.log.debug(`ip undefined`);
+               callback();
+           } else {
+               if (this.config.cloud) {
+                   baseUrl = "https://www.myjudo.eu/interface/";
 
-            if (this.config.password === undefined) {
-                this.log.debug(`password undefined`);
-            }
-            try {
-                interval = parseInt(this.config.interval * 1000, 10);
-            } catch (err) {
-                interval = 600000
-            }
+               } else {
+                   baseUrl = "https://" + this.config.ip + ":8124/?group=";
+               }
+           }
 
-        } catch (error) {
-            this.log.error('No one IP configured');
-        }
+           if (this.config.user === undefined) {
+               this.log.debug(`user undefined`);
+               callback();
+           }
+
+           if (this.config.password === undefined) {
+               this.log.debug(`password undefined`);
+               callback();
+           }
+           try {
+               interval = parseInt(this.config.interval * 1000, 10);
+           } catch (err) {
+               interval = 600000
+           }
+
+       } catch (error) {
+           this.log.error('No one IP configured');
+       }
    }
 
 }
