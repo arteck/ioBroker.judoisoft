@@ -192,7 +192,7 @@ class judoisoftControll extends utils.Adapter {
                 await this.setState("HardwareVersion", conResult.data.data[0].hv, true);
                 
                 _da = conResult.data.data[0].data[0].da;
-                _ds = conResult.data.data[0].data[0].ds;
+                _dt = conResult.data.data[0].data[0].dt;
                 
                 await this.setState("HardwareVersion", conResult.data.data[0].hv, true);
              
