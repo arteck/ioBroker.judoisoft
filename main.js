@@ -9,7 +9,7 @@
  */
 'use strict';
 
-const judoConv = require('./lib/dataConverter');
+const judoConv = require(__dirname + '/lib/dataConverter');
 const utils = require('@iobroker/adapter-core');
 const axios = require('axios');
 const https = require('https');
