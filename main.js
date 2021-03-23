@@ -188,8 +188,8 @@ class judoisoftControll extends utils.Adapter {
                 
                 await this.setState("wtuType", "cloud", true);
 
-                await this.setState("SoftwareVersion", conResult.data.data[0].data[0].sv, true);
-                await this.setState("HardwareVersion", conResult.data.data[0].data[0].hv, true);
+                await this.setState("SoftwareVersion", getInValue(conResult.data.data[0].data[0].data, '1'), true);
+                await this.setState("HardwareVersion", getInValue(conResult.data.data[0].data[0].data, '2'), true);
                 
                 _da = conResult.data.data[0].data[0].da;
                 _dt = conResult.data.data[0].data[0].dt;
@@ -231,14 +231,16 @@ class judoisoftControll extends utils.Adapter {
                 result = judoConv.getInValue(conResult.data.data[0].data[0].data, '94');
                 let salzstand_rounded = 0;
                 let reichweite = 0;
+                let salzstand = 0;
                 
                 if (result.indexOf(':') > -1) {
-                    reichweite = Math.round(result.split(':')[1] / 7);             
+                    reichweite = Math.round(result.split(':')[1]);             
+                    salzstand = result.split(':')[0] / 1000;
+                    salzstand_rounded = parseInt(5 * Math.ceil(salzstand / 5));
+                    
                     if (reichweite > 1) {
                         await this.setState(`SaltRange`, reichweite, true);
-                    } else {
-                        let salzstand = result.split(':')[0] / 1000;
-                        salzstand_rounded = parseInt(5 * Math.ceil(salzstand / 5));
+                    } else {                        
                         await this.setState(`SaltRange`, salzstand_rounded, true);
                     }
                 }                
