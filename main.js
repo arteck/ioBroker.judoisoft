@@ -164,6 +164,7 @@ class judoisoftControll extends utils.Adapter {
 
         this.log.debug("url " + baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data");
         
+        try {
         // check data
         let conResult = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data");
 
@@ -177,7 +178,7 @@ class judoisoftControll extends utils.Adapter {
 
         let result;
 
-        try {
+        
             if (conResult.data.status == 'ok') {
 
                 this.log.debug("getSerialnumber : " + JSON.stringify(conResult.data[0].serialnumber));
