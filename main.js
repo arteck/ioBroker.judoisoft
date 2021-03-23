@@ -194,8 +194,8 @@ class judoisoftControll extends utils.Adapter {
 
                 await this.setState("Connection status", conResult.data[0].status, true);
 
-                const serv = await this.timeConverter(responses[3].data.data);
-                await this.setState("ServiceDate", serv, true);
+             //   const serv = await this.timeConverter(responses[3].data.data);
+            //    await this.setState("ServiceDate", serv, true);
 
                 //WaterTotal
                 result = getInValue(conResult.data[0].data[0].data, '8');
