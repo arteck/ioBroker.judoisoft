@@ -31,6 +31,9 @@ let baseUrl = "";
 let _tokenData;
 let _pauseValveState = false;
 let _pauseStandBy = false;
+let _serialnumber;
+let _da;
+let _dt;
 
 class judoisoftControll extends utils.Adapter {
 
@@ -179,14 +182,18 @@ class judoisoftControll extends utils.Adapter {
         
             if (conResult.data.status == 'ok') {
                 
-                const serialN = conResult.data.data[0].serialnumber;
-                await this.setState("SerialNumber", serialN, true);
+                _serialnumber = conResult.data.data[0].serialnumber;
+                await this.setState("SerialNumber", _serialnumber, true);
                 this.log.debug("-> SerialNumber");
-                
                 
                 await this.setState("wtuType", "cloud", true);
 
                 await this.setState("SoftwareVersion", conResult.data.data[0].sv, true);
+                await this.setState("HardwareVersion", conResult.data.data[0].hv, true);
+                
+                _da = conResult.data.data[0].data[0].da;
+                _ds = conResult.data.data[0].data[0].ds;
+                
                 await this.setState("HardwareVersion", conResult.data.data[0].hv, true);
              
 
@@ -200,7 +207,17 @@ class judoisoftControll extends utils.Adapter {
 
              //   const serv = await this.timeConverter(responses[3].data.data);
             //    await this.setState("ServiceDate", serv, true);
-
+                
+                // NaturalHardness
+                result = parseInt(judoConv.getInValue(conResult.data.data[0].data[0].data, '790_26')/2)+2;
+                await this.setState(`NaturalHardness`, result, true);
+                this.log.debug("-> NaturalHardness");                
+                                
+                //ResidualHardness
+                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '790_8');
+                await this.setState(`ResidualHardness`, result, true);
+                this.log.debug("-> ResidualHardness");             
+                
                 //WaterTotal
                 result = judoConv.getInValue(conResult.data.data[0].data[0].data, '8');
                 await this.setState(`WaterTotal`, result, true);
@@ -377,8 +394,27 @@ class judoisoftControll extends utils.Adapter {
     }
 
     async setCommandStateCloud(command, state) {
+        switch (command) {  
+            case 'Regeneration':
+                this.log.debug("set Regeneration " + state);
+                await axios.get(baseUrl + "&token=" + _tokenData + "&group=register&command=write%20data&serial_number=" + _serialnumber + "eb&dt=" + _dt + "&index=65&data=&da=" + _da + "&role=customer" , { httpsAgent: agent });                                  
+                break;
+            case 'WaterStop':
+                this.log.debug("set WaterStop " + state);
+                _pauseValveState = true;     // für getInfo
+                if (state) {                            
+                    const val = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _tokenData + "&parameter=close", { httpsAgent: agent });
+                    await this.setState("WaterStopStatus", val.data.parameter, true);
+                } else {
+                    const val = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _tokenData + "&parameter=open", { httpsAgent: agent });
+                    await this.setState("WaterStopStatus", val.data.parameter, true);
+                }
+                _pauseValveState = false;
 
+                break;  
+                default:
 
+        }
 
     }
 
