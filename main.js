@@ -164,14 +164,14 @@ class judoisoftControll extends utils.Adapter {
 
         try {
         // check data
-        let conResult = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data", { httpsAgent: agent });
+        let conResult = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data");
 
         this.log.debug("get Data from" + JSON.stringify(conResult));
 
         if (result.data.status == 'error') {
             this.log.info("reconnect " + Date.now());
             _tokenData = await this.getTokenFirst();
-            conResult = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data", { httpsAgent: agent });
+            conResult = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data");
         }
 
         let result;
@@ -227,7 +227,7 @@ class judoisoftControll extends utils.Adapter {
 
         } catch (err) {
             this.setState('info.connection', false, true);
-            this.log.error('getInfosCloud ERROR' + JSON.stringify(stats.data));
+            this.log.error('getInfosCloud ERROR' + JSON.stringify(err));
         }
     }
 
