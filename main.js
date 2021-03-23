@@ -209,14 +209,23 @@ class judoisoftControll extends utils.Adapter {
 
                 //SaltRange
                 result = judoConv.getInValue(conResult.data.data[0].data[0].data, '94');
-                await this.setState(`SaltRange`, result, true);
+                let salzstand_rounded = 0;
+                let reichweite = 0;
+                
+                if (result.indexOf(':') > -1) {
+                    reichweite = Math.round(result.split(':')[1] / 7);             
+
+                    let salzstand = result.split(':')[0] / 1000;
+                    salzstand_rounded = parseInt(5 * Math.ceil(salzstand / 5));
+                }                
+                
+                await this.setState(`SaltRange`, salzstand_rounded, true);
                 this.log.debug("-> SaltRange");
 
-                //SaltQuantity
-                let salzstand_rounded = 0;
-                let salzstand = result.split(':')[0] / 1000;
-                salzstand_rounded = parseInt(5 * Math.ceil(salzstand / 5));
-                let sq = salzstand_rounded * 100 / 50;
+                //SaltQuantity                  
+                let sq = salzstand_rounded * 100 / 50;  
+                if (sq > 100) sq = 100;
+                
                 await this.setState(`SaltQuantity`, sq, true);
                 this.log.debug("-> SaltQuantity");
 
