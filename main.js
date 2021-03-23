@@ -402,13 +402,20 @@ class judoisoftControll extends utils.Adapter {
             case 'WaterStop':
                 this.log.debug("set WaterStop " + state);
                 _pauseValveState = true;     // für getInfo
+
+                this.log.error(baseUrl + "&token=" + _tokenData + "&group=register&command=write%20data&serial_number=" + _serialnumber + "eb&dt=" + _dt + "&index=72&data=&da=" + _da + "&role=customer");
+                
                 if (state) {                            
+
                     const val = await axios.get(baseUrl + "&token=" + _tokenData + "&group=register&command=write%20data&serial_number=" + _serialnumber + "eb&dt=" + _dt + "&index=72&data=&da=" + _da + "&role=customer" , { httpsAgent: agent });                                  
-                     this.log.error('getInfos ERROR' + JSON.stringify(val.data));
+                    
+                    
+                    this.log.error('getInfos ERROR' + JSON.stringify(val.data));
                     await this.setState("WaterStopStatus", val.data.parameter, true);
                 } else {
                     const val = await axios.get(baseUrl + "&token=" + _tokenData + "&group=register&command=write%20data&serial_number=" + _serialnumber + "eb&dt=" + _dt + "&index=73&data=&da=" + _da + "&role=customer" , { httpsAgent: agent });                                  
-                     this.log.error('getInfos ERROR' + JSON.stringify(val.data));
+                    
+                    this.log.error('getInfos ERROR' + JSON.stringify(val.data));
                     await this.setState("WaterStopStatus", val.data.parameter, true);
                 }
                 _pauseValveState = false;
