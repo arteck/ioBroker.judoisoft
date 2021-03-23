@@ -163,29 +163,33 @@ class judoisoftControll extends utils.Adapter {
         this.log.debug("get Consumption data Cloud");
 
         try {
-        // check data
-        let conResult = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data");
+            // check data
+            let conResult = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data");
 
-        this.log.debug("get Data from" + JSON.stringify(conResult));
+//            this.log.debug("get Data from" + JSON.(conResult));
 
-        if (result.data.status == 'error') {
-            this.log.info("reconnect " + Date.now());
-            _tokenData = await this.getTokenFirst();
-            conResult = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data");
-        }
+            if (conResult.data[0].status == 'error') {
+                this.log.info("reconnect " + Date.now());
+                _tokenData = await this.getTokenFirst();
+                conResult = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data");
+            }
 
-        let result;
+            let result;
 
         
-            if (conResult.data.status == 'ok') {
+            if (conResult.data[0].status == 'ok') {
 
                 this.log.debug("getSerialnumber : " + JSON.stringify(conResult.data[0].serialnumber));
                 const serialN = conResult.data[0].serialnumber;
                 await this.setState("SerialNumber", serialN, true);
+                this.log.debug("-> SerialNumber");
+                
+                
                 await this.setState("wtuType", "cloud", true);
 
                 await this.setState("SoftwareVersion", conResult.data[0].sv, true);
                 await this.setState("HardwareVersion", conResult.data[0].hv, true);
+             
 
                 let inst;
                 if (conResult.data[0].installation_date) {
@@ -202,10 +206,12 @@ class judoisoftControll extends utils.Adapter {
                 result = getInValue(conResult.data[0].data[0].data, '8');
                 await this.setState(`WaterTotal`, result, true);
                 await this.setState(`WaterTotalOut`, 0, true);
+                this.log.debug("-> WaterTotal");
 
                 //SaltRange
                 result = getInValue(conResult.data[0].data[0].data, '94');
                 await this.setState(`SaltRange`, result, true);
+                this.log.debug("-> SaltRange");
 
                 //SaltQuantity
                 let salzstand_rounded = 0;
@@ -213,10 +219,12 @@ class judoisoftControll extends utils.Adapter {
                 salzstand_rounded = parseInt(5 * Math.ceil(salzstand / 5));
                 let sq = salzstand_rounded * 100 / 50;
                 await this.setState(`SaltQuantity`, sq, true);
+                this.log.debug("-> SaltQuantity");
 
                 //FlowRate
                 let durchfluss = getInValue(conResult.data[0].data[0].data, '790_1617');
                 await this.setState(`FlowRate`, durchfluss, true);
+                this.log.debug("-> FlowRate");
 
 
             }
