@@ -431,7 +431,7 @@ class judoisoftControll extends utils.Adapter {
             await this.setState("token", token, true);
              //Serial
 
-            const serResult;
+            let serResult;
 
             if (!this.config.cloud) {
                 serResult = await axios.get(baseUrl + "register&command=show&msgnumber=2&token=" + token, {httpsAgent: agent});
