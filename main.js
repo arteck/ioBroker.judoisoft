@@ -168,7 +168,7 @@ class judoisoftControll extends utils.Adapter {
 
 //            this.log.debug("get Data from" + JSON.(conResult));
 
-            if (conResult.data[0].status == 'error') {
+            if (conResult.data.status == 'error') {
                 this.log.info("reconnect " + Date.now());
                 _tokenData = await this.getTokenFirst();
                 conResult = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data", { httpsAgent: agent });
@@ -177,39 +177,38 @@ class judoisoftControll extends utils.Adapter {
             let result;
 
         
-            if (conResult.data[0].status == 'ok') {
-
-                this.log.debug("getSerialnumber : " + JSON.stringify(conResult.data[0].serialnumber));
-                const serialN = conResult.data[0].serialnumber;
+            if (conResult.data.status == 'ok') {
+                
+                const serialN = conResult.data.data[0].serialnumber;
                 await this.setState("SerialNumber", serialN, true);
                 this.log.debug("-> SerialNumber");
                 
                 
                 await this.setState("wtuType", "cloud", true);
 
-                await this.setState("SoftwareVersion", conResult.data[0].sv, true);
-                await this.setState("HardwareVersion", conResult.data[0].hv, true);
+                await this.setState("SoftwareVersion", conResult.data.data[0].sv, true);
+                await this.setState("HardwareVersion", conResult.data.data[0].hv, true);
              
 
-                let inst;
-                if (conResult.data[0].installation_date) {
+     /**           let inst;
+                if (conResult.data.data[0].installation_date) {
                     inst = await this.timeConverter(conResult.data[0].installation_date);
                 }
                 await this.setState("InstallationDate", inst, true);
-
-                await this.setState("Connection status", conResult.data[0].status, true);
+**/
+                await this.setState("Connection status", conResult.data.data[0].status, true);
 
              //   const serv = await this.timeConverter(responses[3].data.data);
             //    await this.setState("ServiceDate", serv, true);
 
                 //WaterTotal
-                result = getInValue(conResult.data[0].data[0].data, '8');
+                result = getInValue(conResult.data.data[0].data[0].data, '8');
                 await this.setState(`WaterTotal`, result, true);
                 await this.setState(`WaterTotalOut`, 0, true);
                 this.log.debug("-> WaterTotal");
 
                 //SaltRange
-                result = getInValue(conResult.data[0].data[0].data, '94');
+                result = getInValue(conResult.data.data[0].data[0].data, '94');
                 await this.setState(`SaltRange`, result, true);
                 this.log.debug("-> SaltRange");
 
@@ -222,7 +221,7 @@ class judoisoftControll extends utils.Adapter {
                 this.log.debug("-> SaltQuantity");
 
                 //FlowRate
-                let durchfluss = getInValue(conResult.data[0].data[0].data, '790_1617');
+                let durchfluss = getInValue(conResult.data.data[0].data[0].data, '790_1617');
                 await this.setState(`FlowRate`, durchfluss, true);
                 this.log.debug("-> FlowRate");
 
