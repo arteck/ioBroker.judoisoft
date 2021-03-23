@@ -188,8 +188,8 @@ class judoisoftControll extends utils.Adapter {
                 
                 await this.setState("wtuType", "cloud", true);
 
-                await this.setState("SoftwareVersion", getInValue(conResult.data.data[0].data[0].data, '1'), true);
-                await this.setState("HardwareVersion", getInValue(conResult.data.data[0].data[0].data, '2'), true);
+                await this.setState("SoftwareVersion", judoConv.getInValue(conResult.data.data[0].data[0].data, '1'), true);
+                await this.setState("HardwareVersion", judoConv.getInValue(conResult.data.data[0].data[0].data, '2'), true);
                 
                 _da = conResult.data.data[0].data[0].da;
                 _dt = conResult.data.data[0].data[0].dt;
@@ -224,8 +224,7 @@ class judoisoftControll extends utils.Adapter {
                 
                 result = judoConv.getInValue(conResult.data.data[0].data[0].data, '9');
                 await this.setState(`WaterTotalOut`, result, true);
-                this.log.debug("-> WaterTotal");
-                
+                this.log.debug("-> WaterTotal");                
 
                 //SaltRange
                 result = judoConv.getInValue(conResult.data.data[0].data[0].data, '94');
@@ -258,6 +257,9 @@ class judoisoftControll extends utils.Adapter {
                 let durchfluss = judoConv.getInValue(conResult.data.data[0].data[0].data, '790_1617');
                 await this.setState(`FlowRate`, durchfluss, true);
                 this.log.debug("-> FlowRate");
+
+                //wartung
+                result = judoConv.getInValue(deviceFound.deviceData.data[0].data, '7').split(':')[0];
 
                 
                  //StandByValue
