@@ -186,7 +186,7 @@ class judoisoftControll extends utils.Adapter {
                 await this.setState("SoftwareVersion", conResult.data[0].sv, true);
                 await this.setState("HardwareVersion", conResult.data[0].hv, true);
 
-                const inst;
+                let inst;
                 if (conResult.data[0].installation_date) {
                     inst = await this.timeConverter(conResult.data[0].installation_date);
                 }
