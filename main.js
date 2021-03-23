@@ -206,7 +206,8 @@ class judoisoftControll extends utils.Adapter {
             //    await this.setState("ServiceDate", serv, true);
                 
                 // NaturalHardness
-                result = parseInt(judoConv.getInValue(conResult.data.data[0].data[0].data, '790_26')/2)+2;
+            //    result = parseInt(judoConv.getInValue(conResult.data.data[0].data[0].data, '790_26')/2)+2;
+                result = 0;
                 await this.setState(`NaturalHardness`, result, true);
                 this.log.debug("-> NaturalHardness");                
                                 
