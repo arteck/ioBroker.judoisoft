@@ -192,10 +192,7 @@ class judoisoftControll extends utils.Adapter {
                 await this.setState("HardwareVersion", judoConv.getInValue(conResult.data.data[0].data[0].data, '2'), true);
                 
                 _da = conResult.data.data[0].data[0].da;
-                _dt = conResult.data.data[0].data[0].dt;
-                
-                await this.setState("HardwareVersion", conResult.data.data[0].hv, true);
-             
+                _dt = conResult.data.data[0].data[0].dt;             
 
      /**           let inst;
                 if (conResult.data.data[0].installation_date) {
@@ -258,14 +255,15 @@ class judoisoftControll extends utils.Adapter {
                 await this.setState(`FlowRate`, result, true);
                 this.log.debug("-> FlowRate");
 
-                //wartung
+                //Maintenance
                 result = judoConv.getInValue(conResult.data.data[0].data[0].data, '7').split(':')[0];
-                await this.setState(`ServiceDate`, result, true);
-                this.log.debug("-> wartung" + result);
+                await this.setState(`Maintenance`, result, true);
+                this.log.debug("-> Maintenance " + result);
                 
                  //StandByValue
                 result = judoConv.getInValue(conResult.data.data[0].data[0].data, '792_9');
                 await this.setState(`StandByValue`, result, true);
+                this.log.debug("-> StandByValue" + result);
                
                 
                 await this.setState("lastInfoUpdate", Date.now(), true);   
@@ -664,7 +662,21 @@ class judoisoftControll extends utils.Adapter {
             },
             native: {},
         });
-
+       
+        this.extendObjectAsync(`Maintenance`, {
+            type: 'state',
+            common: {
+                name: `Maintenance`,
+                type: 'number',
+                read: true,
+                write: false,
+                def: 0,
+                role: 'info',
+                unit: 'Tage'
+            },
+            native: {},
+        });
+       
         this.extendObjectAsync(`SaltQuantity`, {
             type: 'state',
             common: {
