@@ -162,7 +162,7 @@ class judoisoftControll extends utils.Adapter {
     async getInfosCloud() {
         this.log.debug("get Consumption data Cloud");
 
-        / check data
+        // check data
         let conResult = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data", { httpsAgent: agent });
 
         this.log.debug("get Data " + JSON.stringify(conResult));
