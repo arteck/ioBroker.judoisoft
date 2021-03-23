@@ -259,7 +259,8 @@ class judoisoftControll extends utils.Adapter {
                 this.log.debug("-> FlowRate");
 
                 //wartung
-                result = judoConv.getInValue(deviceFound.deviceData.data[0].data, '7').split(':')[0];
+                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '7').split(':')[0];
+                await this.setState(`ServiceDate`, result, true);
                 this.log.debug("-> wartung" + result);
                 
                  //StandByValue
@@ -649,7 +650,7 @@ class judoisoftControll extends utils.Adapter {
                 native: {},
             });
         }
-
+        
         this.extendObjectAsync(`SaltRange`, {
             type: 'state',
             common: {
