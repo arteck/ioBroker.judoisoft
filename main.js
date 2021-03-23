@@ -220,9 +220,12 @@ class judoisoftControll extends utils.Adapter {
                 
                 //WaterTotal
                 result = judoConv.getInValue(conResult.data.data[0].data[0].data, '8');
-                await this.setState(`WaterTotal`, result, true);
-                await this.setState(`WaterTotalOut`, 0, true);
+                await this.setState(`WaterTotal`, result, true);                
+                
+                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '9');
+                await this.setState(`WaterTotalOut`, result, true);
                 this.log.debug("-> WaterTotal");
+                
 
                 //SaltRange
                 result = judoConv.getInValue(conResult.data.data[0].data[0].data, '94');
@@ -251,6 +254,13 @@ class judoisoftControll extends utils.Adapter {
                 await this.setState(`FlowRate`, durchfluss, true);
                 this.log.debug("-> FlowRate");
 
+                
+                 //StandByValue
+                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '792_9');
+                await this.setState(`StandByValue`, result, true);
+               
+                
+                await this.setState("lastInfoUpdate", Date.now(), true);   
 
             }
 
@@ -413,7 +423,22 @@ class judoisoftControll extends utils.Adapter {
                 _pauseValveState = false;
 
                 break;  
-                default:
+            case 'StandBy':
+                this.log.debug("set StandBy " + state);
+                _pauseStandBy = true;    // für getInfo
+                if (state) {  
+                    const val = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=write%20data&serial_number=" + _serialnumber + "&dt=" + _dt + "&index=171&data=&da=" + _da + "&role=customer" , { httpsAgent: agent });                                  
+                } else {
+                    const val = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=write%20data&serial_number=" + _serialnumber + "&dt=" + _dt + "&index=73&data=&da=" + _da + "&role=customer" , { httpsAgent: agent });                                  
+                }               
+                _pauseStandBy = false;
+                
+                break; 
+            case 'ResidualHardness':
+                this.log.debug("set ResidualHardness " + state);
+                const val = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=write%20data&serial_number=" + _serialnumber + "&dt=" + _dt + "&index=60&data=" + state + "&da=" + _da + "&role=customer" , { httpsAgent: agent });                                  
+                break;                
+            default:
 
         }
 
