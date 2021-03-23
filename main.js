@@ -254,13 +254,13 @@ class judoisoftControll extends utils.Adapter {
                 this.log.debug("-> SaltQuantity");
 
                 //FlowRate
-                let durchfluss = judoConv.getInValue(conResult.data.data[0].data[0].data, '790_1617');
-                await this.setState(`FlowRate`, durchfluss, true);
+                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '790_1617');
+                await this.setState(`FlowRate`, result, true);
                 this.log.debug("-> FlowRate");
 
                 //wartung
                 result = judoConv.getInValue(deviceFound.deviceData.data[0].data, '7').split(':')[0];
-
+                this.log.debug("-> wartung" + result);
                 
                  //StandByValue
                 result = judoConv.getInValue(conResult.data.data[0].data[0].data, '792_9');
