@@ -234,12 +234,15 @@ class judoisoftControll extends utils.Adapter {
                 
                 if (result.indexOf(':') > -1) {
                     reichweite = Math.round(result.split(':')[1] / 7);             
-
+                    if (reichweite > 1) {
+                        reichweite = parseInt(reichweite * 7);
+                        await this.setState(`SaltRange`, reichweite, true);
+                    }
                     let salzstand = result.split(':')[0] / 1000;
                     salzstand_rounded = parseInt(5 * Math.ceil(salzstand / 5));
+                    await this.setState(`SaltRange`, salzstand_rounded, true);
                 }                
                 
-                await this.setState(`SaltRange`, salzstand_rounded, true);
                 this.log.debug("-> SaltRange");
 
                 //SaltQuantity                  
