@@ -202,13 +202,13 @@ class judoisoftControll extends utils.Adapter {
             //    await this.setState("ServiceDate", serv, true);
 
                 //WaterTotal
-                result = getInValue(conResult.data.data[0].data[0].data, '8');
+                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '8');
                 await this.setState(`WaterTotal`, result, true);
                 await this.setState(`WaterTotalOut`, 0, true);
                 this.log.debug("-> WaterTotal");
 
                 //SaltRange
-                result = getInValue(conResult.data.data[0].data[0].data, '94');
+                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '94');
                 await this.setState(`SaltRange`, result, true);
                 this.log.debug("-> SaltRange");
 
@@ -221,7 +221,7 @@ class judoisoftControll extends utils.Adapter {
                 this.log.debug("-> SaltQuantity");
 
                 //FlowRate
-                let durchfluss = getInValue(conResult.data.data[0].data[0].data, '790_1617');
+                let durchfluss = judoConv.getInValue(conResult.data.data[0].data[0].data, '790_1617');
                 await this.setState(`FlowRate`, durchfluss, true);
                 this.log.debug("-> FlowRate");
 
