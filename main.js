@@ -256,10 +256,10 @@ class judoisoftControll extends utils.Adapter {
                 await this.setState(`SaltQuantity`, sq, true);
                 this.log.debug("-> SaltQuantity");
 
-                //FlowRate
+                //WaterCurrent
                 result = judoConv.getInValue(conResult.data.data[0].data[0].data, '790_1617');
-                await this.setState(`FlowRate`, result, true);
-                this.log.debug("-> FlowRate");
+                await this.setState(`WaterCurrent`, result, true);
+                this.log.debug("-> WaterCurrent");
 
                  //StandByValue
                 result = judoConv.getInValue(conResult.data.data[0].data[0].data, '792_9');
