@@ -18,8 +18,8 @@ const md5 = require('md5');
 let interval = 0;
 let requestTimeout = null;
 
-axios.defaults.timeout = 10000;   // timeout 10 sec
 
+axios.defaults.timeout = 5000;   // timeout 5 sec
 
 // At request level
 const agent = new https.Agent({  
@@ -405,7 +405,7 @@ class judoisoftControll extends utils.Adapter {
 
         } catch (err) {
             this.setState('info.connection', false, true);
-            this.log.error('getInfos ERROR' + JSON.stringify(result.data));
+            this.log.error('getInfos ERROR ' + JSON.stringify(err));
         }
     }
 
