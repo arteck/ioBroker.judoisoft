@@ -511,30 +511,37 @@ class judoisoftControll extends utils.Adapter {
             tokenObject = await axios.get(statusURL, { httpsAgent: agent });
             this.log.debug("getToken: " + JSON.stringify(tokenObject.data));    
            
-            token = tokenObject.data.token;
-            
-            await this.setState("token", token, true);
-            
-             //Serial only local           
-            if (!this.config.cloud) {
-                const serResult = await axios.get(baseUrl + "register&command=show&msgnumber=2&token=" + token, {httpsAgent: agent});
+            if (tokenObject.data.status == 'ok') {                
 
-                this.log.debug("getSerialnumber : " + JSON.stringify(serResult.data));
+                token = tokenObject.data.token;
 
-                const wtuType = serResult.data.data[0]["wtuType"];
-                const serialN = serResult.data.data[0]["serial number"];
+                await this.setState("token", token, true);
 
-                await this.setState("wtuType", wtuType, true);
-                await this.setState("SerialNumber", serialN, true);
+                 //Serial only local           
+                if (!this.config.cloud) {
+                    const serResult = await axios.get(baseUrl + "register&command=show&msgnumber=2&token=" + token, {httpsAgent: agent});
 
-                //Connect
-                const conResult = await axios.get(baseUrl + "register&command=connect&msgnumber=1&token=" + token + "&parameter=" + wtuType + "&serial%20number=" + serialN, {httpsAgent: agent});
-                this.log.debug("connect Result: " + JSON.stringify(conResult.data));
+                    this.log.debug("getSerialnumber : " + JSON.stringify(serResult.data));
 
-                await this.setState("Connection status", conResult.data.status, true);
-            }
+                    const wtuType = serResult.data.data[0]["wtuType"];
+                    const serialN = serResult.data.data[0]["serial number"];
 
-            return token;
+                    await this.setState("wtuType", wtuType, true);
+                    await this.setState("SerialNumber", serialN, true);
+
+                    //Connect
+                    const conResult = await axios.get(baseUrl + "register&command=connect&msgnumber=1&token=" + token + "&parameter=" + wtuType + "&serial%20number=" + serialN, {httpsAgent: agent});
+                    this.log.debug("connect Result: " + JSON.stringify(conResult.data));
+
+                    await this.setState("Connection status", conResult.data.status, true);
+                    
+                    return token;
+                }
+            } else {
+                this.setState('info.connection', false, false);
+                this.setState("Connection status", "ERROR", true);
+                return null;
+            }            
 
         } catch (err) {
            this.setState("Connection status", "ERROR", true);
