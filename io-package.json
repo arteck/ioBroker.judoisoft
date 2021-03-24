@@ -1,8 +1,13 @@
 {
   "common": {
     "name": "judoisoft",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "news": {
+     "1.0.5": {
+        "en": "new cloud access",
+        "de": "new cloud access",
+        "ru": "new cloud access"
+      },
     "1.0.4": {
         "en": "dadd timeout",
         "de": "dadd timeout",
