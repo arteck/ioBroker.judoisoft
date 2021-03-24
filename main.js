@@ -205,16 +205,10 @@ class judoisoftControll extends utils.Adapter {
              //   const serv = await this.timeConverter(responses[3].data.data);
             //    await this.setState("ServiceDate", serv, true);
                 
-                // NaturalHardness
-            //    result = parseInt(judoConv.getInValue(conResult.data.data[0].data[0].data, '790_26')/2)+2;
-                result = 0;
-                await this.setState(`NaturalHardness`, result, true);
-                this.log.debug("-> NaturalHardness");                
-                                
-                //ResidualHardness
-                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '790_8');
-                await this.setState(`ResidualHardness`, result, true);
-                this.log.debug("-> ResidualHardness");             
+                //Maintenance
+                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '7').split(':')[0];
+                await this.setState(`Maintenance`, result, true);
+                this.log.debug("-> Maintenance " + result);
                 
                 //WaterTotal
                 result = judoConv.getInValue(conResult.data.data[0].data[0].data, '8');
@@ -222,8 +216,8 @@ class judoisoftControll extends utils.Adapter {
                 
                 result = judoConv.getInValue(conResult.data.data[0].data[0].data, '9');
                 await this.setState(`WaterTotalOut`, result, true);
-                this.log.debug("-> WaterTotal");                
-
+                this.log.debug("-> WaterTotal");                                
+                
                 //SaltRange
                 result = judoConv.getInValue(conResult.data.data[0].data[0].data, '94');
                 let salzstand_rounded = 0;
@@ -243,6 +237,17 @@ class judoisoftControll extends utils.Adapter {
                 }                
                 
                 this.log.debug("-> SaltRange");
+                                
+                // NaturalHardness
+            //    result = parseInt(judoConv.getInValue(conResult.data.data[0].data[0].data, '790_26')/2)+2;
+                result = 0;
+                await this.setState(`NaturalHardness`, result, true);
+                this.log.debug("-> NaturalHardness");                
+                                
+                //ResidualHardness
+                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '790_8');
+                await this.setState(`ResidualHardness`, result, true);
+                this.log.debug("-> ResidualHardness");             
 
                 //SaltQuantity                  
                 let sq = salzstand_rounded * 100 / 50;  
@@ -256,16 +261,10 @@ class judoisoftControll extends utils.Adapter {
                 await this.setState(`FlowRate`, result, true);
                 this.log.debug("-> FlowRate");
 
-                //Maintenance
-                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '7').split(':')[0];
-                await this.setState(`Maintenance`, result, true);
-                this.log.debug("-> Maintenance " + result);
-                
                  //StandByValue
                 result = judoConv.getInValue(conResult.data.data[0].data[0].data, '792_9');
                 await this.setState(`StandByValue`, result, true);
-                this.log.debug("-> StandByValue" + result);
-               
+                this.log.debug("-> StandByValue" + result);               
                 
                 await this.setState("lastInfoUpdate", Date.now(), true);   
 
@@ -277,7 +276,7 @@ class judoisoftControll extends utils.Adapter {
 
         } catch (err) {
             this.setState('info.connection', false, true);
-            this.log.error('getInfosCloud ERROR' + JSON.stringify(err));
+            this.log.error('getInfosCloud ERROR ' + JSON.stringify(err));
         }
     }
 
@@ -418,7 +417,7 @@ class judoisoftControll extends utils.Adapter {
                 break;
             case 'WaterStop':
                 this.log.debug("set WaterStop " + state);
-                _pauseValveState = true;     // für getInfo
+                _pauseValveState = true;     // fÃ¼r getInfo
                 
                 if (state) {                            
                     const val = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=write%20data&serial_number=" + _serialnumber + "&dt=" + _dt + "&index=72&data=&da=" + _da + "&role=customer" , { httpsAgent: agent });                                  
@@ -432,7 +431,7 @@ class judoisoftControll extends utils.Adapter {
                 break;  
             case 'StandBy':
                 this.log.debug("set StandBy " + state);
-                _pauseStandBy = true;    // für getInfo
+                _pauseStandBy = true;    // fÃ¼r getInfo
                 if (state) {  
                     const val = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=write%20data&serial_number=" + _serialnumber + "&dt=" + _dt + "&index=171&data=&da=" + _da + "&role=customer" , { httpsAgent: agent });                                  
                 } else {
@@ -459,7 +458,7 @@ class judoisoftControll extends utils.Adapter {
                 break;
             case 'WaterStop':
                 this.log.debug("set WaterStop " + state);
-                _pauseValveState = true;     // für getInfo
+                _pauseValveState = true;     // fÃ¼r getInfo
                 if (state) {                            
                     const val = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _tokenData + "&parameter=close", { httpsAgent: agent });
                     await this.setState("WaterStopStatus", val.data.parameter, true);
@@ -472,7 +471,7 @@ class judoisoftControll extends utils.Adapter {
                 break;   
             case 'StandBy':
                 this.log.debug("set StandBy " + state);
-                _pauseStandBy = true;    // für getInfo
+                _pauseStandBy = true;    // fÃ¼r getInfo
                 if (state) {  
                     await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _tokenData + '&parameter=start', { httpsAgent: agent }); 
                 } else {
@@ -701,7 +700,7 @@ class judoisoftControll extends utils.Adapter {
                 write: true,
                 def: 0,
                 role: 'info',
-                unit: '°dH'
+                unit: 'Â°dH'
             },
             native: {},
         });
@@ -716,7 +715,7 @@ class judoisoftControll extends utils.Adapter {
                 write: false,
                 def: 0,
                 role: 'info',
-                unit: '°dH'
+                unit: 'Â°dH'
             },
             native: {},
         });
