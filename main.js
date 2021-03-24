@@ -533,10 +533,9 @@ class judoisoftControll extends utils.Adapter {
                     const conResult = await axios.get(baseUrl + "register&command=connect&msgnumber=1&token=" + token + "&parameter=" + wtuType + "&serial%20number=" + serialN, {httpsAgent: agent});
                     this.log.debug("connect Result: " + JSON.stringify(conResult.data));
 
-                    await this.setState("Connection status", conResult.data.status, true);
-                    
-                    return token;
+                    await this.setState("Connection status", conResult.data.status, true);                    
                 }
+                return token;
             } else {
                 this.setState('info.connection', false, false);
                 this.setState("Connection status", "ERROR", true);
