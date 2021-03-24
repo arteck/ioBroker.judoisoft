@@ -622,33 +622,36 @@ class judoisoftControll extends utils.Adapter {
             native: {},
         });
        
-        this.extendObjectAsync(`WaterYearly`, {
-            type: 'channel',
-            common: {
-                name: `WaterYearly`,
-            },
-            native: {},
-        });
-       
-       for (var b = 1; b < 13; b++) {
-           if (b < 10) {
-             b = '0' + b;
-           }
-           this.extendObjectAsync(`WaterYearly.${b}`, {
-                type: 'state',
+       // not in the cloud
+       if (!this.config.cloud) {
+            this.extendObjectAsync(`WaterYearly`, {
+                type: 'channel',
                 common: {
-                    name: `${b}`,
-                    type: 'number',
-                    read: true,
-                    write: false,
-                    def: 0,
-                    role: 'info',
-                    unit: 'm3'
+                    name: `WaterYearly`,
                 },
                 native: {},
             });
+
+           for (var b = 1; b < 13; b++) {
+               if (b < 10) {
+                 b = '0' + b;
+               }
+               this.extendObjectAsync(`WaterYearly.${b}`, {
+                    type: 'state',
+                    common: {
+                        name: `${b}`,
+                        type: 'number',
+                        read: true,
+                        write: false,
+                        def: 0,
+                        role: 'info',
+                        unit: 'm3'
+                    },
+                    native: {},
+                });
+            }
         }
-        
+       
         this.extendObjectAsync(`SaltRange`, {
             type: 'state',
             common: {
