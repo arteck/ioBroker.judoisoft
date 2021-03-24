@@ -540,7 +540,7 @@ class judoisoftControll extends utils.Adapter {
             } else {
                 this.setState('info.connection', false, false);
                 this.setState("Connection status", "ERROR", true);
-                this.log.error("Check Login data (user:psw)"; 
+                this.log.error("Check Login data (user:psw)"); 
                 return null;
             }            
 
