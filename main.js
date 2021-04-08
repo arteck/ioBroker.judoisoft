@@ -247,10 +247,17 @@ class judoisoftControll extends utils.Adapter {
                 await this.setState(`WaterCurrent`, result, true);
                 this.log.debug("-> WaterCurrent");
 
-                 //StandByValue
+                //StandByValue
                 result = judoConv.getInValue(conResult.data.data[0].data[0].data, '792_9');
                 await this.setState(`StandByValue`, result, true);
                 this.log.debug("-> StandByValue" + result);               
+                
+                //Battery
+                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '93');                
+                let batteriedatenarray = result.split(":");                
+                await this.setState(`Battery`, batteriedatenarray[0], true);
+                this.log.debug("-> Battery" + batteriedatenarray[0]);   
+                
                 
                 await this.setState("lastInfoUpdate", Date.now(), true);   
 
@@ -587,6 +594,23 @@ class judoisoftControll extends utils.Adapter {
             native: {},
         });
         
+        if (this.config.cloud) {
+            await this.extendObjectAsync(`Battery`, {
+                type: 'state',
+                common: {
+                    name: `Battery`,
+                    type: 'number',
+                    read: true,
+                    write: false,
+                    def: 0,
+                    role: 'info',
+                    unit: '%'
+                },
+                native: {},
+            });
+        }
+       
+       
         if (this.config.cloud) {
             await this.extendObjectAsync(`WaterCurrent`, {
                 type: 'state',
