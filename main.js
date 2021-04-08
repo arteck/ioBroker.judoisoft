@@ -540,7 +540,7 @@ class judoisoftControll extends utils.Adapter {
    async create_state() {
         this.log.debug(`create state`);
 
-        this.extendObjectAsync(`token`, {
+        await this.extendObjectAsync(`token`, {
             type: 'state',
             common: {
                 name: `token`,
@@ -552,7 +552,7 @@ class judoisoftControll extends utils.Adapter {
             native: { },
         });
 
-        this.extendObjectAsync(`lastInfoUpdate`, {
+        await this.extendObjectAsync(`lastInfoUpdate`, {
             type: 'state',
             common: {
                 name: 'Date/Time of last information update',
@@ -564,7 +564,7 @@ class judoisoftControll extends utils.Adapter {
             native: { },
         });
 
-        this.extendObjectAsync(`InstallationDate`, {
+        await this.extendObjectAsync(`InstallationDate`, {
             type: 'state',
             common: {
                 name: `InstallationDate`,
@@ -575,7 +575,7 @@ class judoisoftControll extends utils.Adapter {
             },
             native: {},
         });
-        this.extendObjectAsync(`ServiceDate`, {
+        await this.extendObjectAsync(`ServiceDate`, {
             type: 'state',
             common: {
                 name: `ServiceDate`,
@@ -586,38 +586,66 @@ class judoisoftControll extends utils.Adapter {
             },
             native: {},
         });
-       
-        this.extendObjectAsync(`WaterCurrent`, {
-            type: 'state',
-            common: {
-                name: `WaterCurrent`,
-                type: 'number',
-                read: true,
-                write: false,
-                def: 0,
-                role: 'info',
-                unit: 'l'
-            },
-            native: {},
-        });
-       
-        this.extendObjectAsync(`WaterCurrentOut`, {
-            type: 'state',
-            common: {
-                name: `WaterCurrentOut`,
-                type: 'number',
-                read: true,
-                write: false,
-                def: 0,
-                role: 'info',
-                unit: 'l'
-            },
-            native: {},
-        });
-       
+        
+        if (this.config.cloud) {
+            await this.extendObjectAsync(`WaterCurrent`, {
+                type: 'state',
+                common: {
+                    name: `WaterCurrent`,
+                    type: 'number',
+                    read: true,
+                    write: false,
+                    def: 0,
+                    role: 'info',
+                    unit: 'l/h'
+                },
+                native: {},
+            });
+            await this.extendObjectAsync(`WaterCurrentOut`, {
+                type: 'state',
+                common: {
+                    name: `WaterCurrentOut`,
+                    type: 'number',
+                    read: true,
+                    write: false,
+                    def: 0,
+                    role: 'info',
+                    unit: 'l/h'
+                },
+                native: {},
+            });
+        } else {
+             await this.extendObjectAsync(`WaterCurrent`, {
+                type: 'state',
+                common: {
+                    name: `WaterCurrent`,
+                    type: 'number',
+                    read: true,
+                    write: false,
+                    def: 0,
+                    role: 'info',
+                    unit: 'l'
+                },
+                native: {},
+            });
+            await this.extendObjectAsync(`WaterCurrentOut`, {
+                type: 'state',
+                common: {
+                    name: `WaterCurrentOut`,
+                    type: 'number',
+                    read: true,
+                    write: false,
+                    def: 0,
+                    role: 'info',
+                    unit: 'l'
+                },
+                native: {},
+            });
+        }
+        
        // not in the cloud
        if (!this.config.cloud) {
-            this.extendObjectAsync(`WaterYearly`, {
+            await this.extendObjectAsync(`WaterYearly`, {
                 type: 'channel',
                 common: {
                     name: `WaterYearly`,
@@ -629,7 +657,7 @@ class judoisoftControll extends utils.Adapter {
                if (b < 10) {
                  b = '0' + b;
                }
-               this.extendObjectAsync(`WaterYearly.${b}`, {
+               await this.extendObjectAsync(`WaterYearly.${b}`, {
                     type: 'state',
                     common: {
                         name: `${b}`,
@@ -645,7 +673,7 @@ class judoisoftControll extends utils.Adapter {
             }
         }
        
-        this.extendObjectAsync(`SaltRange`, {
+        await this.extendObjectAsync(`SaltRange`, {
             type: 'state',
             common: {
                 name: `SaltRange`,
@@ -659,7 +687,7 @@ class judoisoftControll extends utils.Adapter {
             native: {},
         });
        
-        this.extendObjectAsync(`Maintenance`, {
+        await this.extendObjectAsync(`Maintenance`, {
             type: 'state',
             common: {
                 name: `Maintenance`,
@@ -673,7 +701,7 @@ class judoisoftControll extends utils.Adapter {
             native: {},
         });
        
-        this.extendObjectAsync(`SaltQuantity`, {
+        await this.extendObjectAsync(`SaltQuantity`, {
             type: 'state',
             common: {
                 name: `SaltQuantity`,
@@ -687,7 +715,7 @@ class judoisoftControll extends utils.Adapter {
             native: {},
         });
 
-        this.extendObjectAsync(`ResidualHardness`, {
+        await this.extendObjectAsync(`ResidualHardness`, {
             type: 'state',
             common: {
                 name: `ResidualHardness`,
@@ -701,8 +729,7 @@ class judoisoftControll extends utils.Adapter {
             native: {},
         });
 
-
-        this.extendObjectAsync(`NaturalHardness`, {
+        await this.extendObjectAsync(`NaturalHardness`, {
             type: 'state',
             common: {
                 name: `NaturalHardness`,
@@ -717,7 +744,7 @@ class judoisoftControll extends utils.Adapter {
         });
 
 
-        this.extendObjectAsync(`FlowRate`, {
+        await this.extendObjectAsync(`FlowRate`, {
             type: 'state',
             common: {
                 name: `max flow rate per h`,
@@ -730,7 +757,7 @@ class judoisoftControll extends utils.Adapter {
             },
             native: {},
         });
-        this.extendObjectAsync(`SoftwareVersion`, {
+        await this.extendObjectAsync(`SoftwareVersion`, {
             type: 'state',
             common: {
                 name: `SoftwareVersion`,
@@ -741,7 +768,7 @@ class judoisoftControll extends utils.Adapter {
             },
             native: {},
         });
-        this.extendObjectAsync(`HardwareVersion`, {
+        await this.extendObjectAsync(`HardwareVersion`, {
             type: 'state',
             common: {
                 name: `HardwareVersion`,
@@ -752,22 +779,49 @@ class judoisoftControll extends utils.Adapter {
             },
             native: {},
         });
-
-        this.extendObjectAsync(`WaterTotal`, {
+        if (this.config.cloud) {
+            await this.extendObjectAsync(`WaterTotal`, {
+                type: 'state',
+                common: {
+                    name: `WaterTotal`,
+                    type: 'number',
+                    read: true,
+                    write: false,
+                    def: 0,
+                    role: 'info',
+                    unit: 'l'
+                },
+                native: {},
+            });
+            await this.extendObjectAsync(`WaterTotalOut`, {
             type: 'state',
             common: {
-                name: `WaterTotal`,
+                name: `WaterTotalOut`,
                 type: 'number',
                 read: true,
                 write: false,
                 def: 0,
                 role: 'info',
-                unit: 'm3'
+                unit: 'l'
             },
             native: {},
-        });
-       
-        this.extendObjectAsync(`WaterTotalOut`, {
+            });                   
+        } else {
+            await this.extendObjectAsync(`WaterTotal`, {
+                type: 'state',
+                common: {
+                    name: `WaterTotal`,
+                    type: 'number',
+                    read: true,
+                    write: false,
+                    def: 0,
+                    role: 'info',
+                    unit: 'm3'
+                },
+                native: {},
+            });
+            
+            await this.extendObjectAsync(`WaterTotalOut`, {
             type: 'state',
             common: {
                 name: `WaterTotalOut`,
@@ -779,9 +833,12 @@ class judoisoftControll extends utils.Adapter {
                 unit: 'm3'
             },
             native: {},
-        });       
+            });       
+        }
+       
+       
 
-        this.extendObjectAsync(`WaterAverage`, {
+        await this.extendObjectAsync(`WaterAverage`, {
             type: 'state',
             common: {
                 name: `WaterAverage`,
@@ -795,7 +852,7 @@ class judoisoftControll extends utils.Adapter {
             native: {},
         });
         
-        this.extendObjectAsync(`Quantity`, {
+        await this.extendObjectAsync(`Quantity`, {
             type: 'state',
             common: {
                 name: `withdrawal quantity`,
@@ -809,7 +866,7 @@ class judoisoftControll extends utils.Adapter {
             native: {},
         });
 
-        this.extendObjectAsync(`SerialNumber`, {
+        await this.extendObjectAsync(`SerialNumber`, {
             type: 'state',
             common: {
                 name: `SerialNumber`,
@@ -821,7 +878,7 @@ class judoisoftControll extends utils.Adapter {
             native: {},
         });
        
-        this.extendObjectAsync(`wtuType`, {
+        await this.extendObjectAsync(`wtuType`, {
             type: 'state',
             common: {
                 name: `wtuType`,
@@ -833,7 +890,7 @@ class judoisoftControll extends utils.Adapter {
             native: {},
         });       
        
-        this.extendObjectAsync(`Connection status`, {
+        await this.extendObjectAsync(`Connection status`, {
             type: 'state',
             common: {
                 name: `Connection status`,
@@ -845,7 +902,7 @@ class judoisoftControll extends utils.Adapter {
             native: {},
         });        
        
-        this.extendObjectAsync(`StandByValue`, {
+        await this.extendObjectAsync(`StandByValue`, {
             type: 'state',
             common: {
                 name: `StandByValue`,
@@ -858,7 +915,7 @@ class judoisoftControll extends utils.Adapter {
             },
             native: {},
         });       
-        this.extendObjectAsync(`StandBy`, {
+        await this.extendObjectAsync(`StandBy`, {
             type: 'state',
             common: {
                 name: `StandBy`,
@@ -870,7 +927,7 @@ class judoisoftControll extends utils.Adapter {
             },
             native: {},
         });     
-       this.extendObjectAsync(`Regeneration`, {
+       await this.extendObjectAsync(`Regeneration`, {
             type: 'state',
             common: {
                 name: `Regeneration`,
@@ -883,7 +940,7 @@ class judoisoftControll extends utils.Adapter {
             native: {},
         });
 
-        this.extendObjectAsync(`WaterStopStatus`, {
+        await this.extendObjectAsync(`WaterStopStatus`, {
             type: 'state',
             common: {
                 name: `WaterStopStatus`,
@@ -895,7 +952,7 @@ class judoisoftControll extends utils.Adapter {
             native: {},
         });
        
-        this.extendObjectAsync(`WaterStop`, {
+        await this.extendObjectAsync(`WaterStop`, {
             type: 'state',
             common: {
                 name: `WaterStop`,
@@ -908,11 +965,11 @@ class judoisoftControll extends utils.Adapter {
             native: {},
         });
        
-       this.subscribeStates(`WaterStop`);
-       this.subscribeStates(`Regeneration`);
-       this.subscribeStates(`ResidualHardness`);
-       this.subscribeStates(`StandBy`);
-       this.setState('info.connection', true, true);
+       await this.subscribeStates(`WaterStop`);
+       await this.subscribeStates(`Regeneration`);
+       await this.subscribeStates(`ResidualHardness`);
+       await this.subscribeStates(`StandBy`);
+       await this.setState('info.connection', true, true);
    }
     
     async timeConverter(tstmp) {
@@ -942,7 +999,7 @@ class judoisoftControll extends utils.Adapter {
 
            if (this.config.ip === undefined) {
                this.log.debug(`ip undefined`);
-               callback();
+               return();
            } else {
                if (this.config.cloud) {
                    baseUrl = "https://www.myjudo.eu/interface/";
@@ -954,12 +1011,18 @@ class judoisoftControll extends utils.Adapter {
 
            if (this.config.user === undefined) {
                this.log.debug(`user undefined`);
-               callback();
+               return();
            }
 
-           if (this.config.password === undefined) {
-               this.log.debug(`password undefined`);
-               callback();
+           if (this.config.password !== undefined ) {
+              if (this.config.password && (!adapter.supportsFeature || !adapter.supportsFeature('ADAPTER_AUTO_DECRYPT_NATIVE'))) {
+                this.config.password = tools.decrypt((systemConfig && systemConfig.native && systemConfig.native.secret) || 'Zgfr56gFe87jJOM', this.config.password);
+              }
+             // eslint-disable-next-line no-control-regex
+              if (/[\x00-\x08\x0E-\x1F\x80-\xFF]/.test(this.config.password)) {
+                this.log.error('Password error: Please re-enter the password in Admin. Stopping');
+                return;
+              }                              
            }
            try {
                interval = parseInt(this.config.interval * 1000, 10);
