@@ -253,10 +253,12 @@ class judoisoftControll extends utils.Adapter {
                 this.log.debug("-> StandByValue" + result);               
                 
                 //Battery
-                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '93');                
-                let batteriedatenarray = result.split(":");                
-                await this.setState(`Battery`, batteriedatenarray[0], true);
-                this.log.debug("-> Battery" + batteriedatenarray[0]);   
+                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '93');    
+                if (result && result.toString().indexOf(":") > -1) {
+                    let batt = result.split(":");                
+                    await this.setState(`Battery`, batt[0], true);
+                    this.log.debug("-> Battery" + batt[0]);   
+                }
                 
                 
                 await this.setState("lastInfoUpdate", Date.now(), true);   
