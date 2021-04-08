@@ -180,17 +180,18 @@ class judoisoftControll extends utils.Adapter {
                 _da = conResult.data.data[0].data[0].da;
                 _dt = conResult.data.data[0].data[0].dt;             
 
-     /**           let inst;
-                if (conResult.data.data[0].installation_date) {
-                    inst = await this.timeConverter(conResult.data[0].installation_date);
-                }
-                await this.setState("InstallationDate", inst, true);
-**/
+                // InstallationDate
+                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '6');  
+                await this.setState("InstallationDate", result, true);
+                this.log.debug("-> InstallationDate " + result);
+
+                // service
+                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '6').split(':')[0];
+                await this.setState("ServiceDays", result, true);
+                this.log.debug("-> ServiceDays " + result);
+                
                 await this.setState("Connection status", conResult.data.data[0].status, true);
 
-             //   const serv = await this.timeConverter(responses[3].data.data);
-            //    await this.setState("ServiceDate", serv, true);
-                
                 //Maintenance
                 result = judoConv.getInValue(conResult.data.data[0].data[0].data, '7').split(':')[0];
                 await this.setState(`Maintenance`, result, true);
@@ -584,18 +585,33 @@ class judoisoftControll extends utils.Adapter {
             },
             native: {},
         });
-        await this.extendObjectAsync(`ServiceDate`, {
-            type: 'state',
-            common: {
-                name: `ServiceDate`,
-                type: 'number',
-                role: 'value.time',
-                read: true,
-                write: false
-            },
-            native: {},
-        });
         
+        if (this.config.cloud) {
+            await this.extendObjectAsync(`ServiceDays`, {
+                type: 'state',
+                common: {
+                    name: `ServiceDays`,
+                    type: 'number',
+                    role: 'info',
+                    read: true,
+                    write: false
+                },
+                native: {},
+            });
+        } else {
+            await this.extendObjectAsync(`ServiceDate`, {
+                type: 'state',
+                common: {
+                    name: `ServiceDate`,
+                    type: 'number',
+                    role: 'value.time',
+                    read: true,
+                    write: false
+                },
+                native: {},
+            });
+        }
+       
         if (this.config.cloud) {
             await this.extendObjectAsync(`Battery`, {
                 type: 'state',
