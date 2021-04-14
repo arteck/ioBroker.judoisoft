@@ -1051,6 +1051,8 @@ class judoisoftControll extends utils.Adapter {
            }
 
 
+           this.log.debug("base url " + baseUrl);   
+           
            if (this.config.user === undefined) {
                this.log.debug(`user undefined`);
                return;
@@ -1073,7 +1075,7 @@ class judoisoftControll extends utils.Adapter {
            }
 
        } catch (error) {
-           this.log.error('No one IP configured');
+           this.log.error('other problem');
        }
    }
 
