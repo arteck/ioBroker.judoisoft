@@ -1039,17 +1039,17 @@ class judoisoftControll extends utils.Adapter {
                this.config.ip = "https://www.myjudo.eu/";
            }
 
-           if (this.config.ip === undefined) {
-               this.log.debug(`ip undefined`);
-               return;
+           if (this.config.cloud) {
+               baseUrl = "https://www.myjudo.eu/interface/";
            } else {
-               if (this.config.cloud) {
-                   baseUrl = "https://www.myjudo.eu/interface/";
-
+               if (this.config.ip === undefined) {
+                    this.log.debug(`ip undefined`);
+                    return;
                } else {
                    baseUrl = "https://" + this.config.ip + ":8124/?group=";
                }
            }
+
 
            if (this.config.user === undefined) {
                this.log.debug(`user undefined`);
