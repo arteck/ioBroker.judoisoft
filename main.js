@@ -498,14 +498,14 @@ class judoisoftControll extends utils.Adapter {
            statusURL = baseUrl + "register&command=login&msgnumber=1&name=login&user=" + this.config.user + "&password=" + this.config.password + "&role=customer";
        }
 
-       this.log.debug("getURL: " + baseUrl + "register&command=login&msgnumber=1&name=login&user=" + this.config.user);
+       this.log.debug("getTokenFirst : " + baseUrl + "register&command=login&msgnumber=1&name=login&user=" + this.config.user);
 
        let tokenObject;
        let token;
        
         try {       
             tokenObject = await axios.get(statusURL, { httpsAgent: agent });
-            this.log.debug("getToken: " + JSON.stringify(tokenObject.data));    
+            this.log.debug("getTokenObject: " + JSON.stringify(tokenObject));    
            
             if (tokenObject.data.status == 'ok') {                
 
