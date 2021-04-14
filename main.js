@@ -1041,7 +1041,7 @@ class judoisoftControll extends utils.Adapter {
 
            if (this.config.ip === undefined) {
                this.log.debug(`ip undefined`);
-               return();
+               return;
            } else {
                if (this.config.cloud) {
                    baseUrl = "https://www.myjudo.eu/interface/";
@@ -1053,7 +1053,7 @@ class judoisoftControll extends utils.Adapter {
 
            if (this.config.user === undefined) {
                this.log.debug(`user undefined`);
-               return();
+               return;
            }
 
            if (this.config.password !== undefined ) {
