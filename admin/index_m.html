@@ -22,10 +22,6 @@
             // example: select elements with id=key and class=value and insert value
             if (!settings) return;
             
-            if (settings.password && (typeof supportsFeature !== 'function' || !supportsFeature('ADAPTER_AUTO_DECRYPT_NATIVE'))) {
-                settings.password = decrypt(secret, settings.password);
-            }
-            
             $('.value').each(function () {
                 var $key = $(this);
                 var id = $key.attr('id');
@@ -59,9 +55,7 @@
                     obj[$this.attr('id')] = $this.val();
                 }
             });
-            if (obj.password && (typeof supportsFeature !== 'function' || !supportsFeature('ADAPTER_AUTO_DECRYPT_NATIVE'))) {
-                obj.password = encrypt(secret, obj.password);
-            }
+          
             callback(obj);
         }
     </script>
