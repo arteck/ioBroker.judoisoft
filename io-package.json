@@ -1,8 +1,13 @@
 {
   "common": {
     "name": "judoisoft",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "news": {
+    "1.0.7": {
+        "en": "corr psw save method",
+        "de": "corr psw save method",
+        "ru": "corr psw save method"
+      },      
      "1.0.6": {
         "en": "new cloud corr",
         "de": "new cloud corr",
