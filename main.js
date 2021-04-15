@@ -494,11 +494,11 @@ class judoisoftControll extends utils.Adapter {
 
        if (this.config.cloud) {
            statusURL = baseUrl + "?group=register&command=login&msgnumber=1&name=login&user=" + this.config.user + "&password=" + md5(this.config.password) + "&nohash=Service&role=customer";
+           this.log.debug("get statusURL for Cloud");
        } else {
            statusURL = baseUrl + "register&command=login&msgnumber=1&name=login&user=" + this.config.user + "&password=" + this.config.password + "&role=customer";
+           this.log.debug("get statusURL for local");
        }
-
-       this.log.debug("getTokenFirst Request: " + statusURL);
 
        let token;
        
