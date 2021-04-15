@@ -173,13 +173,18 @@ class judoisoftControll extends utils.Adapter {
                 this.log.debug("-> SerialNumber");
                 
                 await this.setState("wtuType", "cloud", true);
-
+                this.log.debug("-> wtuType");                
+                
                 await this.setState("SoftwareVersion", judoConv.getInValue(conResult.data.data[0].data[0].data, '1'), true);
+                this.log.debug("-> SoftwareVersion");
                 await this.setState("HardwareVersion", judoConv.getInValue(conResult.data.data[0].data[0].data, '2'), true);
+                this.log.debug("-> HardwareVersion");
                 
                 _da = conResult.data.data[0].data[0].da;
+                this.log.debug("-> _da");
                 _dt = conResult.data.data[0].data[0].dt;             
-
+                this.log.debug("-> _dt");
+                
                 // InstallationDate
                 result = judoConv.getInValue(conResult.data.data[0].data[0].data, '6');  
                 await this.setState("InstallationDate", result, true);
