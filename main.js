@@ -187,6 +187,8 @@ class judoisoftControll extends utils.Adapter {
                 
                 // InstallationDate
                 result = judoConv.getInValue(conResult.data.data[0].data[0].data, '6');  
+                this.log.debug("-> InstallationDate 1" + result);
+
                 await this.setState("InstallationDate", result, true);
                 this.log.debug("-> InstallationDate " + result);
 
