@@ -498,7 +498,7 @@ class judoisoftControll extends utils.Adapter {
            statusURL = baseUrl + "register&command=login&msgnumber=1&name=login&user=" + this.config.user + "&password=" + this.config.password + "&role=customer";
        }
 
-       this.log.debug("getTokenFirst Request: " statusURL);
+       this.log.debug("getTokenFirst Request: " + statusURL);
 
        let tokenObject;
        let token;
