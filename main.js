@@ -500,12 +500,11 @@ class judoisoftControll extends utils.Adapter {
 
        this.log.debug("getTokenFirst Request: " + statusURL);
 
-       let tokenObject;
        let token;
        
         try {       
-            tokenObject = await axios.get(statusURL, { httpsAgent: agent });
-            this.log.debug("getTokenObject: " + JSON.stringify(tokenObject));    
+            const tokenObject = await axios.get(statusURL, { httpsAgent: agent });
+     //       this.log.debug("getTokenObject: " + JSON.stringify(tokenObject));    
            
             if (tokenObject.data.status == 'ok') {                
 
