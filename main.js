@@ -541,7 +541,7 @@ class judoisoftControll extends utils.Adapter {
 
         } catch (err) {
            this.setState("Connection status", "ERROR", true);
-           this.log.debug("getToken: " + JSON.stringify(tokenObject.data));      
+           this.log.debug("getToken ERROR: " + JSON.stringify(tokenObject.data));      
            this.setState('info.connection', false, false);
            return null;
         }
