@@ -157,7 +157,11 @@ class judoisoftControll extends utils.Adapter {
             this.log.debug("-- urlGet " + urlGet);
             
             let conResult = await axios.get(urlGet, { httpsAgent: agent });
+            
+            this.log.debug("-- hier ist es " + JSON.stringify(conResult.data));
 
+            let daten = conResult.data;
+            
             if (conResult.data[0].status !== 'online') {
                 this.log.info("reconnect " + Date.now());
                 _tokenData = await this.getTokenFirst();
@@ -166,28 +170,26 @@ class judoisoftControll extends utils.Adapter {
 
             let result;
 
-            this.log.debug("JSON STRING " + JSON.stringify(conResult));
-            
-            _serialnumber = conResult.data.data[0].serialnumber;
+            _serialnumber = daten.data[0].serialnumber;
             await this.setState("SerialNumber", _serialnumber, true);
             this.log.debug("-> SerialNumber");
 
-            await this.setState("SoftwareVersion", judoConv.getInValue(conResult.data.data[0].data[0].data, '1'), true);
+            await this.setState("SoftwareVersion", judoConv.getInValue(daten.data[0].data[0].data, '1'), true);
             this.log.debug("-> SoftwareVersion");
-            await this.setState("HardwareVersion", judoConv.getInValue(conResult.data.data[0].data[0].data, '2'), true);
+            await this.setState("HardwareVersion", judoConv.getInValue(daten.data[0].data[0].data, '2'), true);
             this.log.debug("-> HardwareVersion");
 
-            _da = conResult.data.data[0].data[0].da;
-            this.log.debug("-> _da");
-            _dt = conResult.data.data[0].data[0].dt;             
-            this.log.debug("-> _dt");
+            _da = daten.data[0].data[0].da;
+            this.log.debug("-> _da " + _da);
+            _dt = daten.data[0].data[0].dt;
+            this.log.debug("-> _dt " + _dt);
 
             // InstallationDate
-            result = judoConv.getInValue(conResult.data.data[0].data[0].data, '6');  
-            this.log.debug("-> InstallationDate 1" + result);
-
-            await this.setState("InstallationDate", result, true);
+            result = judoConv.getInValue(daten.data[0].data[0].data, '6');  
+//            result = daten.data[0].installation_date;
             this.log.debug("-> InstallationDate " + result);
+            await this.setState("InstallationDate", result, true);
+            
 
             // service
             result = judoConv.getInValue(conResult.data.data[0].data[0].data, '6').split(':')[0];
