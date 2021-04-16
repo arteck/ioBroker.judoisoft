@@ -19,7 +19,7 @@ let interval = 0;
 let requestTimeout = null;
 
 
-axios.defaults.timeout = 10000;   // timeout 10 sec
+axios.defaults.timeout = 5000;   // timeout 10 sec
 
 // At request level
 const agent = new https.Agent({  
@@ -153,7 +153,10 @@ class judoisoftControll extends utils.Adapter {
 
         try {
             // check data
-            let conResult = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data", { httpsAgent: agent });
+            const urlGet = baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data";
+            this.log.debug("-- urlGet " + urlGet);
+            
+            let conResult = await axios.get(urlGet, { httpsAgent: agent });
 
             if (conResult.data.status !== 'online') {
                 this.log.info("reconnect " + Date.now());
