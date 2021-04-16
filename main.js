@@ -157,7 +157,7 @@ class judoisoftControll extends utils.Adapter {
 
             let conResult = await axios.get(urlGet, { httpsAgent: agent });
 
-            if (conResult.status = 200) {
+            if (conResult.status = 200) {  // der wird evtl. nicht gebraucht
                 if (conResult.data.status == 'online' || conResult.data.status == 'ok') {
                     this.log.debug("all fine " + conResult.data);
                 } else {
@@ -506,7 +506,7 @@ class judoisoftControll extends utils.Adapter {
        try {
             const tokenObject = await axios.get(statusURL, { httpsAgent: agent });
 
-            if (tokenObject.status = 200) {
+            if (tokenObject.status = 200) {  // der wird evtl. nicht gebraucht
                 if (tokenObject.data.status == 'online' || tokenObject.data.status == 'ok') {
 
                     token = tokenObject.data.token;
