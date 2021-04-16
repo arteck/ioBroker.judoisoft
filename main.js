@@ -532,7 +532,7 @@ class judoisoftControll extends utils.Adapter {
                         await this.setState("Connection status", conResult.data.status, true);
                     }
                 } else {
-                    token = 'error';
+                    token = null;
                 }
                 return token;
             } else {
