@@ -168,6 +168,8 @@ class judoisoftControll extends utils.Adapter {
         
             if (conResult.data.status == 'ok') {
                 
+                this.log.debug("-JSON " JSON.stringify(conResult));
+                
                 _serialnumber = conResult.data.data[0].serialnumber;
                 await this.setState("SerialNumber", _serialnumber, true);
                 this.log.debug("-> SerialNumber");
