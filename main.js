@@ -154,125 +154,123 @@ class judoisoftControll extends utils.Adapter {
         try {
             // check data
             const urlGet = baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data";
-            this.log.debug("-- urlGet " + urlGet);
-            
+
             let conResult = await axios.get(urlGet, { httpsAgent: agent });
-            
-            this.log.debug("-- hier ist es " + JSON.stringify(conResult.data));
 
-            let daten = conResult.data;
-            
-            if (conResult.data[0].status !== 'online') {
-                this.log.info("reconnect " + Date.now());
-                _tokenData = await this.getTokenFirst();
-                conResult = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data", { httpsAgent: agent });
-            }
-
-            let result;
-
-            _serialnumber = daten.data[0].serialnumber;
-            await this.setState("SerialNumber", _serialnumber, true);
-            this.log.debug("-> SerialNumber");
-
-            await this.setState("SoftwareVersion", judoConv.getInValue(daten.data[0].data[0].data, '1'), true);
-            this.log.debug("-> SoftwareVersion");
-            await this.setState("HardwareVersion", judoConv.getInValue(daten.data[0].data[0].data, '2'), true);
-            this.log.debug("-> HardwareVersion");
-
-            _da = daten.data[0].data[0].da;
-            this.log.debug("-> _da " + _da);
-            _dt = daten.data[0].data[0].dt;
-            this.log.debug("-> _dt " + _dt);
-
-            // InstallationDate
-            result = judoConv.getInValue(daten.data[0].data[0].data, '6');  
-//            result = daten.data[0].installation_date;
-            this.log.debug("-> InstallationDate " + result);
-            await this.setState("InstallationDate", result, true);
-            
-
-            // service
-            result = judoConv.getInValue(conResult.data.data[0].data[0].data, '6').split(':')[0];
-            await this.setState("ServiceDays", result, true);
-            this.log.debug("-> ServiceDays " + result);
-
-            await this.setState("Connection status", conResult.data.data[0].status, true);
-
-            //Maintenance
-            result = judoConv.getInValue(conResult.data.data[0].data[0].data, '7').split(':')[0];
-            await this.setState(`Maintenance`, result, true);
-            this.log.debug("-> Maintenance " + result);
-
-            //WaterTotal
-            result = judoConv.getInValue(conResult.data.data[0].data[0].data, '8');
-            await this.setState(`WaterTotal`, result, true);                
-
-            result = judoConv.getInValue(conResult.data.data[0].data[0].data, '9');
-            await this.setState(`WaterTotalOut`, result, true);
-            this.log.debug("-> WaterTotal");                                
-
-            //SaltRange
-            result = judoConv.getInValue(conResult.data.data[0].data[0].data, '94');
-            let salzstand_rounded = 0;
-            let reichweite = 0;
-            let salzstand = 0;
-
-            if (result.indexOf(':') > -1) {
-                reichweite = Math.round(result.split(':')[1]);             
-                salzstand = result.split(':')[0] / 1000;
-                salzstand_rounded = parseInt(5 * Math.ceil(salzstand / 5));
-
-                if (reichweite > 1) {
-                    await this.setState(`SaltRange`, reichweite, true);
-                } else {                        
-                    await this.setState(`SaltRange`, salzstand_rounded, true);
+            if (conResult.status = 200) {
+                if (conResult.data.status == 'online' || conResult.data.status == 'ok') {
+                    this.log.debug("all fine " + conResult.data);
+                } else {
+                    this.log.info("reconnect " + Date.now());
+                    _tokenData = await this.getTokenFirst();
+                    conResult = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data", {httpsAgent: agent});
                 }
-            }                
 
-            this.log.debug("-> SaltRange");
+                let result;
 
-            // NaturalHardness
-        //    result = parseInt(judoConv.getInValue(conResult.data.data[0].data[0].data, '790_26')/2)+2;
-            result = 0;
-            await this.setState(`NaturalHardness`, result, true);
-            this.log.debug("-> NaturalHardness");                
+                _serialnumber = conResult.data.data[0].serialnumber;
+                await this.setState("SerialNumber", _serialnumber, true);
+                this.log.debug("-> SerialNumber");
 
-            //ResidualHardness
-            result = judoConv.getInValue(conResult.data.data[0].data[0].data, '790_8');
-            await this.setState(`ResidualHardness`, result, true);
-            this.log.debug("-> ResidualHardness");             
+                await this.setState("SoftwareVersion", judoConv.getInValue(conResult.data.data[0].data[0].data, '1'), true);
+                this.log.debug("-> SoftwareVersion");
+                await this.setState("HardwareVersion", judoConv.getInValue(conResult.data.data[0].data[0].data, '2'), true);
+                this.log.debug("-> HardwareVersion");
 
-            //SaltQuantity                  
-            let sq = salzstand_rounded * 100 / 50;  
-            if (sq > 100) sq = 100;
+                _da = conResult.data.data[0].data[0].da;
+                this.log.debug("-> _da " + _da);
+                _dt = conResult.data.data[0].data[0].dt;
+                this.log.debug("-> _dt " + _dt);
 
-            await this.setState(`SaltQuantity`, sq, true);
-            this.log.debug("-> SaltQuantity");
+                // InstallationDate
+                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '6');
+//            result = daten.data[0].installation_date;
+                this.log.debug("-> InstallationDate " + result);
+                await this.setState("InstallationDate", result, true);
 
-            //WaterCurrent
-            result = judoConv.getInValue(conResult.data.data[0].data[0].data, '790_1617');
-            await this.setState(`WaterCurrent`, result, true);
-            this.log.debug("-> WaterCurrent");
 
-            //StandByValue
-            result = judoConv.getInValue(conResult.data.data[0].data[0].data, '792_9');
-            await this.setState(`StandByValue`, result, true);
-            this.log.debug("-> StandByValue" + result);               
+                // service
+                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '6').split(':')[0];
+                await this.setState("ServiceDays", result, true);
+                this.log.debug("-> ServiceDays " + result);
 
-            //Battery
-            result = judoConv.getInValue(conResult.data.data[0].data[0].data, '93');    
-            if (result && result.toString().indexOf(":") > -1) {
-                let batt = result.split(":");                
-                await this.setState(`Battery`, batt[0], true);
-                this.log.debug("-> Battery" + batt[0]);   
+                await this.setState("Connection status", conResult.data.data[0].status, true);
+
+                //Maintenance
+                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '7').split(':')[0];
+                await this.setState(`Maintenance`, result, true);
+                this.log.debug("-> Maintenance " + result);
+
+                //WaterTotal
+                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '8');
+                await this.setState(`WaterTotal`, result, true);
+
+                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '9');
+                await this.setState(`WaterTotalOut`, result, true);
+                this.log.debug("-> WaterTotal");
+
+                //SaltRange
+                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '94');
+                let salzstand_rounded = 0;
+                let reichweite = 0;
+                let salzstand = 0;
+
+                if (result.indexOf(':') > -1) {
+                    reichweite = Math.round(result.split(':')[1]);
+                    salzstand = result.split(':')[0] / 1000;
+                    salzstand_rounded = parseInt(5 * Math.ceil(salzstand / 5));
+
+                    if (reichweite > 1) {
+                        await this.setState(`SaltRange`, reichweite, true);
+                    } else {
+                        await this.setState(`SaltRange`, salzstand_rounded, true);
+                    }
+                }
+
+                this.log.debug("-> SaltRange");
+
+                // NaturalHardness
+                //    result = parseInt(judoConv.getInValue(conResult.data.data[0].data[0].data, '790_26')/2)+2;
+                result = 0;
+                await this.setState(`NaturalHardness`, result, true);
+                this.log.debug("-> NaturalHardness");
+
+                //ResidualHardness
+                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '790_8');
+                await this.setState(`ResidualHardness`, result, true);
+                this.log.debug("-> ResidualHardness");
+
+                //SaltQuantity
+                let sq = salzstand_rounded * 100 / 50;
+                if (sq > 100) sq = 100;
+
+                await this.setState(`SaltQuantity`, sq, true);
+                this.log.debug("-> SaltQuantity");
+
+                //WaterCurrent
+                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '790_1617');
+                await this.setState(`WaterCurrent`, result, true);
+                this.log.debug("-> WaterCurrent");
+
+                //StandByValue
+                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '792_9');
+                await this.setState(`StandByValue`, result, true);
+                this.log.debug("-> StandByValue" + result);
+
+                //Battery
+                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '93');
+                if (result && result.toString().indexOf(":") > -1) {
+                    let batt = result.split(":");
+                    await this.setState(`Battery`, batt[0], true);
+                    this.log.debug("-> Battery" + batt[0]);
+                }
+
+                await this.setState("lastInfoUpdate", Date.now(), true);
+
+                requestTimeout = setTimeout(async () => {
+                    this.getInfosCloud();
+                }, interval);
             }
-
-            await this.setState("lastInfoUpdate", Date.now(), true);   
-
-            requestTimeout = setTimeout(async () => {
-                this.getInfosCloud();
-            }, interval);
-
         } catch (err) {
             this.setState('info.connection', false, true);
             this.log.error('getInfosCloud ERROR ' + JSON.stringify(err));
@@ -505,32 +503,36 @@ class judoisoftControll extends utils.Adapter {
 
        let token;
        
-        try {       
+       try {
             const tokenObject = await axios.get(statusURL, { httpsAgent: agent });
-           
-            if (tokenObject.data.status == 'ok') {                
 
-                token = tokenObject.data.token;
+            if (tokenObject.status = 200) {
+                if (tokenObject.data.status == 'online' || tokenObject.data.status == 'ok') {
 
-                await this.setState("token", token, true);
+                    token = tokenObject.data.token;
 
-                 //Serial only local           
-                if (!this.config.cloud) {
-                    const serResult = await axios.get(baseUrl + "register&command=show&msgnumber=2&token=" + token, {httpsAgent: agent});
+                    await this.setState("token", token, true);
 
-                    this.log.debug("getSerialnumber : " + JSON.stringify(serResult.data));
+                    //Serial only local
+                    if (!this.config.cloud) {
+                        const serResult = await axios.get(baseUrl + "register&command=show&msgnumber=2&token=" + token, {httpsAgent: agent});
 
-                    const wtuType = serResult.data.data[0]["wtuType"];
-                    const serialN = serResult.data.data[0]["serial number"];
+                        this.log.debug("getSerialnumber : " + JSON.stringify(serResult.data));
 
-                    await this.setState("wtuType", wtuType, true);
-                    await this.setState("SerialNumber", serialN, true);
+                        const wtuType = serResult.data.data[0]["wtuType"];
+                        const serialN = serResult.data.data[0]["serial number"];
 
-                    //Connect
-                    const conResult = await axios.get(baseUrl + "register&command=connect&msgnumber=1&token=" + token + "&parameter=" + wtuType + "&serial%20number=" + serialN, {httpsAgent: agent});
-                    this.log.debug("connect Result: " + JSON.stringify(conResult.data));
+                        await this.setState("wtuType", wtuType, true);
+                        await this.setState("SerialNumber", serialN, true);
 
-                    await this.setState("Connection status", conResult.data.status, true);                    
+                        //Connect
+                        const conResult = await axios.get(baseUrl + "register&command=connect&msgnumber=1&token=" + token + "&parameter=" + wtuType + "&serial%20number=" + serialN, {httpsAgent: agent});
+                        this.log.debug("connect Result: " + JSON.stringify(conResult.data));
+
+                        await this.setState("Connection status", conResult.data.status, true);
+                    }
+                } else {
+                    token = 'error';
                 }
                 return token;
             } else {
@@ -540,11 +542,11 @@ class judoisoftControll extends utils.Adapter {
                 return null;
             }            
 
-        } catch (err) {
+       } catch (err) {
            this.setState("Connection status", "ERROR", true);
            this.setState('info.connection', false, false);
            return null;
-        }
+       }
    }
 
    async create_state() {
