@@ -172,9 +172,6 @@ class judoisoftControll extends utils.Adapter {
                 await this.setState("SerialNumber", _serialnumber, true);
                 this.log.debug("-> SerialNumber");
                 
-                await this.setState("wtuType", "cloud", true);
-                this.log.debug("-> wtuType");                
-                
                 await this.setState("SoftwareVersion", judoConv.getInValue(conResult.data.data[0].data[0].data, '1'), true);
                 this.log.debug("-> SoftwareVersion");
                 await this.setState("HardwareVersion", judoConv.getInValue(conResult.data.data[0].data[0].data, '2'), true);
@@ -879,7 +876,19 @@ class judoisoftControll extends utils.Adapter {
                 unit: 'm3'
             },
             native: {},
-            });       
+            });    
+
+            await this.extendObjectAsync(`wtuType`, {
+            type: 'state',
+            common: {
+                name: `wtuType`,
+                type: 'string',
+                read: true,
+                write: false,
+                role: 'info'
+            },
+            native: {},
+        });    
         }
        
        
@@ -922,19 +931,7 @@ class judoisoftControll extends utils.Adapter {
                 role: 'info'
             },
             native: {},
-        });
-       
-        await this.extendObjectAsync(`wtuType`, {
-            type: 'state',
-            common: {
-                name: `wtuType`,
-                type: 'string',
-                read: true,
-                write: false,
-                role: 'info'
-            },
-            native: {},
-        });       
+        });         
        
         await this.extendObjectAsync(`Connection status`, {
             type: 'state',
