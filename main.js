@@ -768,7 +768,9 @@ class judoisoftControll extends utils.Adapter {
                 write: true,
                 def: 0,
                 role: 'info',
-                unit: '°dH'
+                unit: '°dH',
+                min: 0,
+                max: 12
             },
             native: {},
         });
