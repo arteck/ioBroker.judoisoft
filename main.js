@@ -138,7 +138,7 @@ class judoisoftControll extends utils.Adapter {
             await this.setState("HardwareVersion", responses[1].data.data, true);
             
             const inst = await this.timeConverter(responses[2].data.data);
-            await this.setState("InstallationDate", Number(inst), true);
+            await this.setState("InstallationDate", inst, true);
             
             const serv = await this.timeConverter(responses[3].data.data);
             await this.setState("ServiceDate", Number(serv), true);
@@ -169,7 +169,7 @@ class judoisoftControll extends utils.Adapter {
                 let result;
 
                 _serialnumber = conResult.data.data[0].serialnumber;
-                await this.setState("SerialNumber", Number(_serialnumber), true);
+                await this.setState("SerialNumber", _serialnumber, true);
                 this.log.debug("-> SerialNumber");
 
                 await this.setState("SoftwareVersion", judoConv.getInValue(conResult.data.data[0].data[0].data, '1'), true);
@@ -186,7 +186,7 @@ class judoisoftControll extends utils.Adapter {
                 result = judoConv.getInValue(conResult.data.data[0].data[0].data, '6');
 //            result = daten.data[0].installation_date;
                 this.log.debug("-> InstallationDate " + result);
-                await this.setState("InstallationDate", Number(result), true);
+                await this.setState("InstallationDate", result, true);
 
 
                 // service
@@ -523,7 +523,7 @@ class judoisoftControll extends utils.Adapter {
                         const serialN = serResult.data.data[0]["serial number"];
 
                         await this.setState("wtuType", wtuType, true);
-                        await this.setState("SerialNumber", Number(serialN), true);
+                        await this.setState("SerialNumber", serialN, true);
 
                         //Connect
                         const conResult = await axios.get(baseUrl + "register&command=connect&msgnumber=1&token=" + token + "&parameter=" + wtuType + "&serial%20number=" + serialN, {httpsAgent: agent});
@@ -580,7 +580,7 @@ class judoisoftControll extends utils.Adapter {
             type: 'state',
             common: {
                 name: `InstallationDate`,
-                type: 'number',
+                type: 'string',
                 role: 'value.time',
                 read: true,
                 write: false
@@ -928,7 +928,7 @@ class judoisoftControll extends utils.Adapter {
             type: 'state',
             common: {
                 name: `SerialNumber`,
-                type: 'number',
+                type: 'string',
                 read: true,
                 write: false,
                 role: 'info'
