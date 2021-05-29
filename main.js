@@ -138,7 +138,7 @@ class judoisoftControll extends utils.Adapter {
             await this.setState("HardwareVersion", responses[1].data.data, true);
             
             const inst = await this.timeConverter(responses[2].data.data);
-            await this.setState("InstallationDate", inst, true);
+            await this.setState("InstallationDate", Number(inst), true);
             
             const serv = await this.timeConverter(responses[3].data.data);
             await this.setState("ServiceDate", Number(serv), true);
