@@ -141,7 +141,7 @@ class judoisoftControll extends utils.Adapter {
             await this.setState("InstallationDate", inst, true);
             
             const serv = await this.timeConverter(responses[3].data.data);
-            await this.setState("ServiceDate", serv, true);
+            await this.setState("ServiceDate", Number(serv), true);
                        
         } catch (err) {
             this.log.debug('getInfoStaticLocal ERROR' + JSON.stringify(err));
@@ -169,7 +169,7 @@ class judoisoftControll extends utils.Adapter {
                 let result;
 
                 _serialnumber = conResult.data.data[0].serialnumber;
-                await this.setState("SerialNumber", _serialnumber, true);
+                await this.setState("SerialNumber", Number(_serialnumber), true);
                 this.log.debug("-> SerialNumber");
 
                 await this.setState("SoftwareVersion", judoConv.getInValue(conResult.data.data[0].data[0].data, '1'), true);
@@ -186,7 +186,7 @@ class judoisoftControll extends utils.Adapter {
                 result = judoConv.getInValue(conResult.data.data[0].data[0].data, '6');
 //            result = daten.data[0].installation_date;
                 this.log.debug("-> InstallationDate " + result);
-                await this.setState("InstallationDate", result, true);
+                await this.setState("InstallationDate", Number(result), true);
 
 
                 // service
@@ -254,7 +254,7 @@ class judoisoftControll extends utils.Adapter {
 
                 //StandByValue
                 result = judoConv.getInValue(conResult.data.data[0].data[0].data, '792_9');
-                await this.setState(`StandByValue`, result, true);
+                await this.setState(`StandByValue`, Number(result), true);
                 this.log.debug("-> StandByValue" + result);
 
                 //Battery
@@ -316,7 +316,7 @@ class judoisoftControll extends utils.Adapter {
                 let sq = result.data.data;
                 sq = Math.round((sq/50000)*100);
                     
-                await this.setState(`SaltQuantity`, sq, true);
+                await this.setState(`SaltQuantity`, Number(sq), true);
                 this.log.debug("-> SaltQuantity");
                 
                 //WaterAverage
@@ -336,7 +336,7 @@ class judoisoftControll extends utils.Adapter {
 
                 //Quantity
                 result = await axios.get(baseUrl + "waterstop&command=quantity&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });                             
-                await this.setState(`Quantity`, result.data.data, true);
+                await this.setState(`Quantity`, Number(result.data.data), true);
                 this.log.debug("-> Quantity");
                 
                 //WaterTotal
@@ -373,7 +373,7 @@ class judoisoftControll extends utils.Adapter {
                 if (!_pauseStandBy) {
                     //StandBy
                     result = await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });
-                    await this.setState(`StandByValue`, result.data.data, true);                                   
+                    await this.setState(`StandByValue`, Number(result.data.data), true);                                   
                     this.log.debug("-> StandBy");
                     _pauseStandBy = false;
                 }
@@ -476,7 +476,7 @@ class judoisoftControll extends utils.Adapter {
                 }
                 //StandByValue
                 const valSt = await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });
-                await this.setState(`StandByValue`, valSt.data.data, true);
+                await this.setState(`StandByValue`, Number(valSt.data.data), true);
                 _pauseStandBy = false;
                 
                 break; 
