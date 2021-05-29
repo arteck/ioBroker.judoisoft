@@ -249,7 +249,7 @@ class judoisoftControll extends utils.Adapter {
 
                 //WaterCurrent
                 result = judoConv.getInValue(conResult.data.data[0].data[0].data, '790_1617');
-                await this.setState(`WaterCurrent`, result, true);
+                await this.setState(`WaterCurrent`, Number(result), true);
                 this.log.debug("-> WaterCurrent");
 
                 //StandByValue
@@ -296,8 +296,8 @@ class judoisoftControll extends utils.Adapter {
                 //WaterCurrent
                 result = await axios.get(baseUrl + "consumption&command=water%20current&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });
                 let splWassCur = result.data.data.split(" ");
-                await this.setState(`WaterCurrent`, splWassCur[0], true);
-                await this.setState(`WaterCurrentOut`, splWassCur[1], true);                               
+                await this.setState(`WaterCurrent`, Number(splWassCur[0]), true);
+                await this.setState(`WaterCurrentOut`, Number(splWassCur[1]), true);                               
                 this.log.debug("-> WaterCurrent");
                                
                 //ResidualHardness
