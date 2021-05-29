@@ -141,7 +141,7 @@ class judoisoftControll extends utils.Adapter {
             await this.setState("InstallationDate", inst, true);
             
             const serv = await this.timeConverter(responses[3].data.data);
-            await this.setState("ServiceDate", Number(serv), true);
+            await this.setState("ServiceDate", serv, true);
                        
         } catch (err) {
             this.log.debug('getInfoStaticLocal ERROR' + JSON.stringify(err));
@@ -605,7 +605,7 @@ class judoisoftControll extends utils.Adapter {
                 type: 'state',
                 common: {
                     name: `ServiceDate`,
-                    type: 'number',
+                    type: 'string',
                     role: 'value.time',
                     read: true,
                     write: false
