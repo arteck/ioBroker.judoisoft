@@ -94,7 +94,7 @@
     ],
     "icon": "judo.png",
     "extIcon": "https://raw.githubusercontent.com/arteck/ioBroker.judoisoft/master/admin/judo.png",
-    "type": "hardware",
+    "type": "household",
     "singletonHost": false,
     "logTransporter": true,   
     "main": "main.js",
