@@ -144,7 +144,7 @@ class judoisoftControll extends utils.Adapter {
             await this.setState("ServiceDate", serv, true);
                        
         } catch (err) {
-            this.log.debug('getInfoStaticLocal ERROR' + JSON.stringify(err));
+            this.log.debug('getInfoStaticLocal ERROR');
         }
     }
 
@@ -273,7 +273,7 @@ class judoisoftControll extends utils.Adapter {
             }
         } catch (err) {
             this.setState('info.connection', false, true);
-            this.log.error('getInfosCloud ERROR ' + JSON.stringify(err));
+            this.log.error('getInfosCloud ERROR ');
         }
     }
 
@@ -402,7 +402,7 @@ class judoisoftControll extends utils.Adapter {
 
         } catch (err) {
             this.setState('info.connection', false, true);
-            this.log.error('getInfos ERROR ' + JSON.stringify(err));
+            this.log.error('getInfos ERROR ');
         }
     }
 
