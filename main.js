@@ -116,36 +116,29 @@ class judoisoftControll extends utils.Adapter {
 
     async getInfoStaticLocal() {
         this.log.debug("get Information Static Local");
+        
+        const axreq1 = axios.get(baseUrl + "version&command=software%20version&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //SoftwareVersion
+        const axreq2 = axios.get(baseUrl + "version&command=hardware%20version&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //HardwareVersion
+        const axreq3 = axios.get(baseUrl + "contract&command=init%20date&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //InstallationDate
+        const axreq4 = axios.get(baseUrl + "contract&command=service%20date&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //ServiceDate
 
-        try {
-                       
-            const responses = await axios.all([
-                    //SoftwareVersion
-                await axios.get(baseUrl + "version&command=software%20version&msgnumber=1&token=" + _tokenData, { httpsAgent: agent }),
-                    //HardwareVersion
-                await axios.get(baseUrl + "version&command=hardware%20version&msgnumber=1&token=" + _tokenData, { httpsAgent: agent }),
-                    //InstallationDate
-                await axios.get(baseUrl + "contract&command=init%20date&msgnumber=1&token=" + _tokenData, { httpsAgent: agent }),
-                    //ServiceDate
-                await  axios.get(baseUrl + "contract&command=service%20date&msgnumber=1&token=" + _tokenData, { httpsAgent: agent })               
-            ]);
+        await axios.all([axreq1, axreq2, axreq3, axreq4]).then(axios.spread(function(res1, res2, res3, res4) {
 
-            for (const key in responses) {
-                this.log.debug("get Information Static " + key + " " + JSON.stringify(responses[key].data))
-            }
+            this.log.debug(res1);
+            this.log.debug(res2);
+            this.log.debug(res3);
+            this.log.debug(res3);
 
-            await this.setState("SoftwareVersion", responses[0].data.data, true);
-            await this.setState("HardwareVersion", responses[1].data.data, true);
-            
-            const inst = await this.timeConverter(responses[2].data.data);
+            await this.setState("SoftwareVersion", res1.data.data, true);
+            await this.setState("HardwareVersion", res2.data.data, true);
+
+            const inst = await this.timeConverter(res3.data.data);
             await this.setState("InstallationDate", inst, true);
-            
-            const serv = await this.timeConverter(responses[3].data.data);
-            await this.setState("ServiceDate", serv, true);
-                       
-        } catch (err) {
-            this.log.debug('getInfoStaticLocal ERROR');
-        }
+
+            const serv = await this.timeConverter(res4.data.data);
+            await this.setState("ServiceDate", serv, true);                                   
+
+        }));  
     }
 
     async getInfosCloud() {
