@@ -122,7 +122,7 @@ class judoisoftControll extends utils.Adapter {
         const axreq2 = await axios.get(baseUrl + "contract&command=init%20date&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //InstallationDate
         const axreq3 = await axios.get(baseUrl + "contract&command=service%20date&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //ServiceDate
 
-        await axios.all([axreq0, axreq1, axreq2, axreq3]).then(axios.spread((...responses) => {
+        await axios.all([axreq0, axreq1, axreq2, axreq3]).then(await axios.spread((...responses) => {
 
                this.log.debug('getInfoStaticLocal ERROR' + JSON.stringify(responses[0]));
             
