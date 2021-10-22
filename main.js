@@ -19,7 +19,7 @@ let interval = 0;
 let requestTimeout = null;
 
 
-axios.defaults.timeout = 5000;   // timeout 10 sec
+axios.defaults.timeout = 1000 * 60;   // timeout 10 sec
 
 // At request level
 const agent = new https.Agent({  
