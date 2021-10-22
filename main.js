@@ -126,14 +126,14 @@ class judoisoftControll extends utils.Adapter {
                 
                this.log.debug('getInfoStaticLocal ERROR' + JSON.stringify(responses[0]));
             
-            await this.setState("SoftwareVersion", responses[0].data.data, true);
-            await this.setState("HardwareVersion", responses[1].data.data, true);
+            this.setState("SoftwareVersion", responses[0].data.data, true);
+            this.setState("HardwareVersion", responses[1].data.data, true);
 
-            const inst = await this.timeConverter(responses[2].data.data);
-            await this.setState("InstallationDate", inst, true);
+            const inst = this.timeConverter(responses[2].data.data);
+            this.setState("InstallationDate", inst, true);
 
-            const serv = await this.timeConverter(responses[3].data.data);
-            await this.setState("ServiceDate", serv, true);                                   
+            const serv = this.timeConverter(responses[3].data.data);
+            this.setState("ServiceDate", serv, true);                                   
 
        })).catch(errors => {
             // react on errors.
