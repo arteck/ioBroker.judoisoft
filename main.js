@@ -117,13 +117,15 @@ class judoisoftControll extends utils.Adapter {
     async getInfoStaticLocal() {
         this.log.debug("get Information Static Local");
         
-        const axreq0 = axios.get(baseUrl + "version&command=software%20version&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //SoftwareVersion
-        const axreq1 = axios.get(baseUrl + "version&command=hardware%20version&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //HardwareVersion
-        const axreq2 = axios.get(baseUrl + "contract&command=init%20date&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //InstallationDate
-        const axreq3 = axios.get(baseUrl + "contract&command=service%20date&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //ServiceDate
+        const axreq0 = await axios.get(baseUrl + "version&command=software%20version&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //SoftwareVersion
+        const axreq1 = await axios.get(baseUrl + "version&command=hardware%20version&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //HardwareVersion
+        const axreq2 = await axios.get(baseUrl + "contract&command=init%20date&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //InstallationDate
+        const axreq3 = await axios.get(baseUrl + "contract&command=service%20date&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //ServiceDate
 
         await axios.all([axreq0, axreq1, axreq2, axreq3]).then(axios.spread((...responses) => {
 
+               this.log.debug('getInfoStaticLocal ERROR' + JSON.stringify(responses[0]));
+            
             await this.setState("SoftwareVersion", responses[0].data.data, true);
             await this.setState("HardwareVersion", responses[1].data.data, true);
 
