@@ -24,7 +24,6 @@
   "dependencies": {
     "@iobroker/adapter-core": "^2.4.0", 
     "md5": "^2.3.0",
-    "axios": "^0.23.0",
     "loglevel": "^1.5.1"
   },
   "devDependencies": {
@@ -39,6 +38,7 @@
     "@types/sinon-chai": "^3.2.4",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
+    "axios": "^0.23.0",
     "eslint": "^7.1.0",
     "gulp": "^4.0.2",
     "mocha": "^7.2.0",
