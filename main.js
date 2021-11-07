@@ -115,10 +115,8 @@ class judoisoftControll extends utils.Adapter {
     }
 
     async getInfoStaticLocal() {
-        this.log.debug("get Information Static Local");      
+         this.log.debug("get Information Static Local");      
 
-         this.log.debug("get Information Static Local");    
-        
          try {
              let resp = await axios.get(baseUrl + "version&command=software%20version&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //SoftwareVersion
              this.setState("SoftwareVersion", resp.data.data, true);            
