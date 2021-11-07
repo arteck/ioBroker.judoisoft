@@ -81,7 +81,8 @@
     "license": "MIT",
     "platform": "Javascript/Node.js",
     "enabled": false,
-    "mode": "daemon",
+    "mode": "schedule",
+    "schedule": "*/1 * * * *",
     "readme": "https://github.com/arteck/ioBroker.judoisoft/blob/master/README.md",
     "loglevel": "info",
     "restartAdapters": [
@@ -99,7 +100,7 @@
     "logTransporter": true,   
     "main": "main.js",
     "connectionType": "local",
-    "dataSource": "push",
+    "dataSource": "poll",
     "dependencies": [
         {
             "js-controller": ">=3.1.0"
