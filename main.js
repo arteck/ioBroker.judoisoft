@@ -388,11 +388,7 @@ class judoisoftControll extends utils.Adapter {
                 await this.setState("lastInfoUpdate", Date.now(), true);   
                 
             } // if _tokenData
-            
-            requestTimeout = setTimeout(async () => {
-                this.getInfosLocal();
-            }, interval);
-
+                    
         } catch (err) {
             this.setState('info.connection', false, true);
             this.log.error('getInfos ERROR ');
