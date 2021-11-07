@@ -115,30 +115,41 @@ class judoisoftControll extends utils.Adapter {
     }
 
     async getInfoStaticLocal() {
-        this.log.debug("get Information Static Local");      
-
-        await axios.all([
-                await axios.get(baseUrl + "version&command=software%20version&msgnumber=1&token=" + _tokenData, { httpsAgent: agent }),   //SoftwareVersion
-                await axios.get(baseUrl + "version&command=hardware%20version&msgnumber=1&token=" + _tokenData, { httpsAgent: agent }),   //HardwareVersion
-                await axios.get(baseUrl + "contract&command=init%20date&msgnumber=1&token=" + _tokenData, { httpsAgent: agent }),   //InstallationDate
-                await axios.get(baseUrl + "contract&command=service%20date&msgnumber=1&token=" + _tokenData, { httpsAgent: agent })   //ServiceDate            
-        ]).then(axios.spread((...responses) => {
-                
-               this.log.debug('getInfoStaticLocal ERROR' + JSON.stringify(responses[0]));
-            
-            this.setState("SoftwareVersion", responses[0].data.data, true);
-            this.setState("HardwareVersion", responses[1].data.data, true);
-
-            const inst = this.timeConverter(responses[2].data.data);
-            this.setState("InstallationDate", inst, true);
-
-            const serv = this.timeConverter(responses[3].data.data);
-            this.setState("ServiceDate", serv, true);                                   
-
-       })).catch(errors => {
-            // react on errors.
-            this.log.debug('getInfoStaticLocal ERROR');
-       });
+        this.log.debug("get Information Static Local");    
+        
+         try {
+             let resp = await axios.get(baseUrl + "version&command=software%20version&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //SoftwareVersion
+             this.setState("SoftwareVersion", resp.data.data, true);            
+             this.log.debug('SoftwareVersion' + JSON.stringify(resp));
+         } catch (err) {
+            this.log.error('SoftwareVersion ERROR ');
+         }    
+        
+         try {
+             resp = await axios.get(baseUrl + "version&command=hardware%20version&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //HardwareVersion
+             this.setState("HardwareVersion", resp.data.data, true);
+             this.log.debug('HardwareVersion' + JSON.stringify(resp));
+         } catch (err) {
+            this.log.error('HardwareVersion ERROR ');
+         }   
+        
+         try {  
+             resp = await axios.get(baseUrl + "contract&command=init%20date&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //InstallationDate
+             this.log.debug('InstallationDate' + JSON.stringify(resp));
+             const inst = this.timeConverter(resp.data.data);
+             this.setState("InstallationDate", inst, true);       
+         } catch (err) {
+            this.log.error('InstallationDate ERROR ');
+         }       
+        
+         try {
+             resp = await axios.get(baseUrl + "contract&command=service%20date&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //ServiceDate
+             this.log.debug('ServiceDate' + JSON.stringify(resp));
+             const serv = this.timeConverter(resp.data.data);
+             this.setState("ServiceDate", serv, true);                       
+         } catch (err) {
+            this.log.error('ServiceDate ERROR ');
+         }                             
     }
 
     async getInfosCloud() {
