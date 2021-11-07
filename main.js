@@ -127,7 +127,7 @@ class judoisoftControll extends utils.Adapter {
         
          try {
              resp = await axios.get(baseUrl + "version&command=hardware%20version&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //HardwareVersion
-             this.setState("HardwareVersion", resp.data true);
+             this.setState("HardwareVersion", resp.data, true);
              this.log.debug('HardwareVersion' + JSON.stringify(resp));
          } catch (err) {
             this.log.error('HardwareVersion ERROR ');
