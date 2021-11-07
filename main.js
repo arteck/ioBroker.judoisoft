@@ -527,8 +527,11 @@ class judoisoftControll extends utils.Adapter {
                         const serialN = serResult.data.data[0]["serial number"];
 
                         await this.setState("wtuType", wtuType, true);
+                        this.log.debug("getwtuType" + wtuType); 
+                        
                         await this.setState("SerialNumber", serialN, true);
-
+                        this.log.debug("getserialN" + serialN);
+                        
                         //Connect
                         const conResult = await axios.get(baseUrl + "register&command=connect&msgnumber=1&token=" + token + "&parameter=" + wtuType + "&serial%20number=" + serialN, {httpsAgent: agent});
                         this.log.debug("connect Result: " + JSON.stringify(conResult.data));
