@@ -118,34 +118,34 @@ class judoisoftControll extends utils.Adapter {
         this.log.debug("get Information Static Local");    
         
          try {
-             let resp = await axios.get(baseUrl + "version&command=software%20version&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //SoftwareVersion
-             this.setState("SoftwareVersion", resp.data.data, true);            
+             const soft = await axios.get(baseUrl + "version&command=software%20version&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //SoftwareVersion
+             this.setState("SoftwareVersion", soft.data.data, true);            
          //    this.log.debug('SoftwareVersion' + JSON.stringify(resp.data));
          } catch (err) {
             this.log.error('SoftwareVersion ERROR ');
          }    
         
          try {
-             resp = await axios.get(baseUrl + "version&command=hardware%20version&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //HardwareVersion
-             this.setState("HardwareVersion", resp.data.data, true);
+             const hard = await axios.get(baseUrl + "version&command=hardware%20version&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //HardwareVersion
+             this.setState("HardwareVersion", hard.data.data, true);
          //    this.log.debug('HardwareVersion' + JSON.stringify(resp.data));
          } catch (err) {
             this.log.error('HardwareVersion ERROR ');
          }   
         
          try {  
-             resp = await axios.get(baseUrl + "contract&command=init%20date&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //InstallationDate
+             const instDat = await axios.get(baseUrl + "contract&command=init%20date&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //InstallationDate
          //    this.log.debug('InstallationDate' + JSON.stringify(resp.data));
-             const inst = this.timeConverter(resp.data.data);
+             const inst = this.timeConverter(instDat.data.data);
              this.setState("InstallationDate", inst, true);       
          } catch (err) {
             this.log.error('InstallationDate ERROR ');
          }       
         
          try {
-             resp = await axios.get(baseUrl + "contract&command=service%20date&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //ServiceDate
+             const servDat = await axios.get(baseUrl + "contract&command=service%20date&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //ServiceDate
          //    this.log.debug('ServiceDate' + JSON.stringify(resp.data));
-             const serv = this.timeConverter(resp.data.data);
+             const serv = this.timeConverter(servDat.data.data);
              this.setState("ServiceDate", serv, true);                       
          } catch (err) {
             this.log.error('ServiceDate ERROR ');
