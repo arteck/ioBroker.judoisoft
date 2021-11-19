@@ -137,7 +137,6 @@ class judoisoftControll extends utils.Adapter {
              const inst = new Date(Number(instDat.data.data) * 1000);
              this.log.debug(JSON.stringify(inst));
 
-
              this.setState("InstallationDate", inst, true);       
          } catch (err) {
             this.log.error('InstallationDate ERROR ');
@@ -588,7 +587,7 @@ class judoisoftControll extends utils.Adapter {
             type: 'state',
             common: {
                 name: `InstallationDate`,
-                type: 'object',
+                type: 'string',
                 role: 'value.time',
                 read: true,
                 write: false
@@ -613,7 +612,7 @@ class judoisoftControll extends utils.Adapter {
                 type: 'state',
                 common: {
                     name: `ServiceDate`,
-                    type: 'object',
+                    type: 'string',
                     role: 'value.time',
                     read: true,
                     write: false
