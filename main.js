@@ -134,7 +134,7 @@ class judoisoftControll extends utils.Adapter {
          try {  
              const instDat = await axios.get(baseUrl + "contract&command=init%20date&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //InstallationDate
          //    const inst = this.timeConverter(Number(instDat.data.data));
-             const inst = new Date(Number(instDat.data.data) * 1000);
+             const inst = new Date(instDat.data.data);
              this.log.debug(JSON.stringify(inst));
 
              this.setState("InstallationDate", JSON.stringify(inst), true);       
@@ -145,7 +145,7 @@ class judoisoftControll extends utils.Adapter {
          try {
              const servDat = await axios.get(baseUrl + "contract&command=service%20date&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //ServiceDate
           //   const serv = this.timeConverter(Number(servDat.data.data));
-             const serv = new Date(Number(servDat.data.data) * 1000);
+             const serv = new Date(servDat.data.data);
              this.setState("ServiceDate", JSON.stringify(serv), true);                       
          } catch (err) {
             this.log.error('ServiceDate ERROR ');
