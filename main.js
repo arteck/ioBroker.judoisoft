@@ -120,7 +120,6 @@ class judoisoftControll extends utils.Adapter {
          try {
              const soft = await axios.get(baseUrl + "version&command=software%20version&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //SoftwareVersion
              this.setState("SoftwareVersion", soft.data.data, true);            
-             this.log.debug('SoftwareVersion' + JSON.stringify(soft));
          } catch (err) {
             this.log.error('SoftwareVersion ERROR ');
          }    
@@ -128,15 +127,13 @@ class judoisoftControll extends utils.Adapter {
          try {
              const hard = await axios.get(baseUrl + "version&command=hardware%20version&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //HardwareVersion
              this.setState("HardwareVersion", hard.data.data, true);
-             this.log.debug('HardwareVersion' + JSON.stringify(hard));
          } catch (err) {
             this.log.error('HardwareVersion ERROR ');
          }   
         
          try {  
              const instDat = await axios.get(baseUrl + "contract&command=init%20date&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //InstallationDate
-             this.log.debug('InstallationDate' + JSON.stringify(instDat));
-             const inst = this.timeConverter(instDat.data.data);
+             const inst = this.timeConverter(Number(instDat.data.data));
              this.setState("InstallationDate", inst, true);       
          } catch (err) {
             this.log.error('InstallationDate ERROR ');
@@ -144,8 +141,7 @@ class judoisoftControll extends utils.Adapter {
         
          try {
              const servDat = await axios.get(baseUrl + "contract&command=service%20date&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //ServiceDate
-             this.log.debug('ServiceDate' + JSON.stringify(servDat));
-             const serv = this.timeConverter(servDat.data.data);
+             const serv = this.timeConverter(Number(servDat.data.data));
              this.setState("ServiceDate", serv, true);                       
          } catch (err) {
             this.log.error('ServiceDate ERROR ');
