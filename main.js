@@ -583,7 +583,7 @@ class judoisoftControll extends utils.Adapter {
             type: 'state',
             common: {
                 name: `InstallationDate`,
-                type: 'string',
+                type: 'number',
                 role: 'value.time',
                 read: true,
                 write: false
@@ -608,7 +608,7 @@ class judoisoftControll extends utils.Adapter {
                 type: 'state',
                 common: {
                     name: `ServiceDate`,
-                    type: 'string',
+                    type: 'number',
                     role: 'value.time',
                     read: true,
                     write: false
