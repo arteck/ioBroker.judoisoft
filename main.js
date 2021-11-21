@@ -135,8 +135,6 @@ class judoisoftControll extends utils.Adapter {
              const instDat = await axios.get(baseUrl + "contract&command=init%20date&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });   //InstallationDate
          //    const inst = this.timeConverter(Number(instDat.data.data));
              const inst = new Date(Number(instDat.data.data) * 1000);
-             this.log.debug(JSON.stringify(inst));
-
              this.setState("InstallationDate", inst, true);       
          } catch (err) {
             this.log.error('InstallationDate ERROR ');
