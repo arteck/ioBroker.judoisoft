@@ -392,7 +392,6 @@ class judoisoftControll extends utils.Adapter {
                     }
 
                     this.log.debug("-> ValveState");
-                    _pauseValveState = false;
                 }
                 await this.setState("lastInfoUpdate", Date.now(), true);   
                 
