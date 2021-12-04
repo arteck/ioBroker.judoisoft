@@ -410,11 +410,11 @@ class judoisoftControll extends utils.Adapter {
     async setCommandStateCloud(command, state) {
         switch (command) {  
             case 'Regeneration':
-                this.log.debug("set Regeneration " + state);
+                this.log.debug("set Regeneration Cloud" + state);
                 await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=write%20data&serial_number=" + _serialnumber + "&dt=" + _dt + "&index=65&data=&da=" + _da + "&role=customer" , { httpsAgent: agent });                                  
                 break;
             case 'WaterStop':
-                this.log.debug("set WaterStop " + state);
+                this.log.debug("set WaterStop Cloud" + state);
                 _pauseValveState = true;     // fÃ¼r getInfo
                 
                 if (state) {                            
@@ -428,7 +428,7 @@ class judoisoftControll extends utils.Adapter {
 
                 break;  
             case 'StandBy':
-                this.log.debug("set StandBy " + state);
+                this.log.debug("set StandBy Cloud" + state);
                 _pauseStandBy = true;    // fÃ¼r getInfo
                 if (state) {  
                     const val = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=write%20data&serial_number=" + _serialnumber + "&dt=" + _dt + "&index=171&data=&da=" + _da + "&role=customer" , { httpsAgent: agent });                                  
@@ -439,7 +439,7 @@ class judoisoftControll extends utils.Adapter {
                 
                 break; 
             case 'ResidualHardness':
-                this.log.debug("set ResidualHardness " + state);
+                this.log.debug("set ResidualHardness Cloud" + state);
                 const val = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=write%20data&serial_number=" + _serialnumber + "&dt=" + _dt + "&index=60&data=" + state + "&da=" + _da + "&role=customer" , { httpsAgent: agent });                                  
                 break;                
             default:
@@ -451,11 +451,11 @@ class judoisoftControll extends utils.Adapter {
     async setCommandStateLocal(command, state) {
         switch (command) {             
             case 'Regeneration':
-                this.log.debug("set Regeneration " + state);
+                this.log.debug("set Regeneration Local" + state);
                 await axios.get(baseUrl + "settings&command=regeneration&msgnumber=1&token=" + _tokenData + "&parameter=start", { httpsAgent: agent });   
                 break;
             case 'WaterStop':
-                this.log.debug("set WaterStop " + state);
+                this.log.debug("set WaterStop Local" + state);
                 _pauseValveState = true;     // fÃ¼r getInfo
                 if (state) {                            
                     const val = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _tokenData + "&parameter=close", { httpsAgent: agent });
@@ -468,7 +468,7 @@ class judoisoftControll extends utils.Adapter {
 
                 break;   
             case 'StandBy':
-                this.log.debug("set StandBy " + state);
+                this.log.debug("set StandBy Local" + state);
                 _pauseStandBy = true;    // fÃ¼r getInfo
                 if (state) {  
                     await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _tokenData + '&parameter=start', { httpsAgent: agent }); 
@@ -482,7 +482,7 @@ class judoisoftControll extends utils.Adapter {
                 
                 break; 
              case 'ResidualHardness':
-                this.log.debug("set ResidualHardness " + state);
+                this.log.debug("set ResidualHardness Local" + state);
                 await axios.get(baseUrl + "settings&command=residual%20hardness&msgnumber=1&token=" + _tokenData + '&parameter=' + state, { httpsAgent: agent });                                 
                 break;
              default:
