@@ -452,17 +452,31 @@ class judoisoftControll extends utils.Adapter {
         switch (command) {             
             case 'Regeneration':
                 this.log.debug("set Regeneration Local" + state);
-                await axios.get(baseUrl + "settings&command=regeneration&msgnumber=1&token=" + _tokenData + "&parameter=start", { httpsAgent: agent });   
+                try { 
+                    await axios.get(baseUrl + "settings&command=regeneration&msgnumber=1&token=" + _tokenData + "&parameter=start", { httpsAgent: agent });  
+                } catch (err) {
+                    this.log.error("set ResidualHardness Local ERROR");
+                }
                 break;
             case 'WaterStop':
                 this.log.debug("set WaterStop Local" + state);
                 _pauseValveState = true;     // fÃ¼r getInfo
-                if (state) {                            
-                    const val = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _tokenData + "&parameter=close", { httpsAgent: agent });
-                    await this.setState("WaterStopStatus", val.data.parameter, true);
+                if (state) {  
+                    try {                        
+                        const val = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _tokenData + "&parameter=close", { httpsAgent: agent });
+                        await this.setState("WaterStopStatus", val.data.parameter, true);
+                    } catch (err) {
+                        this.setState("WaterStopStatus", 'close', true);
+                        this.log.error("set WaterStopStatus close ERROR");
+                    }                      
                 } else {
-                    const val = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _tokenData + "&parameter=open", { httpsAgent: agent });
-                    await this.setState("WaterStopStatus", val.data.parameter, true);
+                    try { 
+                        const val = await axios.get(baseUrl + "waterstop&command=valve&msgnumber=1&token=" + _tokenData + "&parameter=open", { httpsAgent: agent });
+                        await this.setState("WaterStopStatus", val.data.parameter, true);
+                    } catch (err) {
+                        this.setState("WaterStopStatus", 'open', true);
+                        this.log.error("set WaterStopStatus open ERROR");
+                    }                        
                 }
                 _pauseValveState = false;
 
@@ -471,9 +485,17 @@ class judoisoftControll extends utils.Adapter {
                 this.log.debug("set StandBy Local" + state);
                 _pauseStandBy = true;    // fÃ¼r getInfo
                 if (state) {  
-                    await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _tokenData + '&parameter=start', { httpsAgent: agent }); 
+                    try { 
+                        await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _tokenData + '&parameter=start', { httpsAgent: agent }); 
+                    } catch (err) {
+                        this.log.error("set StandBy Local start ERROR");
+                    }
                 } else {
-                    await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _tokenData + '&parameter=stop', { httpsAgent: agent }); 
+                    try { 
+                        await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _tokenData + '&parameter=stop', { httpsAgent: agent }); 
+                    } catch (err) {
+                        this.log.error("set StandBy Local stop ERROR");
+                    }
                 }
                 //StandByValue
                 const valSt = await axios.get(baseUrl + "waterstop&command=standby&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });
@@ -483,7 +505,11 @@ class judoisoftControll extends utils.Adapter {
                 break; 
              case 'ResidualHardness':
                 this.log.debug("set ResidualHardness Local" + state);
-                await axios.get(baseUrl + "settings&command=residual%20hardness&msgnumber=1&token=" + _tokenData + '&parameter=' + state, { httpsAgent: agent });                                 
+                try { 
+                    await axios.get(baseUrl + "settings&command=residual%20hardness&msgnumber=1&token=" + _tokenData + '&parameter=' + state, { httpsAgent: agent });                                 
+                } catch (err) {
+                    this.log.error("set ResidualHardness Local ERROR");
+                }                    
                 break;
              default:
 
