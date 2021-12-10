@@ -192,16 +192,16 @@ class judoisoftControll extends utils.Adapter {
 
 
                 // service
-                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '6').split(':')[0];
-                await this.setState("ServiceDays", result, true);
-                this.log.debug("-> ServiceDays " + result);
+                let rServiceDays = judoConv.getInValue(conResult.data.data[0].data[0].data, '6').split(':')[0];
+                await this.setState("ServiceDays", Number(rServiceDays), true);
+                this.log.debug("-> ServiceDays " + rServiceDays);
 
                 await this.setState("Connection status", conResult.data.data[0].status, true);
 
                 //Maintenance
-                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '7').split(':')[0];
-                await this.setState(`Maintenance`, result, true);
-                this.log.debug("-> Maintenance " + result);
+                let rMaintenance = judoConv.getInValue(conResult.data.data[0].data[0].data, '7').split(':')[0];
+                await this.setState(`Maintenance`, Number(rMaintenance), true);
+                this.log.debug("-> Maintenance " + rMaintenance);
 
                 //WaterTotal
                 result = judoConv.getInValue(conResult.data.data[0].data[0].data, '8');
