@@ -188,7 +188,7 @@ class judoisoftControll extends utils.Adapter {
                 result = judoConv.getInValue(conResult.data.data[0].data[0].data, '6');
 //            result = daten.data[0].installation_date;
                 this.log.debug("-> InstallationDate " + result);
-                await this.setState("InstallationDate", result, true);
+                await this.setState("InstallationDate", Number(result), true);
 
 
                 // service
@@ -263,7 +263,7 @@ class judoisoftControll extends utils.Adapter {
                 result = judoConv.getInValue(conResult.data.data[0].data[0].data, '93');
                 if (result && result.toString().indexOf(":") > -1) {
                     let batt = result.split(":");
-                    await this.setState(`Battery`, batt[0], true);
+                    await this.setState(`Battery`, Number(batt[0]), true);
                     this.log.debug("-> Battery" + batt[0]);
                 }
 
