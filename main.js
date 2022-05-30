@@ -566,7 +566,7 @@ class judoisoftControll extends utils.Adapter {
                 }
                 return token;
             } else {
-                this.setState('info.connection', false, false);
+                this.setState('info.connection', false, true);
                 this.setState("Connection status", "ERROR", true);
                 this.log.error("Check Login data (user:psw)"); 
                 return null;
@@ -574,7 +574,7 @@ class judoisoftControll extends utils.Adapter {
 
        } catch (err) {
            this.setState("Connection status", "ERROR", true);
-           this.setState('info.connection', false, false);
+           this.setState('info.connection', false, true);
            return null;
        }
    }
