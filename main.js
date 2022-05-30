@@ -281,18 +281,18 @@ class judoisoftControll extends utils.Adapter {
 
     async getInfosLocal() {
         this.log.debug("get Consumption data Local");
-
-        // check loged in
-        let stats = await axios.get(baseUrl + "register&command=plumber%20address&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });
         
-        if (stats.data.status == 'error') {
-            this.log.info("reconnect " + Date.now()); 
-            _tokenData = await this.getTokenFirst();
-        } 
-     
         let result;
         
         try {
+            // check loged in
+            let stats = await axios.get(baseUrl + "register&command=plumber%20address&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });
+
+            if (stats.data.status == 'error') {
+                this.log.info("reconnect " + Date.now()); 
+                _tokenData = await this.getTokenFirst();
+            } 
+         
             if (_tokenData) {   
                                 
                 //WaterCurrent
