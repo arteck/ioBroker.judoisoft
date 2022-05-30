@@ -1,9 +1,9 @@
 {
   "common": {
     "name": "judoisoft",
-    "version": "1.0.14",
+    "version": "1.0.15",
     "news": {
-      "1.0.14": {
+      "1.0.15": {
         "en": "new error handling",
         "de": "new error handling",
         "ru": "new error handling"

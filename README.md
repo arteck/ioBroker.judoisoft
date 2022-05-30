@@ -23,7 +23,7 @@ Settings available:
 <b>NodeJs >> 8.x.x </b>
 
 ## Changelog
-### 1.0.14 (2022-05-30) 
+### 1.0.15 (2022-05-30) 
 * (arteck) new error handling
 
 ### 1.0.11  (2021-11-07)
