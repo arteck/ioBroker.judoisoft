@@ -973,6 +973,7 @@ class judoisoftControll extends utils.Adapter {
                 type: 'string',
                 read: true,
                 write: false,
+                def: false,
                 role: 'info'
             },
             native: {},
