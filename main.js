@@ -302,10 +302,10 @@ class judoisoftControll extends utils.Adapter {
                 await this.setState(`WaterCurrentOut`, Number(splWassCur[1]), true);                               
                 this.log.debug("-> WaterCurrent");
                                
-                //ResidualHardness
+                //ResidualHardness            
                 result = await axios.get(baseUrl + "settings&command=residual%20hardness&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });
                 await this.setState(`ResidualHardness`, Number(result.data.data), true);
-                this.log.debug("-> ResidualHardness");                                                
+                this.log.debug("-> ResidualHardness " + Number(result.data.data));                                                
                 
                 //SaltRange
                 result = await axios.get(baseUrl + "consumption&command=salt%20range&msgnumber=1&token=" + _tokenData, { httpsAgent: agent });
@@ -505,6 +505,8 @@ class judoisoftControll extends utils.Adapter {
                 break; 
              case 'ResidualHardness':
                 this.log.debug("set ResidualHardness Local" + state);
+                let rhUrl = baseUrl + "settings&command=residual%20hardness&msgnumber=1&token=" + _tokenData + '&parameter=' + state;
+                this.log.debug('set ResidualHardness ' + rhUrl); 
                 try { 
                     await axios.get(baseUrl + "settings&command=residual%20hardness&msgnumber=1&token=" + _tokenData + '&parameter=' + state, { httpsAgent: agent });                                 
                 } catch (err) {
