@@ -970,7 +970,7 @@ class judoisoftControll extends utils.Adapter {
             type: 'state',
             common: {
                 name: `Connection status`,
-                type: 'string',
+                type: 'boolean',
                 read: true,
                 write: false,
                 def: false,
