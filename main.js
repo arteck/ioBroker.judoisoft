@@ -158,6 +158,8 @@ class judoisoftControll extends utils.Adapter {
             const urlGet = baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data";
 
             let conResult = await axios.get(urlGet, { httpsAgent: agent });
+            
+            this.log.debug("RAW : " + JSON.stringify(conResult));
 
             if (conResult.status = 200) {  // der wird evtl. nicht gebraucht
                 if (conResult.data.status == 'online' || conResult.data.status == 'ok') {
