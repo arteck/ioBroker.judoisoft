@@ -198,7 +198,7 @@ class judoisoftControll extends utils.Adapter {
                 await this.setState("ServiceDays", Number(rServiceDays), true);
                 this.log.debug("-> ServiceDays " + rServiceDays);
 
-                await this.setState("Connection status", conResult.data.data[0].status, true);
+                await this.setState("Connection status", conResult.data.data[0].status === "true" ? true : false, true);
 
                 //Maintenance
                 let rMaintenance = judoConv.getInValue(conResult.data.data[0].data[0].data, '7').split(':')[0];
@@ -560,8 +560,8 @@ class judoisoftControll extends utils.Adapter {
                         //Connect
                         const conResult = await axios.get(baseUrl + "register&command=connect&msgnumber=1&token=" + token + "&parameter=" + wtuType + "&serial%20number=" + serialN, {httpsAgent: agent});
                         this.log.debug("connect Result: " + JSON.stringify(conResult.data));
-
-                        await this.setState("Connection status", conResult.data.status, true);
+                    
+                        await this.setState("Connection status", conResult.data.status === "true" ? true : false, true);
                     }
                 } else {
                     token = null;
