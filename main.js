@@ -15,11 +15,11 @@ const axios = require('axios');
 const https = require('https');
 const md5 = require('md5');
 
-let interval = 0;
-let requestTimeout = null;
+let _interval = 0;
+let _requestInterval = null;
 
 
-axios.defaults.timeout = 1000 * 60;   // timeout 10 sec
+axios.defaults.timeout = 1000 * 60;   // timeout 60 sec
 
 // At request level
 const agent = new https.Agent({  
@@ -271,13 +271,18 @@ class judoisoftControll extends utils.Adapter {
 
                 await this.setState("lastInfoUpdate", Date.now(), true);
 
-                requestTimeout = setTimeout(async () => {
+                _requestInterval = setInterval(async () => {
                     this.getInfosCloud();
-                }, interval);
+                }, _interval);
             }
         } catch (err) {
             this.setState('info.connection', false, true);
-            this.log.error('getInfosCloud ERROR ' + JSON.stringify(err));
+            this.log.error('getInfosCloud ERROR reconnect');
+            this.log.info("reconnect " + Date.now());
+            _tokenData = await this.getTokenFirst();
+            let conResult = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data", {httpsAgent: agent});
+            clearInterval(_requestInterval);
+            this.getInfosCloud();        
         }
     }
 
@@ -399,9 +404,9 @@ class judoisoftControll extends utils.Adapter {
                 
             } // if _tokenData
             
-            requestTimeout = setTimeout(async () => {
+            _requestInterval = setInterval(async () => {
                 this.getInfosLocal();
-            }, interval);
+            }, _interval);
 
         } catch (err) {
             this.setState('info.connection', false, true);
@@ -1096,9 +1101,9 @@ class judoisoftControll extends utils.Adapter {
            }
 
            try {
-               interval = parseInt(this.config.interval * 1000, 10);
+               _interval = parseInt(this.config.interval * 1000, 10);
            } catch (err) {
-               interval = 600000
+               _interval = 600000
            }
 
        } catch (error) {
