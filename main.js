@@ -163,7 +163,7 @@ class judoisoftControll extends utils.Adapter {
 
             if (conResult.status = 200) {  // der wird evtl. nicht gebraucht
                 if (conResult.data.status == 'online' || conResult.data.status == 'ok') {
-                    this.log.debug("all fine " + conResult.data);
+                    this.log.debug("all fine " + JSON.stringify(conResult.data));
                 } else {
                     this.log.info("reconnect " + Date.now());
                     _tokenData = await this.getTokenFirst();
