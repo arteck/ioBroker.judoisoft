@@ -290,6 +290,7 @@ class judoisoftControll extends utils.Adapter {
                 }
             } catch (err) {
                 return void this.restart();
+            }
         }
     }
 
