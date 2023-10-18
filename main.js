@@ -281,9 +281,11 @@ class judoisoftControll extends utils.Adapter {
             this.log.info("reconnect " + Date.now());
             try {
                 _tokenData = await this.getTokenFirst();
-                let conResult = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data", {httpsAgent: agent});
-                clearInterval(_requestInterval);
-                this.getInfosCloud();        
+                if (_tokenData != null) {
+                    let conResult = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data", {httpsAgent: agent});
+                    clearInterval(_requestInterval);
+                    this.getInfosCloud();        
+                }
             } catch (err) {
                 return void this.restart();
         }
