@@ -167,7 +167,9 @@ class judoisoftControll extends utils.Adapter {
                 } else {
                     this.log.info("reconnect " + Date.now());
                     _tokenData = await this.getTokenFirst();
-                    conResult = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data", {httpsAgent: agent});
+                    if (_tokenData != null) {
+                        conResult = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data", {httpsAgent: agent});
+                    }
                 }
 
                 let result;
