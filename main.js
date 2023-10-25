@@ -151,8 +151,8 @@ class judoisoftControll extends utils.Adapter {
     }
 
     async getInfosCloud() {
-        this.log.debug("get Consumption data Cloud");
-
+        this.log.debug("get Consumption data Cloud"); 
+        
         try {
             // check data
             const urlGet = baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data";
@@ -165,7 +165,7 @@ class judoisoftControll extends utils.Adapter {
                 if (conResult.data.status == 'online' || conResult.data.status == 'ok') {
                     this.log.debug("all fine " + JSON.stringify(conResult.data));
                 } else {
-                    this.log.info("reconnect " + Date.now());
+                    this.log.info("reconnect " + Date.now());                    
                     _tokenData = await this.getTokenFirst();
                     if (_tokenData != null) {
                         conResult = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data", {httpsAgent: agent});
@@ -279,15 +279,19 @@ class judoisoftControll extends utils.Adapter {
             }
         } catch (err) {
             this.setState('info.connection', false, true);
-            this.log.error('getInfosCloud ERROR reconnect');
-            this.log.info("reconnect " + Date.now());
+            this.log.error('getInfosCloud ERROR reconnect wait 5 min');
+
+            clearInterval(_requestInterval);
+            
             try {
-                _tokenData = await this.getTokenFirst();
-                if (_tokenData != null) {
-                    let conResult = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data", {httpsAgent: agent});
-                    clearInterval(_requestInterval);
-                    this.getInfosCloud();        
-                }
+                setTimeout(function() {                                  
+                    _tokenData = await this.getTokenFirst();
+                    if (_tokenData != null) {
+                        let conResult = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data", {httpsAgent: agent});
+                        clearInterval(_requestInterval);
+                        this.getInfosCloud();        
+                    }
+                }, 1000 * 60 * 5);  // warte 5 min
             } catch (err) {
                 return void this.restart();
             }
