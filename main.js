@@ -76,8 +76,7 @@ class judoisoftControll extends utils.Adapter {
      */
     onUnload(callback) {
         try {
-            if (requestTimeout) clearTimeout(requestTimeout);
-
+            if (_requestInterval) clearInterval(_requestInterval);
             this.log.info('cleaned everything up...');
             this.setState('info.connection', false, true);
             callback();
@@ -151,8 +150,8 @@ class judoisoftControll extends utils.Adapter {
     }
 
     async getInfosCloud() {
-        this.log.debug("get Consumption data Cloud"); 
-        
+        this.log.debug("get Consumption data Cloud");
+
         try {
             // check data
             const urlGet = baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data";
@@ -161,10 +160,14 @@ class judoisoftControll extends utils.Adapter {
             
         //    this.log.debug("RAW : " + JSON.stringify(conResult));
 
-            if (conResult.status = 200) {  // der wird evtl. nicht gebraucht
+            if (conResult.status = 200) {
                 if (conResult.data.status == 'online' || conResult.data.status == 'ok') {
                     this.log.debug("all fine " + JSON.stringify(conResult.data));
                 } else {
+                    if (conResult.data.data == 'login failed') {
+                        this.log.error('getInfosCloud login faild, adapter STOP');
+                        return void this.stop();
+                    }
                     this.log.info("reconnect " + Date.now());                    
                     _tokenData = await this.getTokenFirst();
                     if (_tokenData != null) {
@@ -273,22 +276,28 @@ class judoisoftControll extends utils.Adapter {
 
                 await this.setState("lastInfoUpdate", Date.now(), true);
 
-                _requestInterval = setInterval(async () => {
-                    this.getInfosCloud();
-                }, _interval);
+                if (!_requestInterval) {
+                    _requestInterval = setInterval(async () => {
+                        this.log.error('intervall ' + _requestInterval);
+                        await this.getInfosCloud();
+                    }, _interval);
+                }
             }
         } catch (err) {
             this.setState('info.connection', false, true);
             this.log.error('getInfosCloud ERROR reconnect wait 5 min');
 
             clearInterval(_requestInterval);
-            
+
             try {
-                setTimeout(function() {                                  
+                const requestTimeout = setTimeout(function() {
                     _tokenData = this.getTokenFirst();
                     if (_tokenData != null) {
                         let conResult = axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=get%20device%20data", {httpsAgent: agent});                
-                        this.getInfosCloud();        
+                        this.getInfosCloud();
+                    } else {
+                        this.log.error('getInfosCloud ERROR reconnect wait 5 min');
+                        return void this.restart();
                     }
                 }, 1000 * 60 * 5);  // warte 5 min
             } catch (err) {
@@ -414,10 +423,12 @@ class judoisoftControll extends utils.Adapter {
                 await this.setState("lastInfoUpdate", Date.now(), true);   
                 
             } // if _tokenData
-            
-            _requestInterval = setInterval(async () => {
-                this.getInfosLocal();
-            }, _interval);
+
+            if (!_requestInterval) {
+                _requestInterval = setInterval(async () => {
+                    await this.getInfosLocal();
+                }, _interval);
+            }
 
         } catch (err) {
             this.setState('info.connection', false, true);
@@ -581,6 +592,10 @@ class judoisoftControll extends utils.Adapter {
                     }
                 } else {
                     token = null;
+                    if (conResult.data.data == 'login failed') {
+                        this.log.error('getInfosCloud login faild, adapter STOP');
+                        return void this.stop();
+                    }
                 }
                 return token;
             } else {
@@ -1089,20 +1104,15 @@ class judoisoftControll extends utils.Adapter {
    async initialization() {
        try {
            if (this.config.cloud) {
-               this.config.ip = "https://www.myjudo.eu/";
-           }
-
-           if (this.config.cloud) {
                baseUrl = "https://www.myjudo.eu/interface/";
            } else {
                if (this.config.ip === undefined) {
-                    this.log.debug(`ip undefined`);
+                    this.log.error(`IP undefined`);
                     return;
                } else {
                    baseUrl = "https://" + this.config.ip + ":8124/?group=";
                }
            }
-
 
            this.log.debug("base url " + baseUrl);   
            
