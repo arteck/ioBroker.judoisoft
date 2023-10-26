@@ -277,8 +277,7 @@ class judoisoftControll extends utils.Adapter {
                 await this.setState("lastInfoUpdate", Date.now(), true);
 
                 if (!_requestInterval) {
-                    _requestInterval = setInterval(async () => {
-                        this.log.error('intervall ' + _requestInterval);
+                    _requestInterval = setInterval(async () => {                      
                         await this.getInfosCloud();
                     }, _interval);
                 }
