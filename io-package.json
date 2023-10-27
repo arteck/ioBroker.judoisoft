@@ -1,57 +1,50 @@
 {
   "common": {
     "name": "judoisoft",
-    "version": "1.0.15",
+    "version": "1.1.0",
     "news": {
+      "1.1.0": {
+        "en": "switch to intervall",
+        "de": "wechsel in intervall",
+        "ru": "перейти к интервалу",
+        "pt": "mudar para intervalo",
+        "nl": "wisselen naar intervall",
+        "fr": "commutation à intervalles",
+        "it": "passare all'intervallo",
+        "es": "cambiar a intervalo",
+        "pl": "przełączać się",
+        "uk": "вимикач на інтервал",
+        "zh-cn": "a. 转换到间隔"
+      },
       "1.0.15": {
         "en": "new error handling",
         "de": "new error handling",
         "ru": "new error handling"
-      },        
-    "1.0.9": {
+      },
+      "1.0.9": {
         "en": "js-controller",
         "de": "js-controller",
         "ru": "js-controller"
-      },        
-    "1.0.7": {
+      },
+      "1.0.7": {
         "en": "corr psw save method",
         "de": "corr psw save method",
         "ru": "corr psw save method"
-      },      
-     "1.0.6": {
+      },
+      "1.0.6": {
         "en": "new cloud corr",
         "de": "new cloud corr",
         "ru": "new cloud corr"
       },
-     "1.0.5": {
+      "1.0.5": {
         "en": "new cloud access",
         "de": "new cloud access",
         "ru": "new cloud access"
       },
-    "1.0.4": {
+      "1.0.4": {
         "en": "dadd timeout",
         "de": "dadd timeout",
         "ru": "dadd timeout"
-      },
-    "1.0.3": {
-        "en": "del cloud",
-        "de": "del cloud",
-        "ru": "del cloud"
-      },
-    "1.0.2": {
-        "en": "add cloud",
-        "de": "add cloud",
-        "ru": "add cloud"
-      },
-      "1.0.1": {
-        "en": "ready",
-        "de": "ready",
-        "ru": "ready"
-      },
-      "0.0.1": {
-        "en": "init",
-        "de": "init",
-        "ru": "init"
       }
     },
     "title": "judoisoft",
@@ -101,49 +94,49 @@
     "extIcon": "https://raw.githubusercontent.com/arteck/ioBroker.judoisoft/master/admin/judo.png",
     "type": "household",
     "singletonHost": false,
-    "logTransporter": true,   
+    "logTransporter": true,
     "main": "main.js",
     "connectionType": "local",
     "dataSource": "push",
     "dependencies": [
-        {
-            "js-controller": ">=3.1.0"
-        }
+      {
+        "js-controller": ">=3.1.0"
+      }
     ]
   },
   "encryptedNative": [
-        "password"
-    ],
-    "protectedNative": [
-        "password"
-    ],
+    "password"
+  ],
+  "protectedNative": [
+    "password"
+  ],
   "native": {
     "interval": 300,
-    "ipaddress" : "0.0.0.0",
+    "ipaddress": "0.0.0.0",
     "user": "user",
-    "password" : ""
+    "password": ""
   },
   "instanceObjects": [
-        {
-            "_id": "info",
-            "type": "channel",
-            "common": {
-                "name": "Information"
-            },
-            "native": {}
-        },
-        {
-            "_id": "info.connection",
-            "type": "state",
-            "common": {
-                "role": "indicator.connected",
-                "name": "If connected",
-                "type": "boolean",
-                "read": true,
-                "write": false,
-                "def": false
-            },
-            "native": {}
-        }
-    ]
+    {
+      "_id": "info",
+      "type": "channel",
+      "common": {
+        "name": "Information"
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.connection",
+      "type": "state",
+      "common": {
+        "role": "indicator.connected",
+        "name": "If connected",
+        "type": "boolean",
+        "read": true,
+        "write": false,
+        "def": false
+      },
+      "native": {}
+    }
+  ]
 }
