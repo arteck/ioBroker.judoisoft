@@ -289,6 +289,9 @@ class judoisoftControll extends utils.Adapter {
             clearInterval(_requestInterval);
 
             try {
+                if (requestTimeout) {
+                    clearTimeout(requestTimeout);
+                }
                 const requestTimeout = setTimeout(function() {
                     _tokenData = this.getTokenFirst();
                     if (_tokenData != null) {
