@@ -441,7 +441,7 @@ class judoisoftControll extends utils.Adapter {
     async setCommandStateCloud(command, state) {
         switch (command) {  
             case 'Regeneration':
-                this.log.debug("set Regeneration Cloud" + state);
+                this.log.debug("set Regeneration Cloud " + state);
                 await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=write%20data&serial_number=" + _serialnumber + "&dt=" + _dt + "&index=65&data=&da=" + _da + "&role=customer" , { httpsAgent: agent });                                  
                 break;
             case 'WaterStop':
@@ -470,7 +470,7 @@ class judoisoftControll extends utils.Adapter {
                 
                 break; 
             case 'ResidualHardness':
-                this.log.debug("set ResidualHardness Cloud" + state);
+                this.log.debug("set ResidualHardness Cloud " + state);
                 const val = await axios.get(baseUrl + "?token=" + _tokenData + "&group=register&command=write%20data&serial_number=" + _serialnumber + "&dt=" + _dt + "&index=60&data=" + state + "&da=" + _da + "&role=customer" , { httpsAgent: agent });                                  
                 break;                
             default:
@@ -482,11 +482,11 @@ class judoisoftControll extends utils.Adapter {
     async setCommandStateLocal(command, state) {
         switch (command) {             
             case 'Regeneration':
-                this.log.debug("set Regeneration Local" + state);
+                this.log.debug("set Regeneration Local " + state);
                 try { 
                     await axios.get(baseUrl + "settings&command=regeneration&msgnumber=1&token=" + _tokenData + "&parameter=start", { httpsAgent: agent });  
                 } catch (err) {
-                    this.log.error("set ResidualHardness Local ERROR");
+                    this.log.error("set ResidualHardness Local ERROR" + JSON.stringify(err));
                 }
                 break;
             case 'WaterStop':
