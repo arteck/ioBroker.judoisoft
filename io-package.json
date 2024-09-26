@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "judoisoft",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "news": {
+      "1.1.1": {
+        "en": "corr cloud connection",
+        "de": "corr cloud-verbindung",
+        "ru": "соединение облако",
+        "pt": "conexão de nuvem de corrimento",
+        "nl": "corr cloudverbinding",
+        "fr": "connexion cloud corr",
+        "it": "connessione cloud corr",
+        "es": "conexión de nube de corrido",
+        "pl": "corr cloud connection",
+        "uk": "хмарний зв'язок",
+        "zh-cn": "corr 云连接"
+      },
       "1.1.0": {
         "en": "switch to intervall",
         "de": "wechsel in intervall",
@@ -40,11 +53,6 @@
         "en": "new cloud access",
         "de": "new cloud access",
         "ru": "new cloud access"
-      },
-      "1.0.4": {
-        "en": "dadd timeout",
-        "de": "dadd timeout",
-        "ru": "dadd timeout"
       }
     },
     "title": "judoisoft",
