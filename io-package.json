@@ -40,27 +40,7 @@
         "es": "cambiar a intervalo",
         "pl": "przełączać się",
         "uk": "вимикач на інтервал",
-        "zh-cn": "a. 转换到间隔"
-      },
-      "1.0.15": {
-        "en": "new error handling",
-        "de": "new error handling",
-        "ru": "new error handling"
-      },
-      "1.0.9": {
-        "en": "js-controller",
-        "de": "js-controller",
-        "ru": "js-controller"
-      },
-      "1.0.7": {
-        "en": "corr psw save method",
-        "de": "corr psw save method",
-        "ru": "corr psw save method"
-      },
-      "1.0.6": {
-        "en": "new cloud corr",
-        "de": "new cloud corr",
-        "ru": "new cloud corr"
+        "zh-cn": "a. 转换到间隔"      
       }
     },
     "title": "judoisoft",
