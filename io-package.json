@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "judoisoft",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "news": {
+      "1.1.2": {
+        "en": "corr some errors",
+        "de": "korrekt einige fehler",
+        "ru": "исправление ошибок",
+        "pt": "corrija alguns erros",
+        "nl": "enkele fouten te corrigeren",
+        "fr": "corriger certaines erreurs",
+        "it": "corr alcuni errori",
+        "es": "corr algunos errores",
+        "pl": "corr niektóre błędy",
+        "uk": "похибки",
+        "zh-cn": "错误"
+      },
       "1.1.1": {
         "en": "corr cloud connection",
         "de": "corr cloud-verbindung",
@@ -48,11 +61,6 @@
         "en": "new cloud corr",
         "de": "new cloud corr",
         "ru": "new cloud corr"
-      },
-      "1.0.5": {
-        "en": "new cloud access",
-        "de": "new cloud access",
-        "ru": "new cloud access"
       }
     },
     "title": "judoisoft",

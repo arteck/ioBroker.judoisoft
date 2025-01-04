@@ -175,7 +175,7 @@ function onChange(isChanged) {
 }
 
 function showMessage(message, title, icon) {
-    var $dialogMessage;
+    let $dialogMessage;
     // noinspection JSJQueryEfficiency
     $dialogMessage = $('#dialog-message');
     if (!$dialogMessage.length) {
