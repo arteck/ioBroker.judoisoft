@@ -1,12 +1,3 @@
-/**
- *
- *      ioBroker judoisoft Adapter
- *
- *      (c) 2014-2021 arteck <arteck@outlook.com>
- *
- *      MIT License
- *
- */
 'use strict';
 
 const judoConv = require('./lib/dataConverter');
