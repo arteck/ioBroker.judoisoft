@@ -42,6 +42,8 @@ module.exports = [
             'no-trailing-spaces': 'error',
             'prefer-const': 'warn',
             'no-case-declarations': 'warn',
+            'no-prototype-builtins': 'warn',
+            'no-global-assign': 'warn',
 
             quotes: [
                 'error',
