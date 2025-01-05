@@ -24,7 +24,7 @@
   "dependencies": {
     "@iobroker/adapter-core": "^3.2.2",
     "md5": "^2.3.0",
-    "axios": "^1.5.1",
+    "axios": "^1.7.9",
     "loglevel": "^1.9.2"
   },
   "devDependencies": {
