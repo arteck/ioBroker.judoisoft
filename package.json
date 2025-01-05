@@ -1,9 +1,6 @@
 {
   "name": "iobroker.judoisoft",
-  "version": "1.1.2",
-  "engines": {
-    "node": ">=18.0.0"
-  },
+  "version": "1.1.2", 
   "description": "judo i-soft plus",
   "author": {
     "name": "Arthur Rupp",
@@ -20,6 +17,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/arteck/ioBroker.judoisoft.git"
+  },
+  "engines": {
+    "node": ">= 18"
   },
   "dependencies": {
     "@iobroker/adapter-core": "^3.2.2",
