@@ -149,7 +149,7 @@ class judoisoftControll extends utils.Adapter {
         this.log.debug('get Consumption data Cloud');
 
         try {
-            let conResult = await this.getAxiosData(baseUrl + '?token=' + _tokenData + '&group=register&command=get%20device%20data');
+            let conResult = await this.getAxiosData(baseUrl + '?token=' + _tokenData + '&group=register&command=get%20device%20data',true);
 
             //    this.log.debug("RAW : " + JSON.stringify(conResult));
 
@@ -162,9 +162,9 @@ class judoisoftControll extends utils.Adapter {
                         return void this.stop();
                     }
                     this.log.info('reconnect ' + Date.now());
-                    _tokenData = await this.getTokenFirst();
+                    _tokenData = await this.getTokenFirst(true);
                     if (_tokenData != null) {
-                        conResult = await this.getAxiosData(baseUrl + '?token=' + _tokenData + '&group=register&command=get%20device%20data');
+                        conResult = await this.getAxiosData(baseUrl + '?token=' + _tokenData + '&group=register&command=get%20device%20data',true);
                     }
                 }
 
@@ -284,9 +284,9 @@ class judoisoftControll extends utils.Adapter {
                     clearTimeout(requestTimeout);
                 }
                 const requestTimeout = setTimeout(function() {
-                    _tokenData = this.getTokenFirst();
+                    _tokenData = this.getTokenFirst(true);
                     if (_tokenData != null) {
-                        const conResult = this.getAxiosData(baseUrl + '?token=' + _tokenData + '&group=register&command=get%20device%20data');
+                        const conResult = this.getAxiosData(baseUrl + '?token=' + _tokenData + '&group=register&command=get%20device%20data',true);
                         this.getInfosCloud();
                     } else {
                         this.log.error('getInfosCloud ERROR reconnect wait 5 min');
@@ -538,8 +538,7 @@ class judoisoftControll extends utils.Adapter {
         }
     }
 
-    async getTokenFirst() {
-
+    async getTokenFirst(withHeader = false) {
         let statusURL = '';
 
         if (this.config.cloud) {
@@ -553,7 +552,7 @@ class judoisoftControll extends utils.Adapter {
         let token;
 
         try {
-            const tokenObject = await this.getAxiosData(statusURL);
+            const tokenObject = await this.getAxiosData(statusURL, withHeader);
             const conResult = null;
 
             if (tokenObject.status == 200) {  // der wird evtl. nicht gebraucht
@@ -606,9 +605,17 @@ class judoisoftControll extends utils.Adapter {
         }
     }
 
-    async getAxiosData(url) {
+    async getAxiosData(url, withHeader = false) {
         options.url = url;
-
+        const headers = {
+            'Connection': 'keep-alive',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36'
+        }
+        
+        if (withHeader) {
+            options.headers = headers;
+        }
+        
         try {
             const response = await axios(options);
             return response;
