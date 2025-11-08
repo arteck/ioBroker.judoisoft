@@ -72,7 +72,10 @@
     ],
     "materialize": true,
     "compact": true,
-    "license": "MIT",
+    "licenseInformation": {
+      "type": "free",
+      "license": "MIT"
+    },
     "platform": "Javascript/Node.js",
     "enabled": false,
     "mode": "daemon",
