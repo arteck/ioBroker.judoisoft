@@ -77,7 +77,8 @@
     "enabled": false,
     "mode": "daemon",
     "readme": "https://github.com/arteck/ioBroker.judoisoft/blob/master/README.md",
-    "loglevel": "info",    
+    "loglevel": "info",
+    "tier": 2,    
     "keywords": [
       "judo",
       "isoft",
