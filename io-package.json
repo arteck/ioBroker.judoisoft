@@ -88,7 +88,6 @@
     "type": "household",
     "singletonHost": false,
     "logTransporter": true,
-    "main": "main.js",
     "connectionType": "local",
     "dataSource": "push",
     "globalDependencies": [
