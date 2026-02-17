@@ -1,6 +1,7 @@
 'use strict';
 
 const judoConv = require('./lib/dataConverter');
+const restData = require('./lib/restData');
 const utils = require('@iobroker/adapter-core');
 const axios = require('axios');
 const https = require('https');
@@ -59,10 +60,16 @@ class judoisoftControll extends utils.Adapter {
 
         await this.initialization();
         await this.create_state();
-        _tokenData = await this.getTokenFirst();
+
+        if (!this.isRestApiMode()) {
+            _tokenData = await this.getTokenFirst();
+        }
 
         if (this.config.cloud) {
             this.getInfosCloud();
+        } else if (this.isRestApiMode()) {
+            await this.getInfoStaticLocalRest();
+            this.getInfosLocalRest();
         } else {
             await this.getInfoStaticLocal();
             this.getInfosLocal();
@@ -101,6 +108,8 @@ class judoisoftControll extends utils.Adapter {
             if (state && !state.ack) {
                 if (this.config.cloud) {
                     this.setCommandStateCloud(command, state.val);
+                } else if (this.isRestApiMode()) {
+                    this.setCommandStateLocalRest(command, state.val);
                 } else {
                     this.setCommandStateLocal(command, state.val);
                 }
@@ -110,6 +119,10 @@ class judoisoftControll extends utils.Adapter {
             // The state was deleted
             this.log.info(`state ${id} deleted`);
         }
+    }
+
+    isRestApiMode() {
+        return !this.config.cloud && !!this.config.restApi;
     }
 
     async getInfoStaticLocal() {
@@ -429,6 +442,165 @@ class judoisoftControll extends utils.Adapter {
         }
     }
 
+    async callRestApi(commandHex, dataHex = '') {
+        const command = restData.normalizeHexString(commandHex);
+        const data = restData.normalizeHexString(dataHex);
+        const response = await this.getAxiosData(`${baseUrl}${command}${data}`);
+        return response;
+    }
+
+    async getRestData(commandHex) {
+        const response = await this.callRestApi(commandHex);
+        if (!response || response.status !== 200) {
+            return null;
+        }
+        return restData.getRestPayloadData(response.data);
+    }
+
+    async getInfoStaticLocalRest() {
+        this.log.debug('get Information Static Local REST');
+
+        try {
+            const softHex = await this.getRestData('0100');
+            if (softHex) {
+                await this.setState('SoftwareVersion', restData.decodeSoftwareVersion(softHex), true);
+            }
+        } catch (err) {
+            this.log.error('SoftwareVersion REST ERROR');
+        }
+
+        try {
+            const instDateHex = await this.getRestData('0E00');
+            if (instDateHex) {
+                const unixTs = restData.hexLeToNumber(instDateHex);
+                if (unixTs && unixTs > 946684800) {
+                    await this.setState('InstallationDate', unixTs * 1000, true);
+                }
+            }
+        } catch (err) {
+            this.log.error('InstallationDate REST ERROR');
+        }
+    }
+
+    async getInfosLocalRest() {
+        this.log.debug('get Consumption data Local REST');
+
+        try {
+            const deviceTypeHex = await this.getRestData('FF00');
+            if (deviceTypeHex) {
+                const deviceType = parseInt(deviceTypeHex, 16);
+                const wtuType = Number.isNaN(deviceType) ? deviceTypeHex : deviceType.toString();
+                await this.setState('wtuType', restData.formatWtuType(wtuType), true);
+            }
+
+            const serialNumberHex = await this.getRestData('0600');
+            if (serialNumberHex) {
+                const serialNumber = restData.hexLeToNumber(serialNumberHex);
+                await this.setState('SerialNumber', serialNumber !== null ? serialNumber.toString() : serialNumberHex, true);
+            }
+
+            const residualHardnessHex = await this.getRestData('5100');
+            if (residualHardnessHex) {
+                const residualHardness = restData.hexLeToNumber(residualHardnessHex);
+                if (residualHardness !== null) {
+                    await this.setState('ResidualHardness', residualHardness, true);
+                }
+            }
+
+            const saltHex = await this.getRestData('5600');
+            if (saltHex && saltHex.length >= 8) {
+                const saltGramm = restData.hexLeToNumber(saltHex.slice(0, 4));
+                const saltRangeDays = restData.hexLeToNumber(saltHex.slice(4, 8));
+                if (saltRangeDays !== null) {
+                    await this.setState('SaltRange', saltRangeDays, true);
+                }
+                if (saltGramm !== null) {
+                    const saltPercent = Math.min(100, Math.round((saltGramm / 50000) * 100));
+                    await this.setState('SaltQuantity', saltPercent, true);
+                }
+            }
+
+            const totalWaterHex = await this.getRestData('2800');
+            if (totalWaterHex) {
+                const totalWater = restData.hexLeToNumber(totalWaterHex);
+                if (totalWater !== null) {
+                    await this.setState('WaterTotal', totalWater / 1000, true);
+                }
+            }
+
+            const softWaterHex = await this.getRestData('2900');
+            if (softWaterHex) {
+                const softWater = restData.hexLeToNumber(softWaterHex);
+                if (softWater !== null) {
+                    await this.setState('WaterTotalOut', softWater / 1000, true);
+                }
+            }
+
+            const yearHex = new Date().getFullYear().toString(16).toUpperCase().padStart(4, '0');
+            const yearlyWaterHex = await this.getRestData(`FE00${yearHex}`);
+            if (yearlyWaterHex && yearlyWaterHex.length >= 96) {
+                for (let month = 1; month <= 12; month++) {
+                    const monthHex = yearlyWaterHex.slice((month - 1) * 8, month * 8);
+                    const monthValue = restData.hexLeToNumber(monthHex);
+                    const id = month.toString().padStart(2, '0');
+                    await this.setState(`WaterYearly.${id}`, monthValue !== null ? monthValue / 1000 : 0, true);
+                }
+            }
+
+            await this.setState('Connection status', true, true);
+            await this.setState('lastInfoUpdate', Date.now(), true);
+
+            if (!_requestInterval) {
+                _requestInterval = setInterval(async () => {
+                    await this.getInfosLocalRest();
+                }, _interval);
+            }
+        } catch (err) {
+            this.setState('info.connection', false, true);
+            this.setState('Connection status', false, true);
+            this.log.error('getInfosLocalRest ERROR');
+        }
+    }
+
+    async setCommandStateLocalRest(command, state) {
+        try {
+            switch (command) {
+                case 'Regeneration':
+                    this.log.debug(`set Regeneration Local REST ${state}`);
+                    if (state) {
+                        await this.callRestApi('350000');
+                    }
+                    break;
+                case 'WaterStop':
+                    this.log.debug(`set WaterStop Local REST ${state}`);
+                    _pauseValveState = true;
+                    if (state) {
+                        await this.callRestApi('3C00');
+                        await this.setState('WaterStopStatus', 'closed', true);
+                    } else {
+                        await this.callRestApi('3D00');
+                        await this.setState('WaterStopStatus', 'opened', true);
+                    }
+                    _pauseValveState = false;
+                    break;
+                case 'StandBy':
+                    this.log.debug(`set StandBy Local REST ${state}`);
+                    // No generic standby command for all softener variants in REST command list.
+                    break;
+                case 'ResidualHardness':
+                    this.log.debug(`set ResidualHardness Local REST ${state}`);
+                    await this.callRestApi(`3000${restData.toHexByte(state)}`);
+                    break;
+                default:
+                    break;
+            }
+        } catch (err) {
+            _pauseValveState = false;
+            _pauseStandBy = false;
+            this.log.error(`setCommandStateLocalRest ${command} ERROR`);
+        }
+    }
+
     async setCommandStateCloud(command, state) {
         switch (command) {
             case 'Regeneration':
@@ -539,6 +711,9 @@ class judoisoftControll extends utils.Adapter {
     }
 
     async getTokenFirst() {
+        if (this.isRestApiMode()) {
+            return 'REST_API_MODE';
+        }
 
         let statusURL = '';
 
@@ -1115,7 +1290,13 @@ class judoisoftControll extends utils.Adapter {
                     this.log.error(`IP undefined`);
                     return;
                 } else {
-                    baseUrl = 'https://' + this.config.ip + ':8124/?group=';
+                    if (this.isRestApiMode()) {
+                        const encodedUser = encodeURIComponent(this.config.user || '');
+                        const encodedPassword = encodeURIComponent(this.config.password || '');
+                        baseUrl = `http://${encodedUser}:${encodedPassword}@${this.config.ip}/api/rest/`;
+                    } else {
+                        baseUrl = 'https://' + this.config.ip + ':8124/?group=';
+                    }
                 }
             }
 

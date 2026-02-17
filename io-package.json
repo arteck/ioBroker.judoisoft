@@ -111,6 +111,7 @@
   "native": {
     "interval": 300,
     "ipaddress": "0.0.0.0",
+    "restApi": false,
     "user": "user",
     "password": ""
   },
