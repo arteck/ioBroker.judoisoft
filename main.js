@@ -489,6 +489,11 @@ class judoisoftControll extends utils.Adapter {
         this.log.debug('get Consumption data Local REST');
 
         try {
+            const runtimeHex = await this.getRestData('2500');
+            const runtimeHours = restData.decodeRuntimeCounter(runtimeHex);
+            this.log.debug(`-> OperatingHours ${runtimeHours} (${runtimeHex})`);
+            await this.setState('OperatingHours', runtimeHours, true);
+
             const residualHardnessHex = await this.getRestData('5100');
             if (residualHardnessHex) {
                 const residualHardness = restData.hexLeToNumber(residualHardnessHex);
@@ -546,9 +551,8 @@ class judoisoftControll extends utils.Adapter {
                 }, _interval);
             }
         } catch (err) {
-            this.setState('info.connection', false, true);
-            this.setState('Connection status', false, true);
-            this.log.error('getInfosLocalRest ERROR');
+            await this.setState('info.connection', false, true);
+            this.log.error(`REST ERROR in getInfosLocalRest: ${JSON.stringify(err)}`);
         }
     }
 
@@ -846,6 +850,21 @@ class judoisoftControll extends utils.Adapter {
             },
             native: {},
         });
+
+        if (this.isRestApiMode()) {
+            await this.extendObjectAsync(`OperatingHours`, {
+                type: 'state',
+                common: {
+                    name: `OperatingHours`,
+                    type: 'number',
+                    role: 'info',
+                    unit: 'h',
+                    read: true,
+                    write: false
+                },
+                native: {},
+            });
+        }
 
         if (this.config.cloud) {
             await this.extendObjectAsync(`Battery`, {
