@@ -461,24 +461,27 @@ class judoisoftControll extends utils.Adapter {
         this.log.debug('get Information Static Local REST');
 
         try {
-            const softHex = await this.getRestData('0100');
-            if (softHex) {
-                await this.setState('SoftwareVersion', restData.decodeSoftwareVersion(softHex), true);
-            }
-        } catch (err) {
-            this.log.error('SoftwareVersion REST ERROR');
-        }
+            const deviceTypeHex = await this.getRestData('FF00');
+            const deviceType = restData.decodeWtuType(deviceTypeHex);
+            this.log.debug(`-> deviceType ${deviceType} (${deviceTypeHex})`);
+            await this.setState('wtuType', deviceType, true);
 
-        try {
+            const serialNumberHex = await this.getRestData('0600');
+            const serialNumber = restData.decodeSerialNumber(serialNumberHex);
+            this.log.debug(`-> serialNumber ${serialNumber} (${serialNumberHex})`);
+            await this.setState('SerialNumber', serialNumber, true);
+
+            const softwareVersionHex = await this.getRestData('0100');
+            const softwareVersion = restData.decodeSoftwareVersion(softwareVersionHex);
+            this.log.debug(`-> softwareVersion ${softwareVersion} (${softwareVersionHex})`);
+            await this.setState('SoftwareVersion', softwareVersion, true);
+
             const instDateHex = await this.getRestData('0E00');
-            if (instDateHex) {
-                const unixTs = restData.hexLeToNumber(instDateHex);
-                if (unixTs && unixTs > 946684800) {
-                    await this.setState('InstallationDate', unixTs * 1000, true);
-                }
-            }
+            const instDate = restData.decodeCommissioningDate(instDateHex);
+            this.log.debug(`-> InstallationDate: ${instDate} (${instDateHex})`);
+            await this.setState('InstallationDate', instDate, true);
         } catch (err) {
-            this.log.error('InstallationDate REST ERROR');
+            this.log.error(`REST ERROR in getInfoStaticLocalRest: ${JSON.stringify(err)}`);
         }
     }
 
@@ -486,19 +489,6 @@ class judoisoftControll extends utils.Adapter {
         this.log.debug('get Consumption data Local REST');
 
         try {
-            const deviceTypeHex = await this.getRestData('FF00');
-            if (deviceTypeHex) {
-                const deviceType = parseInt(deviceTypeHex, 16);
-                const wtuType = Number.isNaN(deviceType) ? deviceTypeHex : deviceType.toString();
-                await this.setState('wtuType', restData.formatWtuType(wtuType), true);
-            }
-
-            const serialNumberHex = await this.getRestData('0600');
-            if (serialNumberHex) {
-                const serialNumber = restData.hexLeToNumber(serialNumberHex);
-                await this.setState('SerialNumber', serialNumber !== null ? serialNumber.toString() : serialNumberHex, true);
-            }
-
             const residualHardnessHex = await this.getRestData('5100');
             if (residualHardnessHex) {
                 const residualHardness = restData.hexLeToNumber(residualHardnessHex);
