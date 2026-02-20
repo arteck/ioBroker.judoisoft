@@ -33,6 +33,7 @@ let _pauseStandBy = false;
 let _serialnumber;
 let _da;
 let _dt;
+let wtuType = -1;
 
 class judoisoftControll extends utils.Adapter {
     /**
@@ -506,8 +507,9 @@ class judoisoftControll extends utils.Adapter {
         try {
             const deviceTypeHex = await this.getRestData('FF00');
             const deviceType = restData.decodeWtuType(deviceTypeHex);
-            this.log.debug(`-> deviceType ${deviceType} (${deviceTypeHex})`);
-            await this.setState('wtuType', deviceType, true);
+            wtuType = deviceType.num;
+            this.log.debug(`-> deviceType ${JSON.stringify(deviceType)} (${deviceTypeHex})`);
+            await this.setState('wtuType', deviceType.text, true);
 
             const serialNumberHex = await this.getRestData('0600');
             const serialNumber = restData.decodeSerialNumber(serialNumberHex);
@@ -526,6 +528,174 @@ class judoisoftControll extends utils.Adapter {
         } catch (err) {
             this.log.error(`REST ERROR in getInfoStaticLocalRest: ${JSON.stringify(err)}`);
         }
+
+        if (wtuType === 0x41) {
+            await this.createIdosEcoStates();
+        }
+    }
+
+    async createIdosEcoStates() {
+        /*
+            Statusdaten abfragen
+         */
+
+        await this.extendObject(`StatusData`, {
+            type: 'channel',
+            common: {
+                name: `WaterYearly`,
+            },
+            native: {},
+        });
+
+        // provide the full response of /api/rest/4300 as expert object. no real docs what all those values actually mean ...
+        await this.extendObject(`StatusData.Raw`, {
+            type: 'state',
+            common: {
+                name: `Raw value of status StatusData query`,
+                type: 'string',
+                read: true,
+                write: false,
+                expert: true
+            },
+            native: {},
+        });
+
+        await this.extendObject(`StatusData.CircuitType`, {
+            type: 'state',
+            common: {
+                name: `Schaltungstyp`,
+                type: 'string',
+                read: true,
+                write: false
+            },
+            native: {},
+        });
+
+        await this.extendObject(`StatusData.OperatingMode`, {
+            type: 'state',
+            common: {
+                name: `Betriebsmodus`,
+                type: 'string',
+                read: true,
+                write: false
+            },
+            native: {},
+        });
+
+        await this.extendObject(`StatusData.Concentration`, {
+            type: 'state',
+            common: {
+                name: `Konzentration (min, Norm, max)`,
+                type: 'string',
+                read: true,
+                write: false
+            },
+            native: {},
+        });
+
+        await this.extendObject(`StatusData.ErrorCode`, {
+            type: 'state',
+            common: {
+                name: `Fehlercode`,
+                type: 'string',
+                read: true,
+                write: false
+            },
+            native: {},
+        });
+
+        await this.extendObject(`StatusData.Warnings`, {
+            type: 'state',
+            common: {
+                name: `Warnmeldungen`,
+                type: 'string',
+                read: true,
+                write: false
+            },
+            native: {},
+        });
+
+        await this.extendObject(`StatusData.DosingAmount`, {
+            type: 'state',
+            common: {
+                name: `Dosiermenge`,
+                type: 'string',
+                read: true,
+                write: false
+            },
+            native: {},
+        });
+
+        await this.extendObject(`StatusData.DosingAmount`, {
+            type: 'state',
+            common: {
+                name: `Dosiermenge`,
+                type: 'string',
+                read: true,
+                write: false
+            },
+            native: {},
+        });
+
+        await this.extendObject(`StatusData.CurrentWaterFlow`, {
+            type: 'state',
+            common: {
+                name: `Wasserdurchfluss`,
+                type: 'string',
+                read: true,
+                write: false,
+                unit: 'l/h'
+            },
+            native: {},
+        });
+
+        await this.extendObject(`StatusData.RemainingAmountInTank`, {
+            type: 'state',
+            common: {
+                name: `Restmenge im Behälter`,
+                type: 'string',
+                read: true,
+                write: false
+            },
+            native: {},
+        });
+
+        await this.extendObject(`StatusData.WaterConsumption`, {
+            type: 'state',
+            common: {
+                name: `Wasserverbrauch`,
+                type: 'string',
+                read: true,
+                write: false,
+                unit: 'l'
+            },
+            native: {},
+        });
+
+        /*
+            Dosierung lesen
+         */
+
+        await this.extendObject(`Dosage`, {
+            type: 'channel',
+            common: {
+                name: `Dosierung`,
+            },
+            native: {},
+        });
+
+        // provide the full response of /api/rest/6300 as expert object. no real docs what all those values actually mean ...
+        await this.extendObject(`Dosage.Raw`, {
+            type: 'state',
+            common: {
+                name: `Raw value of status DosData query`,
+                type: 'string',
+                read: true,
+                write: false,
+                expert: true
+            },
+            native: {},
+        });
     }
 
     async getInfosLocalRest() {
@@ -550,7 +720,7 @@ class judoisoftControll extends utils.Adapter {
             const yearlyWaterHex = await this.getRestData(`FE00${yearHex}`);
             const yearlyWater = restData.decodeYearlyStatistics(yearlyWaterHex);
             this.log.debug(`-> WaterYearly ${JSON.stringify(yearlyWater)} (${yearlyWaterHex})`);
-            for(const [month, monthValue] of Object.entries(yearlyWater)) {
+            for (const [month, monthValue] of Object.entries(yearlyWater)) {
                 const id = month.toString().padStart(2, '0');
                 await this.setState(`WaterYearly.${id}`, monthValue, true);
             }
@@ -559,6 +729,36 @@ class judoisoftControll extends utils.Adapter {
             const totalWater = restData.decodeTotalWaterAmount(totalWaterHex);
             this.log.debug(`-> WaterTotal ${totalWater} (${totalWaterHex})`);
             await this.setState('WaterTotal', totalWater, true);
+
+            const dateTimeHex = await this.getRestData('6100');
+            const dateTime = restData.decodeDateTime(dateTimeHex);
+            this.log.debug(`-> Date ${dateTime} (${dateTimeHex})`);
+            await this.setState('Date', dateTime, true);
+
+            if (wtuType === 0x41) {
+                const statusDataHex = await this.getRestData('4300'); // data that must be fetched only on i-dos eco device as connectivity module would return 400 error on other devices
+                const statusData = restData.decodeStatusData(statusDataHex);
+                this.log.debug(`-> StatusData ${JSON.stringify(statusData)} (${statusDataHex})`);
+                await this.setState('StatusData.Raw', statusDataHex, true);
+                // TODO: figure out what all those values actually mean -> possibly provide better type / role (and add corresponding test)
+                // one response got from device: 0200010300000000010000000000000000f3001c0000000000825f0000
+                await this.setState('StatusData.CircuitType', statusData.circuitType, true);
+                await this.setState('StatusData.OperatingMode', statusData.operatingMode, true);
+                await this.setState('StatusData.Concentration', statusData.concentration, true);
+                await this.setState('StatusData.ErrorCode', statusData.errorCode, true);
+                await this.setState('StatusData.Warnings', statusData.warnings, true);
+                await this.setState('StatusData.DosingAmount', statusData.dosingAmount, true);
+                await this.setState('StatusData.CurrentWaterFlow', statusData.currentWaterFlow, true);
+                await this.setState('StatusData.RemainingAmountInTank', statusData.remainingAmountInTank, true);
+                await this.setState('StatusData.WaterConsumption', statusData.waterConsumption, true);
+
+                const dosageHex = await this.getRestData('6300');
+                const dosage = restData.decodeDosage(dosageHex);
+                // TODO: figure out what all those values actually mean (and add corresponding test)
+                // one response got from device: 0102
+                this.log.debug(`-> Dosage ${JSON.stringify(dosage)} (${dosageHex})`);
+                await this.setState('Dosage.Raw', dosageHex, true);
+            }
 
             /*
                 based on docs:
@@ -1414,10 +1614,24 @@ class judoisoftControll extends utils.Adapter {
             native: {},
         });
 
+        if (this.isRestApiMode()) {
+            await this.extendObject(`Date`, {
+                type: 'state',
+                common: {
+                    name: `Date/Time on device`,
+                    type: 'number',
+                    role: 'value.time',
+                    read: true,
+                    write: false,
+                },
+                native: {},
+            });
+        }
+
         await this.subscribeStates(`WaterStop`);
         await this.subscribeStates(`Regeneration`);
         await this.subscribeStates(`ResidualHardness`);
-        if(!this.isRestApiMode()) {
+        if (!this.isRestApiMode()) {
             await this.subscribeStates(`StandBy`);
         }
         await this.setState('info.connection', true, true);
