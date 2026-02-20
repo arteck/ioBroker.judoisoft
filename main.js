@@ -619,10 +619,6 @@ class judoisoftControll extends utils.Adapter {
                     }
                     _pauseValveState = false;
                     break;
-                case 'StandBy':
-                    this.log.debug(`set StandBy Local REST ${state}`);
-                    // No generic standby command for all softener variants in REST command list.
-                    break;
                 case 'ResidualHardness':
                     this.log.debug(`set ResidualHardness Local REST ${state}`);
                     await this.callRestApi(`3000${restData.toHexByte(state)}`);
