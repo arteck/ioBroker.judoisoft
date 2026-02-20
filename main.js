@@ -532,10 +532,32 @@ class judoisoftControll extends utils.Adapter {
         this.log.debug('get Consumption data Local REST');
 
         try {
+            /*
+                tested with own devices
+             */
+
             const runtimeHex = await this.getRestData('2500');
             const runtimeHours = restData.decodeRuntimeCounter(runtimeHex);
             this.log.debug(`-> OperatingHours ${runtimeHours} (${runtimeHex})`);
             await this.setState('OperatingHours', runtimeHours, true);
+
+            const softWaterHex = await this.getRestData('2900');
+            const softWater = restData.decodeSoftWaterAmount(softWaterHex);
+            this.log.debug(`-> SoftWater ${softWater} (${softWaterHex})`);
+            await this.setState('WaterTotalOut', softWater, true);
+
+            const yearHex = restData.formatYearToHex(new Date().getFullYear());
+            const yearlyWaterHex = await this.getRestData(`FE00${yearHex}`);
+            const yearlyWater = restData.decodeYearlyStatistics(yearlyWaterHex);
+            this.log.debug(`-> WaterYearly ${JSON.stringify(yearlyWater)} (${yearlyWaterHex})`);
+            for(const [month, monthValue] of Object.entries(yearlyWater)) {
+                const id = month.toString().padStart(2, '0');
+                await this.setState(`WaterYearly.${id}`, monthValue, true);
+            }
+
+            /*
+                based on docs:
+             */
 
             const residualHardnessHex = await this.getRestData('5100');
             if (residualHardnessHex) {
@@ -563,25 +585,6 @@ class judoisoftControll extends utils.Adapter {
                 const totalWater = restData.hexLeToNumber(totalWaterHex);
                 if (totalWater !== null) {
                     await this.setState('WaterTotal', totalWater / 1000, true);
-                }
-            }
-
-            const softWaterHex = await this.getRestData('2900');
-            if (softWaterHex) {
-                const softWater = restData.hexLeToNumber(softWaterHex);
-                if (softWater !== null) {
-                    await this.setState('WaterTotalOut', softWater / 1000, true);
-                }
-            }
-
-            const yearHex = new Date().getFullYear().toString(16).toUpperCase().padStart(4, '0');
-            const yearlyWaterHex = await this.getRestData(`FE00${yearHex}`);
-            if (yearlyWaterHex && yearlyWaterHex.length >= 96) {
-                for (let month = 1; month <= 12; month++) {
-                    const monthHex = yearlyWaterHex.slice((month - 1) * 8, month * 8);
-                    const monthValue = restData.hexLeToNumber(monthHex);
-                    const id = month.toString().padStart(2, '0');
-                    await this.setState(`WaterYearly.${id}`, monthValue !== null ? monthValue / 1000 : 0, true);
                 }
             }
 
