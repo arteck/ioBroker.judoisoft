@@ -935,7 +935,7 @@ class judoisoftControll extends utils.Adapter {
     async create_state() {
         this.log.debug(`create state`);
 
-        if(!this.isRestApiMode()) {
+        if (!this.isRestApiMode()) {
             await this.extendObjectAsync(`token`, {
                 type: 'state',
                 common: {
@@ -961,7 +961,7 @@ class judoisoftControll extends utils.Adapter {
             native: {},
         });
 
-        if(!this.isRestApiMode()) {
+        if (!this.isRestApiMode()) {
             if (this.config.cloud) {
                 await this.extendObjectAsync(`ServiceDays`, {
                     type: 'state',
@@ -1132,19 +1132,21 @@ class judoisoftControll extends utils.Adapter {
             native: {},
         });
 
-        await this.extendObjectAsync(`Maintenance`, {
-            type: 'state',
-            common: {
-                name: `Maintenance`,
-                type: 'number',
-                read: true,
-                write: false,
-                def: 0,
-                role: 'info',
-                unit: 'Tage',
-            },
-            native: {},
-        });
+        if (!this.isRestApiMode()) {
+            await this.extendObjectAsync(`Maintenance`, {
+                type: 'state',
+                common: {
+                    name: `Maintenance`,
+                    type: 'number',
+                    read: true,
+                    write: false,
+                    def: 0,
+                    role: 'info',
+                    unit: 'Tage',
+                },
+                native: {},
+            });
+        }
 
         await this.extendObjectAsync(`SaltQuantity`, {
             type: 'state',
@@ -1214,17 +1216,19 @@ class judoisoftControll extends utils.Adapter {
             },
             native: {},
         });
-        await this.extendObjectAsync(`HardwareVersion`, {
-            type: 'state',
-            common: {
-                name: `HardwareVersion`,
-                type: 'string',
-                read: true,
-                write: false,
-                role: 'info',
-            },
-            native: {},
-        });
+        if (!this.isRestApiMode()) {
+            await this.extendObjectAsync(`HardwareVersion`, {
+                type: 'state',
+                common: {
+                    name: `HardwareVersion`,
+                    type: 'string',
+                    read: true,
+                    write: false,
+                    role: 'info',
+                },
+                native: {},
+            });
+        }
         if (this.config.cloud) {
             await this.extendObjectAsync(`WaterTotal`, {
                 type: 'state',
@@ -1334,44 +1338,48 @@ class judoisoftControll extends utils.Adapter {
             native: {},
         });
 
-        await this.extendObjectAsync(`Connection status`, {
-            type: 'state',
-            common: {
-                name: `Connection status`,
-                type: 'boolean',
-                read: true,
-                write: false,
-                def: false,
-                role: 'info',
-            },
-            native: {},
-        });
+        if (!this.isRestApiMode()) {
+            await this.extendObjectAsync(`Connection status`, {
+                type: 'state',
+                common: {
+                    name: `Connection status`,
+                    type: 'boolean',
+                    read: true,
+                    write: false,
+                    def: false,
+                    role: 'info',
+                },
+                native: {},
+            });
 
-        await this.extendObjectAsync(`StandByValue`, {
-            type: 'state',
-            common: {
-                name: `StandByValue`,
-                type: 'number',
-                read: true,
-                write: false,
-                def: 0,
-                role: 'info',
-                unit: 'h',
-            },
-            native: {},
-        });
-        await this.extendObjectAsync(`StandBy`, {
-            type: 'state',
-            common: {
-                name: `StandBy`,
-                type: 'boolean',
-                role: 'info',
-                def: false,
-                read: true,
-                write: true,
-            },
-            native: {},
-        });
+            await this.extendObjectAsync(`StandByValue`, {
+                type: 'state',
+                common: {
+                    name: `StandByValue`,
+                    type: 'number',
+                    read: true,
+                    write: false,
+                    def: 0,
+                    role: 'info',
+                    unit: 'h',
+                },
+                native: {},
+            });
+
+            await this.extendObjectAsync(`StandBy`, {
+                type: 'state',
+                common: {
+                    name: `StandBy`,
+                    type: 'boolean',
+                    role: 'info',
+                    def: false,
+                    read: true,
+                    write: true,
+                },
+                native: {},
+            });
+        }
+
         await this.extendObjectAsync(`Regeneration`, {
             type: 'state',
             common: {
@@ -1413,7 +1421,9 @@ class judoisoftControll extends utils.Adapter {
         await this.subscribeStates(`WaterStop`);
         await this.subscribeStates(`Regeneration`);
         await this.subscribeStates(`ResidualHardness`);
-        await this.subscribeStates(`StandBy`);
+        if(!this.isRestApiMode()) {
+            await this.subscribeStates(`StandBy`);
+        }
         await this.setState('info.connection', true, true);
     }
 
