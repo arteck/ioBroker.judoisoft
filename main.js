@@ -555,6 +555,11 @@ class judoisoftControll extends utils.Adapter {
                 await this.setState(`WaterYearly.${id}`, monthValue, true);
             }
 
+            const totalWaterHex = await this.getRestData('2800');
+            const totalWater = restData.decodeTotalWaterAmount(totalWaterHex);
+            this.log.debug(`-> WaterTotal ${totalWater} (${totalWaterHex})`);
+            await this.setState('WaterTotal', totalWater, true);
+
             /*
                 based on docs:
              */
@@ -577,14 +582,6 @@ class judoisoftControll extends utils.Adapter {
                 if (saltGramm !== null) {
                     const saltPercent = Math.min(100, Math.round((saltGramm / 50000) * 100));
                     await this.setState('SaltQuantity', saltPercent, true);
-                }
-            }
-
-            const totalWaterHex = await this.getRestData('2800');
-            if (totalWaterHex) {
-                const totalWater = restData.hexLeToNumber(totalWaterHex);
-                if (totalWater !== null) {
-                    await this.setState('WaterTotal', totalWater / 1000, true);
                 }
             }
 
