@@ -23,6 +23,9 @@ Settings available:
 
 
 ## Changelog
+
+### **WORK IN PROGRESS**
+- (iobroker-bot) Adapter requires node.js >= 20 now.
 ### 1.1.2 (2025-01-04)
 * (arteck) corr some errors
 
