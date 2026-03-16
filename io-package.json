@@ -40,7 +40,7 @@
         "es": "cambiar a intervalo",
         "pl": "przełączać się",
         "uk": "вимикач на інтервал",
-        "zh-cn": "a. 转换到间隔"      
+        "zh-cn": "a. 转换到间隔"
       }
     },
     "title": "judoisoft",
@@ -77,7 +77,7 @@
     "enabled": false,
     "mode": "daemon",
     "readme": "https://github.com/arteck/ioBroker.judoisoft/blob/master/README.md",
-    "loglevel": "info",    
+    "loglevel": "info",
     "keywords": [
       "judo",
       "isoft",
@@ -110,7 +110,10 @@
   ],
   "native": {
     "interval": 300,
+    "ip": "",
     "ipaddress": "0.0.0.0",
+    "cloud": false,
+    "restApi": false,
     "user": "user",
     "password": ""
   },

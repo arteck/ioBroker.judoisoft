@@ -117,4 +117,16 @@ systemDictionary = {
         'es': 'Adapter settings',
         'pl': 'Adapter settings'
     },
+    'REST API (connectivity module)': {
+        'en': 'REST API (connectivity module)',
+        'de': 'REST API (Konnektivitätsmodul)',
+        'ru': 'REST API (модуль подключения)',
+        'pt': 'REST API (módulo de conectividade)',
+        'nl': 'REST-API (connectiviteitsmodule)',
+        'fr': 'API REST (module de connectivité)',
+        'it': 'API REST (modulo di connettività)',
+        'es': 'API REST (módulo de conectividad)',
+        'pl': 'REST API (moduł łączności)',
+        'zh-cn': 'REST API（连接模块）'
+    },
 };
