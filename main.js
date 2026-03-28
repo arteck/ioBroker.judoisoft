@@ -4,7 +4,7 @@ const judoConv = require('./lib/dataConverter');
 const restData = require('./lib/restData');
 const utils = require('@iobroker/adapter-core');
 const axios = require('axios');
-const https = require('https');
+const https = require('node:https');
 const md5 = require('md5');
 
 let _interval = 0;
