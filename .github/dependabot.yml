@@ -2,16 +2,17 @@
 # Cooldown delays updating normal npm dependencies by 7 days but allows security updates to be processed immediately.
 # Note: Cooldown is not supported for the github-actions ecosystem.
 # Reference: https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-options-reference
+# Randomized monthly schedule from the template PR: day 22 at 02:16 Europe/Berlin.
 version: 2
 updates:
 
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
-      interval: 'monthly'
-      time: '04:00'
+      interval: 'cron'
       timezone: 'Europe/Berlin'
-    open-pull-requests-limit: 5
+      cronjob: '16 2 22 * *'
+    open-pull-requests-limit: 15
     assignees:
       - 'arteck'
     versioning-strategy: 'increase'
@@ -21,9 +22,9 @@ updates:
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
-      interval: 'monthly'
-      time: '04:00'
+      interval: 'cron'
       timezone: 'Europe/Berlin'
-    open-pull-requests-limit: 5
+      cronjob: '16 2 22 * *'
+    open-pull-requests-limit: 15
     assignees:
       - 'arteck'
