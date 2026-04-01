@@ -11,7 +11,7 @@ updates:
     schedule:
       interval: 'cron'
       timezone: 'Europe/Berlin'
-      cronjob: '16 2 22 * *'
+      cron: '16 2 22 * *'
     open-pull-requests-limit: 15
     assignees:
       - 'arteck'
@@ -24,7 +24,7 @@ updates:
     schedule:
       interval: 'cron'
       timezone: 'Europe/Berlin'
-      cronjob: '16 2 22 * *'
+      cron: '16 2 22 * *'
     open-pull-requests-limit: 15
     assignees:
       - 'arteck'
