@@ -26,6 +26,9 @@ This uses the local interface `http://<ip>/api/rest/...` (Basic Auth).
 
 
 ## Changelog
+
+### **WORK IN PROGRESS**
+- (iobroker-bot) Adapter requires node.js >= 20 now.
 ### 1.1.2 (2025-01-04)
 * (arteck) corr some errors
 
@@ -71,7 +74,7 @@ This uses the local interface `http://<ip>/api/rest/...` (Basic Auth).
 ## License
 The MIT License (MIT)
 
-Copyright (c) 2018-2025Arthur Rupp arteck@outlook.com
+Copyright (c) 2018-2026 Arthur Rupp arteck@outlook.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

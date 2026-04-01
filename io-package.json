@@ -43,7 +43,6 @@
         "zh-cn": "a. 转换到间隔"
       }
     },
-    "title": "judoisoft",
     "titleLang": {
       "en": "judoisoft",
       "de": "judoisoft",
@@ -72,12 +71,16 @@
     ],
     "materialize": true,
     "compact": true,
-    "license": "MIT",
+    "licenseInformation": {
+      "type": "free",
+      "license": "MIT"
+    },
     "platform": "Javascript/Node.js",
     "enabled": false,
     "mode": "daemon",
     "readme": "https://github.com/arteck/ioBroker.judoisoft/blob/master/README.md",
     "loglevel": "info",
+    "tier": 2,
     "keywords": [
       "judo",
       "isoft",
@@ -88,7 +91,6 @@
     "type": "household",
     "singletonHost": false,
     "logTransporter": true,
-    "main": "main.js",
     "connectionType": "local",
     "dataSource": "push",
     "globalDependencies": [

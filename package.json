@@ -19,12 +19,12 @@
     "url": "https://github.com/arteck/ioBroker.judoisoft.git"
   },
   "engines": {
-    "node": ">= 18"
+    "node": ">= 20"
   },
   "dependencies": {
     "@iobroker/adapter-core": "^3.2.2",
     "md5": "^2.3.0",
-    "axios": "^1.8.4",
+    "axios": "^1.13.5",
     "loglevel": "^1.9.2"
   },
   "devDependencies": {
@@ -35,12 +35,12 @@
     "@iobroker/adapter-dev": "^1.4.0",
     "@iobroker/testing": "^5.2.2",
     "@types/gulp": "^4.0.17",
-    "@types/node": "^22.13.0",
+    "@types/node": "^24.6.1",
     "eslint": "^9.30.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-prettier": "^5.4.1",
     "mocha": "^11.7.1",
-    "prettier": "^3.5.3"
+    "prettier": "^3.6.2"
   },
   "main": "main.js",
   "files": [
