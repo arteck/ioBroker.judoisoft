@@ -31,6 +31,7 @@ This uses the local interface `http://<ip>/api/rest/...` (Basic Auth).
 - (iobroker-bot) Adapter requires node.js >= 20 now.
 - (@SimonFischer04) support rest-api (#143). closes #32, closes #82
 - (@arteck, @SimonFischer04) (dependency) bump / cleanups
+- (@SimonFischer04) Migration to ESLint 9 and @iobroker/eslint-config. #114
 
 ### 1.1.2 (2025-01-04)
 * (arteck) corr some errors
