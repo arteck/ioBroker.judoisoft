@@ -1,0 +1,9 @@
+{
+  "settings_header": "Configurações do adaptador",
+  "ip_label": "Endereço IP",
+  "cloud_label": "Login na nuvem",
+  "restapi_label": "REST API (novo módulo de conectividade)",
+  "interval_label": "Intervalo de consulta [seg]",
+  "user_label": "Nome de usuário",
+  "password_label": "Senha"
+}

@@ -1,0 +1,9 @@
+{
+  "settings_header": "Impostazioni adattatore",
+  "ip_label": "Indirizzo IP",
+  "cloud_label": "Login cloud",
+  "restapi_label": "REST API (nuovo modulo di connettività)",
+  "interval_label": "Intervallo di polling [sec]",
+  "user_label": "Nome utente",
+  "password_label": "Password"
+}

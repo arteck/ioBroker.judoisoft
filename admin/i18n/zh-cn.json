@@ -1,0 +1,9 @@
+{
+  "settings_header": "适配器设置",
+  "ip_label": "IP 地址",
+  "cloud_label": "云登录",
+  "restapi_label": "REST API（新连接模块）",
+  "interval_label": "轮询间隔 [秒]",
+  "user_label": "用户名",
+  "password_label": "密码"
+}

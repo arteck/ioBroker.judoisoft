@@ -69,7 +69,9 @@
     "authors": [
       "arteck <arteck@outlook.com>"
     ],
-    "materialize": true,
+    "adminUI": {
+      "config": "json"
+    },
     "compact": true,
     "licenseInformation": {
       "type": "free",

@@ -1,0 +1,9 @@
+{
+  "settings_header": "Налаштування адаптера",
+  "ip_label": "IP-адреса",
+  "cloud_label": "Вхід через хмару",
+  "restapi_label": "REST API (новий модуль підключення)",
+  "interval_label": "Інтервал опитування [с]",
+  "user_label": "Ім'я користувача",
+  "password_label": "Пароль"
+}

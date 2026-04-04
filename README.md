@@ -32,6 +32,7 @@ This uses the local interface `http://<ip>/api/rest/...` (Basic Auth).
 - (@SimonFischer04) support rest-api (#143). closes #32, closes #82
 - (@arteck, @SimonFischer04) (dependency) bump / cleanups
 - (@SimonFischer04) Migration to ESLint 9 and @iobroker/eslint-config. #114
+- (@SimonFischer04) Migrate admin config to ioBroker jsonConfig. Closes #55
 
 ### 1.1.2 (2025-01-04)
 * (arteck) corr some errors

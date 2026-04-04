@@ -1,0 +1,9 @@
+{
+  "settings_header": "Adapterinstellingen",
+  "ip_label": "IP-adres",
+  "cloud_label": "Cloud-login",
+  "restapi_label": "REST API (nieuwe connectiviteitsmodule)",
+  "interval_label": "Polling-interval [sec]",
+  "user_label": "Gebruikersnaam",
+  "password_label": "Wachtwoord"
+}

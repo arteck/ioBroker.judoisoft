@@ -4,7 +4,7 @@ import globals from 'globals';
 export default [
     ...config,
     {
-        ignores: ['.dev-server/**', 'admin/adapter-settings.js'],
+        ignores: ['.dev-server/**'],
     },
 
     // Add mocha globals for test files

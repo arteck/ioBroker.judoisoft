@@ -1,0 +1,9 @@
+{
+  "settings_header": "Настройки адаптера",
+  "ip_label": "IP-адрес",
+  "cloud_label": "Вход через облако",
+  "restapi_label": "REST API (новый модуль подключения)",
+  "interval_label": "Интервал опроса [сек]",
+  "user_label": "Пользователь",
+  "password_label": "Пароль"
+}

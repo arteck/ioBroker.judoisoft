@@ -1,0 +1,9 @@
+{
+  "settings_header": "Adapter-Einstellungen",
+  "ip_label": "IP-Adresse",
+  "cloud_label": "Cloud-Login",
+  "restapi_label": "REST API (neues Konnektivitätsmodul)",
+  "interval_label": "Abfrageintervall [Sek.]",
+  "user_label": "Benutzername",
+  "password_label": "Passwort"
+}

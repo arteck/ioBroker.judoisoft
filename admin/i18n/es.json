@@ -1,0 +1,9 @@
+{
+  "settings_header": "Configuración del adaptador",
+  "ip_label": "Dirección IP",
+  "cloud_label": "Inicio de sesión en la nube",
+  "restapi_label": "REST API (nuevo módulo de conectividad)",
+  "interval_label": "Intervalo de sondeo [seg]",
+  "user_label": "Usuario",
+  "password_label": "Contraseña"
+}

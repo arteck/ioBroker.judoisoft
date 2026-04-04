@@ -1,0 +1,9 @@
+{
+  "settings_header": "Paramètres de l'adaptateur",
+  "ip_label": "Adresse IP",
+  "cloud_label": "Connexion cloud",
+  "restapi_label": "API REST (nouveau module de connectivité)",
+  "interval_label": "Intervalle d'interrogation [sec]",
+  "user_label": "Nom d'utilisateur",
+  "password_label": "Mot de passe"
+}
