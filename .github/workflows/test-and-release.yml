@@ -1,6 +1,6 @@
 name: Test and Release
 
-# Run this job on all pushes and pull requests 
+# Run this job on all pushes and pull requests
 # as well as tags with a semantic version
 on:
   push:
@@ -73,7 +73,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [22.x]
 
     steps:
       - name: Checkout code
