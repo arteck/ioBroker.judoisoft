@@ -1,0 +1,22 @@
+{
+  "json.schemas": [
+    {
+      "fileMatch": [
+        "/package.json"
+      ],
+      "url": "https://json.schemastore.org/package"
+    },
+    {
+      "fileMatch": [
+        "/io-package.json"
+      ],
+      "url": "https://raw.githubusercontent.com/ioBroker/dev-server/master/schemas/io-package.schema.json"
+    },
+    {
+      "fileMatch": [
+        "/admin/jsonConfig.json"
+      ],
+      "url": "https://raw.githubusercontent.com/ioBroker/ioBroker.admin/master/packages/jsonConfig/schemas/jsonConfig.json"
+    }
+  ]
+}
