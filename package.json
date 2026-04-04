@@ -24,7 +24,7 @@
   "dependencies": {
     "@iobroker/adapter-core": "^3.2.2",
     "md5": "^2.3.0",
-    "axios": "^1.13.5",
+    "axios": "^1.13.6",
     "loglevel": "^1.9.2"
   },
   "devDependencies": {
@@ -35,7 +35,7 @@
     "@iobroker/adapter-dev": "^1.4.0",
     "@iobroker/testing": "^5.2.2",
     "@types/gulp": "^4.0.17",
-    "@types/node": "^24.6.1",
+    "@types/node": "^25.5.0",
     "eslint": "^9.30.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-prettier": "^5.4.1",
@@ -56,7 +56,7 @@
     "test:unit": "mocha --config test/mocharc.custom.json \"{!(node_modules|test)/**/*.test.js,*.test.js,test/**/test!(PackageFiles|Startup).js}\"",
     "test:package": "mocha test/package --exit",
     "test:integration": "mocha test/integration --exit",
-    "test": "npm run test:js && npm run test:package",
+    "test": "npm run test:unit && npm run test:package",
     "check": "tsc --noEmit -p tsconfig.check.json",
     "lint": "eslint .",
     "translate": "translate-adapter",
