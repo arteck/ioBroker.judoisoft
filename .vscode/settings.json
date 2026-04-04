@@ -2,19 +2,21 @@
   "json.schemas": [
     {
       "fileMatch": [
-        "/package.json"
+        "package.json"
       ],
       "url": "https://json.schemastore.org/package"
     },
     {
       "fileMatch": [
-        "/io-package.json"
+        "io-package.json"
       ],
-      "url": "https://raw.githubusercontent.com/ioBroker/dev-server/master/schemas/io-package.schema.json"
+      "url": "https://raw.githubusercontent.com/ioBroker/ioBroker.js-controller/master/schemas/io-package.json"
     },
     {
       "fileMatch": [
-        "/admin/jsonConfig.json"
+        "admin/jsonConfig.json",
+        "admin/jsonCustom.json",
+        "admin/jsonTab.json"
       ],
       "url": "https://raw.githubusercontent.com/ioBroker/ioBroker.admin/master/packages/jsonConfig/schemas/jsonConfig.json"
     }
