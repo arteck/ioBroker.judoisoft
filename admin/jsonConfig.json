@@ -1,5 +1,4 @@
 {
-    "$schema": "https://raw.githubusercontent.com/ioBroker/ioBroker.admin/master/packages/jsonConfig/schemas/jsonConfig.json",
     "i18n": true,
   "type": "panel",
   "items": {
@@ -11,50 +10,62 @@
     "cloud": {
       "type": "checkbox",
       "label": "cloud_label",
+      "xs": 12,
       "sm": 12,
       "md": 6,
       "lg": 4,
+      "xl": 4,
       "newLine": true
     },
     "ip": {
       "type": "text",
       "label": "ip_label",
       "hidden": "data.cloud",
+      "xs": 12,
       "sm": 12,
       "md": 6,
-      "lg": 4
+      "lg": 4,
+      "xl": 4
     },
         "restApi": {
             "type": "checkbox",
             "label": "restapi_label",
+            "xs": 12,
             "sm": 12,
             "md": 6,
-            "lg": 4
+            "lg": 4,
+            "xl": 4
         },
         "interval": {
             "type": "number",
             "label": "interval_label",
             "min": 1,
             "step": 1,
+            "xs": 12,
             "sm": 12,
             "md": 6,
             "lg": 4,
+            "xl": 4,
             "newLine": true
         },
         "user": {
             "type": "text",
             "label": "user_label",
+            "xs": 12,
             "sm": 12,
             "md": 6,
             "lg": 4,
+            "xl": 4,
             "newLine": true
         },
         "password": {
             "type": "password",
             "label": "password_label",
+            "xs": 12,
             "sm": 12,
             "md": 6,
-            "lg": 4
+            "lg": 4,
+            "xl": 4
         }
     }
 }
