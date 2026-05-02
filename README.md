@@ -28,6 +28,7 @@ This uses the local interface `http://<ip>/api/rest/...` (Basic Auth).
 ## Changelog
 
 ### **WORK IN PROGRESS**
+- (copilot) Adapter requires node.js >= 22 now
 - (iobroker-bot) Adapter requires node.js >= 20 now.
 - (@SimonFischer04) support rest-api (#143). closes #32, closes #82
 - (@arteck, @SimonFischer04) (dependency) bump / cleanups
