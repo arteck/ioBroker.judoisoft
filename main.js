@@ -83,7 +83,7 @@ class judoisoftControll extends utils.Adapter {
     onUnload(callback) {
         try {
             if (_requestInterval) {
-                clearInterval(_requestInterval);
+                this.clearInterval(_requestInterval);
             }
             this.log.info('cleaned everything up...');
             this.setState('info.connection', false, true);
@@ -303,7 +303,7 @@ class judoisoftControll extends utils.Adapter {
                 await this.setState('lastInfoUpdate', Date.now(), true);
 
                 if (!_requestInterval) {
-                    _requestInterval = setInterval(async () => {
+                    _requestInterval = this.setInterval(async () => {
                         await this.getInfosCloud();
                     }, _interval);
                 }
@@ -312,13 +312,13 @@ class judoisoftControll extends utils.Adapter {
             this.setState('info.connection', false, true);
             this.log.error('getInfosCloud ERROR reconnect wait 5 min');
 
-            clearInterval(_requestInterval);
+            this.clearInterval(_requestInterval);
 
             try {
                 if (requestTimeout) {
-                    clearTimeout(requestTimeout);
+                    this.clearTimeout(requestTimeout);
                 }
-                const requestTimeout = setTimeout(
+                const requestTimeout = this.setTimeout(
                     function () {
                         _tokenData = this.getTokenFirst();
                         if (_tokenData != null) {
@@ -482,7 +482,7 @@ class judoisoftControll extends utils.Adapter {
             } // if _tokenData
 
             if (!_requestInterval) {
-                _requestInterval = setInterval(async () => {
+                _requestInterval = this.setInterval(async () => {
                     await this.getInfosLocal();
                 }, _interval);
             }
@@ -794,7 +794,7 @@ class judoisoftControll extends utils.Adapter {
             await this.setState('lastInfoUpdate', Date.now(), true);
 
             if (!_requestInterval) {
-                _requestInterval = setInterval(async () => {
+                _requestInterval = this.setInterval(async () => {
                     await this.getInfosLocalRest();
                 }, _interval);
             }
