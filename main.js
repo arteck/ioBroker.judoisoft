@@ -195,55 +195,58 @@ class judoisoftControll extends utils.Adapter {
 
                 let result;
 
-                _serialnumber = conResult.data.data[0].serialnumber;
+                const deviceIndex = this.config.deviceIndex || 0;
+                const devices = conResult.data.data;
+
+                if (deviceIndex >= devices.length) {
+                    this.log.error(
+                        `Configured device index ${deviceIndex} is out of range. Available devices: ${devices.length}. Using first device.`
+                    );
+                }
+
+                const device = devices[Math.min(deviceIndex, devices.length - 1)];
+
+                _serialnumber = device.serialnumber;
                 await this.setState('SerialNumber', _serialnumber, true);
                 this.log.debug('-> SerialNumber');
 
-                await this.setState(
-                    'SoftwareVersion',
-                    judoConv.getInValue(conResult.data.data[0].data[0].data, '1'),
-                    true
-                );
+                await this.setState('SoftwareVersion', judoConv.getInValue(device.data[0].data, '1'), true);
                 this.log.debug('-> SoftwareVersion');
-                await this.setState(
-                    'HardwareVersion',
-                    judoConv.getInValue(conResult.data.data[0].data[0].data, '2'),
-                    true
-                );
+                await this.setState('HardwareVersion', judoConv.getInValue(device.data[0].data, '2'), true);
                 this.log.debug('-> HardwareVersion');
 
-                _da = conResult.data.data[0].data[0].da;
+                _da = device.data[0].da;
                 this.log.debug(`-> _da ${_da}`);
-                _dt = conResult.data.data[0].data[0].dt;
+                _dt = device.data[0].dt;
                 this.log.debug(`-> _dt ${_dt}`);
 
                 // InstallationDate
-                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '6');
+                result = judoConv.getInValue(device.data[0].data, '6');
                 this.log.debug(`-> InstallationDate ${result}`);
                 await this.setState('InstallationDate', Number(result), true);
 
                 // service
-                const rServiceDays = judoConv.getInValue(conResult.data.data[0].data[0].data, '6').split(':')[0];
+                const rServiceDays = judoConv.getInValue(device.data[0].data, '6').split(':')[0];
                 await this.setState('ServiceDays', Number(rServiceDays), true);
                 this.log.debug(`-> ServiceDays ${rServiceDays}`);
 
-                await this.setState('Connection status', conResult.data.data[0].status === 'true' ? true : false, true);
+                await this.setState('Connection status', device.status === 'true' ? true : false, true);
 
                 //Maintenance
-                const rMaintenance = judoConv.getInValue(conResult.data.data[0].data[0].data, '7').split(':')[0];
+                const rMaintenance = judoConv.getInValue(device.data[0].data, '7').split(':')[0];
                 await this.setState(`Maintenance`, Number(rMaintenance), true);
                 this.log.debug(`-> Maintenance ${rMaintenance}`);
 
                 //WaterTotal
-                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '8');
+                result = judoConv.getInValue(device.data[0].data, '8');
                 await this.setState(`WaterTotal`, result, true);
 
-                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '9');
+                result = judoConv.getInValue(device.data[0].data, '9');
                 await this.setState(`WaterTotalOut`, result, true);
                 this.log.debug('-> WaterTotal');
 
                 //SaltRange
-                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '94');
+                result = judoConv.getInValue(device.data[0].data, '94');
                 let salzstand_rounded = 0;
                 let reichweite = 0;
                 let salzstand = 0;
@@ -263,13 +266,13 @@ class judoisoftControll extends utils.Adapter {
                 this.log.debug('-> SaltRange');
 
                 // NaturalHardness
-                //    result = parseInt(judoConv.getInValue(conResult.data.data[0].data[0].data, '790_26')/2)+2;
+                //    result = parseInt(judoConv.getInValue(device.data[0].data, '790_26')/2)+2;
                 result = 0;
                 await this.setState(`NaturalHardness`, Number(result), true);
                 this.log.debug('-> NaturalHardness');
 
                 //ResidualHardness
-                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '790_8');
+                result = judoConv.getInValue(device.data[0].data, '790_8');
                 await this.setState(`ResidualHardness`, Number(result), true);
                 this.log.debug('-> ResidualHardness');
 
@@ -283,17 +286,17 @@ class judoisoftControll extends utils.Adapter {
                 this.log.debug('-> SaltQuantity');
 
                 //WaterCurrent
-                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '790_1617');
+                result = judoConv.getInValue(device.data[0].data, '790_1617');
                 await this.setState(`WaterCurrent`, Number(result), true);
                 this.log.debug('-> WaterCurrent');
 
                 //StandByValue
-                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '792_9');
+                result = judoConv.getInValue(device.data[0].data, '792_9');
                 await this.setState(`StandByValue`, Number(result), true);
                 this.log.debug(`-> StandByValue${result}`);
 
                 //Battery
-                result = judoConv.getInValue(conResult.data.data[0].data[0].data, '93');
+                result = judoConv.getInValue(device.data[0].data, '93');
                 if (result && result.toString().indexOf(':') > -1) {
                     const batt = result.split(':');
                     await this.setState(`Battery`, Number(batt[0]), true);

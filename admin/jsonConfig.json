@@ -36,6 +36,19 @@
             "lg": 4,
             "xl": 4
         },
+        "deviceIndex": {
+            "type": "number",
+            "label": "deviceIndex_label",
+            "tooltip": "deviceIndex_tooltip",
+            "hidden": "!data.cloud",
+            "min": 0,
+            "step": 1,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 4,
+            "xl": 4
+        },
         "interval": {
             "type": "number",
             "label": "interval_label",

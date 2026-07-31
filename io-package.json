@@ -134,6 +134,7 @@
     "ipaddress": "0.0.0.0",
     "cloud": false,
     "restApi": false,
+    "deviceIndex": 0,
     "user": "user",
     "password": ""
   },

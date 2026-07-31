@@ -5,5 +5,7 @@
   "restapi_label": "REST API (neues Konnektivitätsmodul)",
   "interval_label": "Abfrageintervall [Sek.]",
   "user_label": "Benutzername",
-  "password_label": "Passwort"
+  "password_label": "Passwort",
+  "deviceIndex_label": "Geräteindex (Cloud)",
+  "deviceIndex_tooltip": "Wenn Ihr Konto mehrere Geräte hat, wählen Sie das zu verwendende Gerät (0 = erstes Gerät)"
 }
