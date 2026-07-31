@@ -9,6 +9,7 @@ const md5 = require('md5');
 
 let _interval = 0;
 let _requestInterval = null;
+let _requestTimeout = null;
 
 axios.defaults.timeout = 1000 * 60; // timeout 60 sec
 
@@ -84,6 +85,11 @@ class judoisoftControll extends utils.Adapter {
         try {
             if (_requestInterval) {
                 this.clearInterval(_requestInterval);
+                _requestInterval = null;
+            }
+            if (_requestTimeout) {
+                this.clearTimeout(_requestTimeout);
+                _requestTimeout = null;
             }
             this.log.info('cleaned everything up...');
             this.setState('info.connection', false, true);
@@ -313,13 +319,14 @@ class judoisoftControll extends utils.Adapter {
             this.log.error('getInfosCloud ERROR reconnect wait 5 min');
 
             this.clearInterval(_requestInterval);
+            _requestInterval = null;
 
             try {
-                if (requestTimeout) {
-                    this.clearTimeout(requestTimeout);
+                if (_requestTimeout) {
+                    this.clearTimeout(_requestTimeout);
                 }
-                const requestTimeout = this.setTimeout(
-                    function () {
+                _requestTimeout = this.setTimeout(
+                    () => {
                         _tokenData = this.getTokenFirst();
                         if (_tokenData != null) {
                             this.getAxiosData(
