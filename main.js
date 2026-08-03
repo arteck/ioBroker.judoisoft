@@ -328,8 +328,10 @@ class judoisoftControll extends utils.Adapter {
             this.setState('info.connection', false, true);
             this.log.error('getInfosCloud ERROR reconnect wait 5 min');
 
-            this.clearInterval(_requestInterval);
-            _requestInterval = null;
+            if (_requestInterval) {
+                this.clearInterval(_requestInterval);
+                _requestInterval = null;
+            }
 
             try {
                 if (_requestTimeout) {
