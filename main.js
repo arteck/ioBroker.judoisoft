@@ -337,11 +337,9 @@ class judoisoftControll extends utils.Adapter {
                 }
                 _requestTimeout = this.setTimeout(
                     async () => {
+                        _requestTimeout = null;
                         _tokenData = await this.getTokenFirst();
                         if (_tokenData != null) {
-                            this.getAxiosData(
-                                `${baseUrl}?token=${_tokenData}&group=register&command=get%20device%20data`
-                            );
                             this.getInfosCloud();
                         } else {
                             this.log.error('getInfosCloud ERROR reconnect wait 5 min');
