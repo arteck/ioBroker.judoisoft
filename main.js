@@ -195,16 +195,23 @@ class judoisoftControll extends utils.Adapter {
 
                 let result;
 
-                const deviceIndex = this.config.deviceIndex || 0;
                 const devices = conResult.data.data;
 
-                if (deviceIndex >= devices.length) {
-                    this.log.error(
-                        `Configured device index ${deviceIndex} is out of range. Available devices: ${devices.length}. Using first device.`
+                if (!Array.isArray(devices) || devices.length === 0) {
+                    this.log.error('No devices found in cloud account');
+                    return;
+                }
+
+                const deviceIndex = this.config.deviceIndex || 0;
+
+                if (deviceIndex < 0 || deviceIndex >= devices.length) {
+                    this.log.warn(
+                        `Configured device index ${deviceIndex} is out of range (0-${devices.length - 1}). Using first device (index 0).`
                     );
                 }
 
-                const device = devices[Math.min(deviceIndex, devices.length - 1)];
+                const clampedIndex = Math.max(0, Math.min(deviceIndex, devices.length - 1));
+                const device = devices[clampedIndex];
 
                 _serialnumber = device.serialnumber;
                 await this.setState('SerialNumber', _serialnumber, true);
