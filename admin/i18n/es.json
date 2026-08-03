@@ -5,5 +5,7 @@
   "restapi_label": "REST API (nuevo módulo de conectividad)",
   "interval_label": "Intervalo de sondeo [seg]",
   "user_label": "Usuario",
-  "password_label": "Contraseña"
+  "password_label": "Contraseña",
+  "deviceIndex_label": "Índice de dispositivo (nube)",
+  "deviceIndex_tooltip": "Si su cuenta tiene varios dispositivos, seleccione cuál usar (0 = primer dispositivo)"
 }
