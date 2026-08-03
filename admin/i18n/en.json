@@ -5,5 +5,7 @@
   "restapi_label": "REST API (new connectivity module)",
   "interval_label": "Polling interval [sec]",
   "user_label": "Username",
-  "password_label": "Password"
+  "password_label": "Password",
+  "deviceIndex_label": "Device index (cloud)",
+  "deviceIndex_tooltip": "If your account has multiple devices, select which device to use (0 = first device)"
 }

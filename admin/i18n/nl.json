@@ -5,5 +5,7 @@
   "restapi_label": "REST API (nieuwe connectiviteitsmodule)",
   "interval_label": "Polling-interval [sec]",
   "user_label": "Gebruikersnaam",
-  "password_label": "Wachtwoord"
+  "password_label": "Wachtwoord",
+  "deviceIndex_label": "Apparaatindex (cloud)",
+  "deviceIndex_tooltip": "Als uw account meerdere apparaten heeft, selecteer welk apparaat u wilt gebruiken (0 = eerste apparaat)"
 }

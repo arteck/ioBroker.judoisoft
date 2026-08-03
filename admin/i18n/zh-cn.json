@@ -5,5 +5,7 @@
   "restapi_label": "REST API（新连接模块）",
   "interval_label": "轮询间隔 [秒]",
   "user_label": "用户名",
-  "password_label": "密码"
+  "password_label": "密码",
+  "deviceIndex_label": "设备索引（云）",
+  "deviceIndex_tooltip": "如果您的账户有多个设备，请选择要使用的设备（0 = 第一个设备）"
 }
