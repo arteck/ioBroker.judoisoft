@@ -1,11 +1,11 @@
 {
-  "settings_header": "Adapter-Einstellungen",
-  "ip_label": "IP-Adresse",
-  "cloud_label": "Cloud-Login",
-  "restapi_label": "REST API (neues Konnektivitätsmodul)",
-  "interval_label": "Abfrageintervall [Sek.]",
-  "user_label": "Benutzername",
-  "password_label": "Passwort",
-  "deviceIndex_label": "Geräteindex (Cloud)",
-  "deviceIndex_tooltip": "Wenn Ihr Konto mehrere Geräte hat, wählen Sie das zu verwendende Gerät (0 = erstes Gerät)"
+    "settings_header": "Adapter-Einstellungen",
+    "ip_label": "IP-Adresse",
+    "cloud_label": "Cloud-Login",
+    "restapi_label": "REST API (neues Konnektivitätsmodul)",
+    "interval_label": "Abfrageintervall [Sek.]",
+    "user_label": "Benutzername",
+    "password_label": "Passwort",
+    "deviceIndex_label": "Geräteindex (Cloud)",
+    "deviceIndex_tooltip": "Wenn Ihr Konto mehrere Geräte hat, wählen Sie das zu verwendende Gerät (0 = erstes Gerät)"
 }

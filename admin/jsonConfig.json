@@ -1,32 +1,32 @@
 {
     "i18n": true,
-  "type": "panel",
-  "items": {
-    "_settingsHeader": {
-      "type": "header",
-      "text": "settings_header",
-      "size": 2
-    },
-    "cloud": {
-      "type": "checkbox",
-      "label": "cloud_label",
-      "xs": 12,
-      "sm": 12,
-      "md": 6,
-      "lg": 4,
-      "xl": 4,
-      "newLine": true
-    },
-    "ip": {
-      "type": "text",
-      "label": "ip_label",
-      "hidden": "data.cloud",
-      "xs": 12,
-      "sm": 12,
-      "md": 6,
-      "lg": 4,
-      "xl": 4
-    },
+    "type": "panel",
+    "items": {
+        "_settingsHeader": {
+            "type": "header",
+            "text": "settings_header",
+            "size": 2
+        },
+        "cloud": {
+            "type": "checkbox",
+            "label": "cloud_label",
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 4,
+            "xl": 4,
+            "newLine": true
+        },
+        "ip": {
+            "type": "text",
+            "label": "ip_label",
+            "hidden": "data.cloud",
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 4,
+            "xl": 4
+        },
         "restApi": {
             "type": "checkbox",
             "label": "restapi_label",

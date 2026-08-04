@@ -1,11 +1,11 @@
 {
-  "settings_header": "Paramètres de l'adaptateur",
-  "ip_label": "Adresse IP",
-  "cloud_label": "Connexion cloud",
-  "restapi_label": "API REST (nouveau module de connectivité)",
-  "interval_label": "Intervalle d'interrogation [sec]",
-  "user_label": "Nom d'utilisateur",
-  "password_label": "Mot de passe",
-  "deviceIndex_label": "Index de l'appareil (cloud)",
-  "deviceIndex_tooltip": "Si votre compte possède plusieurs appareils, sélectionnez l'appareil à utiliser (0 = premier appareil)"
+    "settings_header": "Paramètres de l'adaptateur",
+    "ip_label": "Adresse IP",
+    "cloud_label": "Connexion cloud",
+    "restapi_label": "API REST (nouveau module de connectivité)",
+    "interval_label": "Intervalle d'interrogation [sec]",
+    "user_label": "Nom d'utilisateur",
+    "password_label": "Mot de passe",
+    "deviceIndex_label": "Index de l'appareil (cloud)",
+    "deviceIndex_tooltip": "Si votre compte possède plusieurs appareils, sélectionnez l'appareil à utiliser (0 = premier appareil)"
 }

@@ -1,11 +1,11 @@
 {
-  "settings_header": "Ustawienia adaptera",
-  "ip_label": "Adres IP",
-  "cloud_label": "Logowanie do chmury",
-  "restapi_label": "REST API (nowy moduł łączności)",
-  "interval_label": "Interwał odpytywania [s]",
-  "user_label": "Nazwa użytkownika",
-  "password_label": "Hasło",
-  "deviceIndex_label": "Indeks urządzenia (chmura)",
-  "deviceIndex_tooltip": "Jeśli Twoje konto ma wiele urządzeń, wybierz które chcesz użyć (0 = pierwsze urządzenie)"
+    "settings_header": "Ustawienia adaptera",
+    "ip_label": "Adres IP",
+    "cloud_label": "Logowanie do chmury",
+    "restapi_label": "REST API (nowy moduł łączności)",
+    "interval_label": "Interwał odpytywania [s]",
+    "user_label": "Nazwa użytkownika",
+    "password_label": "Hasło",
+    "deviceIndex_label": "Indeks urządzenia (chmura)",
+    "deviceIndex_tooltip": "Jeśli Twoje konto ma wiele urządzeń, wybierz które chcesz użyć (0 = pierwsze urządzenie)"
 }
