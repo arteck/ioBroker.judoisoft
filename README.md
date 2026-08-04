@@ -27,14 +27,8 @@ This uses the local interface `http://<ip>/api/rest/...` (Basic Auth).
 
 ### **WORK IN PROGRESS**
 
-- (arteck) Added device index selector for cloud connections with multiple devices (#194)
-- (arteck) fix: guard clearInterval/clearTimeout calls against null handles
-- (arteck) fix: remove redundant getAxiosData call and null timeout after firing
-- (arteck) fix: resolve async getTokenFirst in reconnect flow
-- (arteck) fix: resolve requestTimeout/this binding issues
-- (arteck) fix: update axios to ^1.18.0 to address proxy vulnerability (CVE)
-- (arteck) fix: address repository checker issues (dependabot config, prettier formatting)
-- (arteck) (dependency) bump axios, prettier, @iobroker/testing, @types/node, actions/stale, github/codeql-action
+- Add device selection for cloud connection - #194
+- Fix issues detected by repository checker
 
 ### 1.1.3 (2026-07-18)
 
