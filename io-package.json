@@ -1,164 +1,154 @@
 {
-  "common": {
-    "name": "judoisoft",
-    "version": "1.1.3",
-    "news": {
-      "1.1.3": {
-        "en": "Adapter requires node.js >= 22 now\nAdapter requires node.js >= 20 now.\nsupport rest-api (#143). closes #32, closes #82\n(dependency) bump / cleanups\nMigration to ESLint 9 and @iobroker/eslint-config. #114\nMigrate admin config to ioBroker jsonConfig. Closes #55",
-        "de": "Der Adapter benötigt jetzt Node.js >= 22.\nDer Adapter benötigt jetzt node.js >= 20.\nUnterstützung für REST-API (#143). Schließt #32 und #82.\n(Abhängigkeit) Aktualisierungen / Aufräumarbeiten\nMigration zu ESLint 9 und @iobroker/eslint-config. #114\nDie Administratorkonfiguration wurde auf ioBroker jsonConfig migriert. Schließt #55.",
-        "ru": "Для работы адаптера требуется Node.js версии >= 22.\nДля работы адаптера теперь требуется Node.js версии >= 20.\nподдержка REST API (#143). Закрывает #32, закрывает #82\n(зависимости) обновление / очистка\nПереход на ESLint 9 и @iobroker/eslint-config. #114\nПеренести конфигурацию администратора в ioBroker jsonConfig. Закрывает #55",
-        "pt": "O adaptador agora requer Node.js >= 22.\nO adaptador agora requer o Node.js versão 20 ou superior.\nSuporte à API REST (#143). Fecha #32, fecha #82\n(dependência) atualização / limpezas\nMigração para ESLint 9 e @iobroker/eslint-config. #114\nMigrar a configuração administrativa para o jsonConfig do ioBroker. Resolve a issue #55.",
-        "nl": "De adapter vereist nu Node.js versie 22 of hoger.\nAdapter vereist nu Node.js versie 20 of hoger.\nondersteuning rest-api (#143). sluit #32, sluit #82\n(afhankelijkheid) verhoging / opruimacties\nMigratie naar ESLint 9 en @iobroker/eslint-config. #114\nMigreer de beheerdersconfiguratie naar ioBroker jsonConfig. Sluit issue #55 af.",
-        "fr": "L'adaptateur nécessite désormais Node.js >= 22.\nL'adaptateur requiert désormais node.js >= 20.\nPrise en charge de l'API REST (#143). Résout les problèmes #32 et #82.\n(dépendance) mise à jour / nettoyages\nMigration vers ESLint 9 et @iobroker/eslint-config. #114\nMigration de la configuration d'administration vers le format JSONConfig d'ioBroker. Résout le problème n° 55.",
-        "it": "L'adattatore ora richiede Node.js >= 22\nL'adattatore ora richiede Node.js >= 20.\nsupporto rest-api (#143). chiude #32, chiude #82\n(dipendenza) aggiornamento / pulizia\nMigrazione a ESLint 9 e @iobroker/eslint-config. #114\nMigrazione della configurazione amministrativa a jsonConfig di ioBroker. Chiude il problema #55.",
-        "es": "El adaptador ahora requiere node.js >= 22.\nEl adaptador ahora requiere node.js >= 20.\nSoporte para API REST (#143). Cierra #32, cierra #82\n(dependencia) actualización / limpiezas\nMigración a ESLint 9 y @iobroker/eslint-config. #114\nMigrar la configuración de administración a ioBroker jsonConfig. Cierra el problema n.° 55.",
-        "pl": "Adapter wymaga teraz node.js >= 22\nAdapter wymaga teraz node.js >= 20.\nwsparcie dla rest-api (#143). zamyka #32, zamyka #82\n(zależność) bump / cleanups\nMigracja do ESLint 9 i @iobroker/eslint-config. #114\nPrzenieś konfigurację administratora do pliku jsonConfig ioBroker. Zamyka #55",
-        "uk": "Адаптер тепер вимагає node.js >= 22\nАдаптер тепер вимагає node.js >= 20.\nпідтримка rest-api (#143). закривається #32, закривається #82\n(залежність) bump / cleanups\nМіграція на ESLint 9 та @iobroker/eslint-config. #114\nПеренести конфігурацію адміністратора до ioBroker jsonConfig. Закриття #55",
-        "zh-cn": "适配器现在需要 node.js 版本 >= 22。\n适配器现在需要 node.js >= 20。\n支持 REST API (#143)。关闭 #32 和 #82。\n（依赖项）提升/清理\n迁移到 ESLint 9 和 @iobroker/eslint-config。#114\n将管理员配置迁移到 ioBroker jsonConfig。关闭 #55"
-      },
-      "1.1.2": {
-        "en": "corr some errors",
-        "de": "korrekt einige fehler",
-        "ru": "исправление ошибок",
-        "pt": "corrija alguns erros",
-        "nl": "enkele fouten te corrigeren",
-        "fr": "corriger certaines erreurs",
-        "it": "corr alcuni errori",
-        "es": "corr algunos errores",
-        "pl": "corr niektóre błędy",
-        "uk": "похибки",
-        "zh-cn": "错误"
-      },
-      "1.1.1": {
-        "en": "corr cloud connection",
-        "de": "corr cloud-verbindung",
-        "ru": "соединение облако",
-        "pt": "conexão de nuvem de corrimento",
-        "nl": "corr cloudverbinding",
-        "fr": "connexion cloud corr",
-        "it": "connessione cloud corr",
-        "es": "conexión de nube de corrido",
-        "pl": "corr cloud connection",
-        "uk": "хмарний зв'язок",
-        "zh-cn": "corr 云连接"
-      },
-      "1.1.0": {
-        "en": "switch to intervall",
-        "de": "wechsel in intervall",
-        "ru": "перейти к интервалу",
-        "pt": "mudar para intervalo",
-        "nl": "wisselen naar intervall",
-        "fr": "commutation à intervalles",
-        "it": "passare all'intervallo",
-        "es": "cambiar a intervalo",
-        "pl": "przełączać się",
-        "uk": "вимикач на інтервал",
-        "zh-cn": "a. 转换到间隔"
-      }
+    "common": {
+        "name": "judoisoft",
+        "version": "1.1.3",
+        "news": {
+            "1.1.3": {
+                "en": "Adapter requires node.js >= 22 now\nAdapter requires node.js >= 20 now.\nsupport rest-api (#143). closes #32, closes #82\n(dependency) bump / cleanups\nMigration to ESLint 9 and @iobroker/eslint-config. #114\nMigrate admin config to ioBroker jsonConfig. Closes #55",
+                "de": "Der Adapter benötigt jetzt Node.js >= 22.\nDer Adapter benötigt jetzt node.js >= 20.\nUnterstützung für REST-API (#143). Schließt #32 und #82.\n(Abhängigkeit) Aktualisierungen / Aufräumarbeiten\nMigration zu ESLint 9 und @iobroker/eslint-config. #114\nDie Administratorkonfiguration wurde auf ioBroker jsonConfig migriert. Schließt #55.",
+                "ru": "Для работы адаптера требуется Node.js версии >= 22.\nДля работы адаптера теперь требуется Node.js версии >= 20.\nподдержка REST API (#143). Закрывает #32, закрывает #82\n(зависимости) обновление / очистка\nПереход на ESLint 9 и @iobroker/eslint-config. #114\nПеренести конфигурацию администратора в ioBroker jsonConfig. Закрывает #55",
+                "pt": "O adaptador agora requer Node.js >= 22.\nO adaptador agora requer o Node.js versão 20 ou superior.\nSuporte à API REST (#143). Fecha #32, fecha #82\n(dependência) atualização / limpezas\nMigração para ESLint 9 e @iobroker/eslint-config. #114\nMigrar a configuração administrativa para o jsonConfig do ioBroker. Resolve a issue #55.",
+                "nl": "De adapter vereist nu Node.js versie 22 of hoger.\nAdapter vereist nu Node.js versie 20 of hoger.\nondersteuning rest-api (#143). sluit #32, sluit #82\n(afhankelijkheid) verhoging / opruimacties\nMigratie naar ESLint 9 en @iobroker/eslint-config. #114\nMigreer de beheerdersconfiguratie naar ioBroker jsonConfig. Sluit issue #55 af.",
+                "fr": "L'adaptateur nécessite désormais Node.js >= 22.\nL'adaptateur requiert désormais node.js >= 20.\nPrise en charge de l'API REST (#143). Résout les problèmes #32 et #82.\n(dépendance) mise à jour / nettoyages\nMigration vers ESLint 9 et @iobroker/eslint-config. #114\nMigration de la configuration d'administration vers le format JSONConfig d'ioBroker. Résout le problème n° 55.",
+                "it": "L'adattatore ora richiede Node.js >= 22\nL'adattatore ora richiede Node.js >= 20.\nsupporto rest-api (#143). chiude #32, chiude #82\n(dipendenza) aggiornamento / pulizia\nMigrazione a ESLint 9 e @iobroker/eslint-config. #114\nMigrazione della configurazione amministrativa a jsonConfig di ioBroker. Chiude il problema #55.",
+                "es": "El adaptador ahora requiere node.js >= 22.\nEl adaptador ahora requiere node.js >= 20.\nSoporte para API REST (#143). Cierra #32, cierra #82\n(dependencia) actualización / limpiezas\nMigración a ESLint 9 y @iobroker/eslint-config. #114\nMigrar la configuración de administración a ioBroker jsonConfig. Cierra el problema n.° 55.",
+                "pl": "Adapter wymaga teraz node.js >= 22\nAdapter wymaga teraz node.js >= 20.\nwsparcie dla rest-api (#143). zamyka #32, zamyka #82\n(zależność) bump / cleanups\nMigracja do ESLint 9 i @iobroker/eslint-config. #114\nPrzenieś konfigurację administratora do pliku jsonConfig ioBroker. Zamyka #55",
+                "uk": "Адаптер тепер вимагає node.js >= 22\nАдаптер тепер вимагає node.js >= 20.\nпідтримка rest-api (#143). закривається #32, закривається #82\n(залежність) bump / cleanups\nМіграція на ESLint 9 та @iobroker/eslint-config. #114\nПеренести конфігурацію адміністратора до ioBroker jsonConfig. Закриття #55",
+                "zh-cn": "适配器现在需要 node.js 版本 >= 22。\n适配器现在需要 node.js >= 20。\n支持 REST API (#143)。关闭 #32 和 #82。\n（依赖项）提升/清理\n迁移到 ESLint 9 和 @iobroker/eslint-config。#114\n将管理员配置迁移到 ioBroker jsonConfig。关闭 #55"
+            },
+            "1.1.2": {
+                "en": "corr some errors",
+                "de": "korrekt einige fehler",
+                "ru": "исправление ошибок",
+                "pt": "corrija alguns erros",
+                "nl": "enkele fouten te corrigeren",
+                "fr": "corriger certaines erreurs",
+                "it": "corr alcuni errori",
+                "es": "corr algunos errores",
+                "pl": "corr niektóre błędy",
+                "uk": "похибки",
+                "zh-cn": "错误"
+            },
+            "1.1.1": {
+                "en": "corr cloud connection",
+                "de": "corr cloud-verbindung",
+                "ru": "соединение облако",
+                "pt": "conexão de nuvem de corrimento",
+                "nl": "corr cloudverbinding",
+                "fr": "connexion cloud corr",
+                "it": "connessione cloud corr",
+                "es": "conexión de nube de corrido",
+                "pl": "poprawiono połączenie z chmurą",
+                "uk": "хмарний зв'язок",
+                "zh-cn": "corr 云连接"
+            },
+            "1.1.0": {
+                "en": "switch to intervall",
+                "de": "wechsel in intervall",
+                "ru": "перейти к интервалу",
+                "pt": "mudar para intervalo",
+                "nl": "wisselen naar intervall",
+                "fr": "commutation à intervalles",
+                "it": "passare all'intervallo",
+                "es": "cambiar a intervalo",
+                "pl": "przełączać się",
+                "uk": "вимикач на інтервал",
+                "zh-cn": "a. 转换到间隔"
+            }
+        },
+        "titleLang": {
+            "en": "judoisoft",
+            "de": "judoisoft",
+            "ru": "judoisoft",
+            "pt": "judoisoft",
+            "nl": "judoisoft",
+            "fr": "judoisoft",
+            "it": "judoisoft ",
+            "es": "judoisoft",
+            "pl": "judoisoft",
+            "uk": "judoisoft",
+            "zh-cn": "judoisoft"
+        },
+        "desc": {
+            "en": "Manage yours judo i-soft",
+            "de": "Verwalte dein Judo i-soft",
+            "ru": "Управляй своим дзюдо i-soft",
+            "pt": "Administre o seu judô i-soft",
+            "nl": "Beheer de jouwe judo i-soft",
+            "fr": "Gérez le vôtre judo i-soft",
+            "it": "Gestisci il tuo judo i-soft",
+            "es": "Maneja el tuyo judo i-soft",
+            "pl": "Zarządzaj swoim judo i-soft",
+            "uk": "Керуйте своїм judo i-soft",
+            "zh-cn": "管理您的柔道i-soft"
+        },
+        "authors": ["arteck <arteck@outlook.com>"],
+        "adminUI": {
+            "config": "json"
+        },
+        "compact": true,
+        "licenseInformation": {
+            "type": "free",
+            "license": "MIT"
+        },
+        "platform": "Javascript/Node.js",
+        "enabled": false,
+        "mode": "daemon",
+        "readme": "https://github.com/arteck/ioBroker.judoisoft/blob/master/README.md",
+        "loglevel": "info",
+        "tier": 2,
+        "keywords": ["judo", "isoft", "judoisoft"],
+        "icon": "judo.png",
+        "extIcon": "https://raw.githubusercontent.com/arteck/ioBroker.judoisoft/master/admin/judo.png",
+        "type": "household",
+        "singletonHost": false,
+        "logTransporter": true,
+        "connectionType": "local",
+        "dataSource": "push",
+        "globalDependencies": [
+            {
+                "admin": ">=7.6.20"
+            }
+        ],
+        "dependencies": [
+            {
+                "js-controller": ">=6.0.11"
+            }
+        ]
     },
-    "titleLang": {
-      "en": "judoisoft",
-      "de": "judoisoft",
-      "ru": "judoisoft",
-      "pt": "judoisoft",
-      "nl": "judoisoft",
-      "fr": "judoisoft",
-      "it": "judoisoft ",
-      "es": "judoisoft",
-      "pl": "judoisoft",
-      "uk": "judoisoft",
-      "zh-cn": "judoisoft"
+    "encryptedNative": ["password"],
+    "protectedNative": ["password"],
+    "native": {
+        "interval": 300,
+        "ip": "",
+        "ipaddress": "0.0.0.0",
+        "cloud": false,
+        "restApi": false,
+        "deviceIndex": 0,
+        "user": "user",
+        "password": ""
     },
-    "desc": {
-      "en": "Manage yours judo i-soft",
-      "de": "Verwalte dein Judo i-soft",
-      "ru": "Управляй своим дзюдо i-soft",
-      "pt": "Administre o seu judô i-soft",
-      "nl": "Beheer de jouwe judo i-soft",
-      "fr": "Gérez le vôtre judo i-soft",
-      "it": "Gestisci il tuo judo i-soft",
-      "es": "Maneja el tuyo judo i-soft",
-      "pl": "Zarządzaj swoim judo i-soft",
-      "uk": "Керуйте своїм judo i-soft",
-      "zh-cn": "管理您的柔道i-soft"
-    },
-    "authors": [
-      "arteck <arteck@outlook.com>"
-    ],
-    "adminUI": {
-      "config": "json"
-    },
-    "compact": true,
-    "licenseInformation": {
-      "type": "free",
-      "license": "MIT"
-    },
-    "platform": "Javascript/Node.js",
-    "enabled": false,
-    "mode": "daemon",
-    "readme": "https://github.com/arteck/ioBroker.judoisoft/blob/master/README.md",
-    "loglevel": "info",
-    "tier": 2,
-    "keywords": [
-      "judo",
-      "isoft",
-      "judoisoft"
-    ],
-    "icon": "judo.png",
-    "extIcon": "https://raw.githubusercontent.com/arteck/ioBroker.judoisoft/master/admin/judo.png",
-    "type": "household",
-    "singletonHost": false,
-    "logTransporter": true,
-    "connectionType": "local",
-    "dataSource": "push",
-    "globalDependencies": [
-      {
-        "admin": ">=7.6.20"
-      }
-    ],
-    "dependencies": [
-      {
-        "js-controller": ">=6.0.11"
-      }
+    "instanceObjects": [
+        {
+            "_id": "info",
+            "type": "channel",
+            "common": {
+                "name": "Information"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.connection",
+            "type": "state",
+            "common": {
+                "role": "indicator.connected",
+                "name": "If connected",
+                "type": "boolean",
+                "read": true,
+                "write": false,
+                "def": false
+            },
+            "native": {}
+        }
     ]
-  },
-  "encryptedNative": [
-    "password"
-  ],
-  "protectedNative": [
-    "password"
-  ],
-  "native": {
-    "interval": 300,
-    "ip": "",
-    "ipaddress": "0.0.0.0",
-    "cloud": false,
-    "restApi": false,
-    "deviceIndex": 0,
-    "user": "user",
-    "password": ""
-  },
-  "instanceObjects": [
-    {
-      "_id": "info",
-      "type": "channel",
-      "common": {
-        "name": "Information"
-      },
-      "native": {}
-    },
-    {
-      "_id": "info.connection",
-      "type": "state",
-      "common": {
-        "role": "indicator.connected",
-        "name": "If connected",
-        "type": "boolean",
-        "read": true,
-        "write": false,
-        "def": false
-      },
-      "native": {}
-    }
-  ]
 }

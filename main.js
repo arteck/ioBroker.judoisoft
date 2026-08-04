@@ -9,6 +9,7 @@ const md5 = require('md5');
 
 let _interval = 0;
 let _requestInterval = null;
+let _requestTimeout = null;
 
 axios.defaults.timeout = 1000 * 60; // timeout 60 sec
 
@@ -83,7 +84,12 @@ class judoisoftControll extends utils.Adapter {
     onUnload(callback) {
         try {
             if (_requestInterval) {
-                clearInterval(_requestInterval);
+                this.clearInterval(_requestInterval);
+                _requestInterval = null;
+            }
+            if (_requestTimeout) {
+                this.clearTimeout(_requestTimeout);
+                _requestTimeout = null;
             }
             this.log.info('cleaned everything up...');
             this.setState('info.connection', false, true);
@@ -129,7 +135,7 @@ class judoisoftControll extends utils.Adapter {
         this.log.debug('get Information Static Local');
         try {
             const soft = await this.getAxiosData(
-                `${baseUrl}version&command=software%20version&msgnumber=1&token=${_tokenData}`
+                `${baseUrl}version&command=software%20version&msgnumber=1&token=${_tokenData}`,
             ); //SoftwareVersion
             this.setState('SoftwareVersion', soft.data.data, true);
         } catch {
@@ -138,7 +144,7 @@ class judoisoftControll extends utils.Adapter {
 
         try {
             const hard = await this.getAxiosData(
-                `${baseUrl}version&command=hardware%20version&msgnumber=1&token=${_tokenData}`
+                `${baseUrl}version&command=hardware%20version&msgnumber=1&token=${_tokenData}`,
             ); //HardwareVersion
             this.setState('HardwareVersion', hard.data.data, true);
         } catch {
@@ -147,7 +153,7 @@ class judoisoftControll extends utils.Adapter {
 
         try {
             const instDat = await this.getAxiosData(
-                `${baseUrl}contract&command=init%20date&msgnumber=1&token=${_tokenData}`
+                `${baseUrl}contract&command=init%20date&msgnumber=1&token=${_tokenData}`,
             ); //InstallationDate
             const inst = new Date(Number(instDat.data.data) * 1000);
             this.setState('InstallationDate', inst, true);
@@ -157,7 +163,7 @@ class judoisoftControll extends utils.Adapter {
 
         try {
             const servDat = await this.getAxiosData(
-                `${baseUrl}contract&command=service%20date&msgnumber=1&token=${_tokenData}`
+                `${baseUrl}contract&command=service%20date&msgnumber=1&token=${_tokenData}`,
             ); //ServiceDate
             const serv = new Date(Number(servDat.data.data) * 1000);
             this.setState('ServiceDate', serv, true);
@@ -171,7 +177,7 @@ class judoisoftControll extends utils.Adapter {
 
         try {
             let conResult = await this.getAxiosData(
-                `${baseUrl}?token=${_tokenData}&group=register&command=get%20device%20data`
+                `${baseUrl}?token=${_tokenData}&group=register&command=get%20device%20data`,
             );
 
             //    this.log.debug("RAW : " + JSON.stringify(conResult));
@@ -188,7 +194,7 @@ class judoisoftControll extends utils.Adapter {
                     _tokenData = await this.getTokenFirst();
                     if (_tokenData != null) {
                         conResult = await this.getAxiosData(
-                            `${baseUrl}?token=${_tokenData}&group=register&command=get%20device%20data`
+                            `${baseUrl}?token=${_tokenData}&group=register&command=get%20device%20data`,
                         );
                     }
                 }
@@ -206,7 +212,7 @@ class judoisoftControll extends utils.Adapter {
 
                 if (deviceIndex < 0 || deviceIndex >= devices.length) {
                     this.log.warn(
-                        `Configured device index ${deviceIndex} is out of range (0-${devices.length - 1}). Using first device (index 0).`
+                        `Configured device index ${deviceIndex} is out of range (0-${devices.length - 1}). Using first device (index 0).`,
                     );
                 }
 
@@ -313,7 +319,7 @@ class judoisoftControll extends utils.Adapter {
                 await this.setState('lastInfoUpdate', Date.now(), true);
 
                 if (!_requestInterval) {
-                    _requestInterval = setInterval(async () => {
+                    _requestInterval = this.setInterval(async () => {
                         await this.getInfosCloud();
                     }, _interval);
                 }
@@ -322,26 +328,27 @@ class judoisoftControll extends utils.Adapter {
             this.setState('info.connection', false, true);
             this.log.error('getInfosCloud ERROR reconnect wait 5 min');
 
-            clearInterval(_requestInterval);
+            if (_requestInterval) {
+                this.clearInterval(_requestInterval);
+                _requestInterval = null;
+            }
 
             try {
-                if (requestTimeout) {
-                    clearTimeout(requestTimeout);
+                if (_requestTimeout) {
+                    this.clearTimeout(_requestTimeout);
                 }
-                const requestTimeout = setTimeout(
-                    function () {
-                        _tokenData = this.getTokenFirst();
+                _requestTimeout = this.setTimeout(
+                    async () => {
+                        _requestTimeout = null;
+                        _tokenData = await this.getTokenFirst();
                         if (_tokenData != null) {
-                            this.getAxiosData(
-                                `${baseUrl}?token=${_tokenData}&group=register&command=get%20device%20data`
-                            );
                             this.getInfosCloud();
                         } else {
                             this.log.error('getInfosCloud ERROR reconnect wait 5 min');
                             return void this.restart();
                         }
                     },
-                    1000 * 60 * 5
+                    1000 * 60 * 5,
                 ); // warte 5 min
             } catch {
                 return void this.restart();
@@ -357,7 +364,7 @@ class judoisoftControll extends utils.Adapter {
         try {
             // check loged in
             const stats = await this.getAxiosData(
-                `${baseUrl}register&command=plumber%20address&msgnumber=1&token=${_tokenData}`
+                `${baseUrl}register&command=plumber%20address&msgnumber=1&token=${_tokenData}`,
             );
 
             if (stats.data.status == 'error') {
@@ -368,7 +375,7 @@ class judoisoftControll extends utils.Adapter {
             if (_tokenData) {
                 //WaterCurrent
                 result = await this.getAxiosData(
-                    `${baseUrl}consumption&command=water%20current&msgnumber=1&token=${_tokenData}`
+                    `${baseUrl}consumption&command=water%20current&msgnumber=1&token=${_tokenData}`,
                 );
                 const splWassCur = result.data.data.split(' ');
                 await this.setState(`WaterCurrent`, Number(splWassCur[0]), true);
@@ -377,14 +384,14 @@ class judoisoftControll extends utils.Adapter {
 
                 //ResidualHardness
                 result = await this.getAxiosData(
-                    `${baseUrl}settings&command=residual%20hardness&msgnumber=1&token=${_tokenData}`
+                    `${baseUrl}settings&command=residual%20hardness&msgnumber=1&token=${_tokenData}`,
                 );
                 await this.setState(`ResidualHardness`, Number(result.data.data), true);
                 this.log.debug('-> ResidualHardness');
 
                 //SaltRange
                 result = await this.getAxiosData(
-                    `${baseUrl}consumption&command=salt%20range&msgnumber=1&token=${_tokenData}`
+                    `${baseUrl}consumption&command=salt%20range&msgnumber=1&token=${_tokenData}`,
                 );
                 await this.setState(`SaltRange`, Number(result.data.data), true);
 
@@ -392,7 +399,7 @@ class judoisoftControll extends utils.Adapter {
 
                 //SaltQuantity
                 result = await this.getAxiosData(
-                    `${baseUrl}consumption&command=salt%20quantity&msgnumber=1&token=${_tokenData}`
+                    `${baseUrl}consumption&command=salt%20quantity&msgnumber=1&token=${_tokenData}`,
                 );
                 let sq = result.data.data;
                 sq = Math.round((sq / 50000) * 100);
@@ -402,35 +409,35 @@ class judoisoftControll extends utils.Adapter {
 
                 //WaterAverage
                 result = await this.getAxiosData(
-                    `${baseUrl}consumption&command=water%20average&msgnumber=1&token=${_tokenData}`
+                    `${baseUrl}consumption&command=water%20average&msgnumber=1&token=${_tokenData}`,
                 );
                 await this.setState(`WaterAverage`, Number(result.data.data), true);
                 this.log.debug('-> WaterAverage');
 
                 //NaturalHardness
                 result = await this.getAxiosData(
-                    `${baseUrl}info&command=natural%20hardness&msgnumber=1&token=${_tokenData}`
+                    `${baseUrl}info&command=natural%20hardness&msgnumber=1&token=${_tokenData}`,
                 );
                 await this.setState(`NaturalHardness`, Number(result.data.data), true);
                 this.log.debug('-> NaturalHardness');
 
                 //FlowRate
                 result = await this.getAxiosData(
-                    `${baseUrl}waterstop&command=flow%20rate&msgnumber=1&token=${_tokenData}`
+                    `${baseUrl}waterstop&command=flow%20rate&msgnumber=1&token=${_tokenData}`,
                 );
                 await this.setState(`FlowRate`, Number(result.data.data), true);
                 this.log.debug('-> FlowRate');
 
                 //Quantity
                 result = await this.getAxiosData(
-                    `${baseUrl}waterstop&command=quantity&msgnumber=1&token=${_tokenData}`
+                    `${baseUrl}waterstop&command=quantity&msgnumber=1&token=${_tokenData}`,
                 );
                 await this.setState(`Quantity`, Number(result.data.data), true);
                 this.log.debug('-> Quantity');
 
                 //WaterTotal
                 result = await this.getAxiosData(
-                    `${baseUrl}consumption&command=water%20total&msgnumber=1&token=${_tokenData}`
+                    `${baseUrl}consumption&command=water%20total&msgnumber=1&token=${_tokenData}`,
                 );
 
                 const splWassTot = result.data.data.split(' ');
@@ -440,7 +447,7 @@ class judoisoftControll extends utils.Adapter {
 
                 //WaterYearly
                 result = await this.getAxiosData(
-                    `${baseUrl}consumption&command=water%20yearly&msgnumber=1&token=${_tokenData}`
+                    `${baseUrl}consumption&command=water%20yearly&msgnumber=1&token=${_tokenData}`,
                 );
                 const splWassJahr = result.data.data.split(' ');
                 for (let b = 1; b < 13; b++) {
@@ -466,7 +473,7 @@ class judoisoftControll extends utils.Adapter {
                 if (!_pauseStandBy) {
                     //StandBy
                     result = await this.getAxiosData(
-                        `${baseUrl}waterstop&command=standby&msgnumber=1&token=${_tokenData}`
+                        `${baseUrl}waterstop&command=standby&msgnumber=1&token=${_tokenData}`,
                     );
                     await this.setState(`StandByValue`, Number(result.data.data), true);
                     this.log.debug('-> StandBy');
@@ -476,7 +483,7 @@ class judoisoftControll extends utils.Adapter {
                 if (!_pauseValveState) {
                     //ValveState
                     result = await this.getAxiosData(
-                        `${baseUrl}waterstop&command=valve&msgnumber=1&token=${_tokenData}`
+                        `${baseUrl}waterstop&command=valve&msgnumber=1&token=${_tokenData}`,
                     );
                     await this.setState(`WaterStopStatus`, result.data.data, true);
 
@@ -492,7 +499,7 @@ class judoisoftControll extends utils.Adapter {
             } // if _tokenData
 
             if (!_requestInterval) {
-                _requestInterval = setInterval(async () => {
+                _requestInterval = this.setInterval(async () => {
                     await this.getInfosLocal();
                 }, _interval);
             }
@@ -804,7 +811,7 @@ class judoisoftControll extends utils.Adapter {
             await this.setState('lastInfoUpdate', Date.now(), true);
 
             if (!_requestInterval) {
-                _requestInterval = setInterval(async () => {
+                _requestInterval = this.setInterval(async () => {
                     await this.getInfosLocalRest();
                 }, _interval);
             }
@@ -856,7 +863,7 @@ class judoisoftControll extends utils.Adapter {
                 await this.getAxiosData(
                     `${baseUrl}?token=${_tokenData}&group=register&command=write%20data&serial_number=${
                         _serialnumber
-                    }&dt=${_dt}&index=65&data=&da=${_da}&role=customer`
+                    }&dt=${_dt}&index=65&data=&da=${_da}&role=customer`,
                 );
                 break;
             case 'WaterStop':
@@ -867,14 +874,14 @@ class judoisoftControll extends utils.Adapter {
                     const val = await this.getAxiosData(
                         `${baseUrl}?token=${_tokenData}&group=register&command=write%20data&serial_number=${
                             _serialnumber
-                        }&dt=${_dt}&index=72&data=&da=${_da}&role=customer`
+                        }&dt=${_dt}&index=72&data=&da=${_da}&role=customer`,
                     );
                     await this.setState('WaterStopStatus', val.data.status, true);
                 } else {
                     const val = await this.getAxiosData(
                         `${baseUrl}?token=${_tokenData}&group=register&command=write%20data&serial_number=${
                             _serialnumber
-                        }&dt=${_dt}&index=73&data=&da=${_da}&role=customer`
+                        }&dt=${_dt}&index=73&data=&da=${_da}&role=customer`,
                     );
                     await this.setState('WaterStopStatus', val.data.status, true);
                 }
@@ -888,13 +895,13 @@ class judoisoftControll extends utils.Adapter {
                     await this.getAxiosData(
                         `${baseUrl}?token=${_tokenData}&group=register&command=write%20data&serial_number=${
                             _serialnumber
-                        }&dt=${_dt}&index=171&data=&da=${_da}&role=customer`
+                        }&dt=${_dt}&index=171&data=&da=${_da}&role=customer`,
                     );
                 } else {
                     await this.getAxiosData(
                         `${baseUrl}?token=${_tokenData}&group=register&command=write%20data&serial_number=${
                             _serialnumber
-                        }&dt=${_dt}&index=73&data=&da=${_da}&role=customer`
+                        }&dt=${_dt}&index=73&data=&da=${_da}&role=customer`,
                     );
                 }
                 _pauseStandBy = false;
@@ -905,7 +912,7 @@ class judoisoftControll extends utils.Adapter {
                 await this.getAxiosData(
                     `${baseUrl}?token=${_tokenData}&group=register&command=write%20data&serial_number=${
                         _serialnumber
-                    }&dt=${_dt}&index=60&data=${state}&da=${_da}&role=customer`
+                    }&dt=${_dt}&index=60&data=${state}&da=${_da}&role=customer`,
                 );
                 break;
             default:
@@ -918,7 +925,7 @@ class judoisoftControll extends utils.Adapter {
                 this.log.debug(`set Regeneration Local ${state}`);
                 try {
                     await this.getAxiosData(
-                        `${baseUrl}settings&command=regeneration&msgnumber=1&token=${_tokenData}&parameter=start`
+                        `${baseUrl}settings&command=regeneration&msgnumber=1&token=${_tokenData}&parameter=start`,
                     );
                 } catch (err) {
                     this.log.error(`set ResidualHardness Local ERROR${JSON.stringify(err)}`);
@@ -930,7 +937,7 @@ class judoisoftControll extends utils.Adapter {
                 if (state) {
                     try {
                         const val = await this.getAxiosData(
-                            `${baseUrl}waterstop&command=valve&msgnumber=1&token=${_tokenData}&parameter=close`
+                            `${baseUrl}waterstop&command=valve&msgnumber=1&token=${_tokenData}&parameter=close`,
                         );
                         await this.setState('WaterStopStatus', val.data.parameter, true);
                     } catch {
@@ -940,7 +947,7 @@ class judoisoftControll extends utils.Adapter {
                 } else {
                     try {
                         const val = await this.getAxiosData(
-                            `${baseUrl}waterstop&command=valve&msgnumber=1&token=${_tokenData}&parameter=open`
+                            `${baseUrl}waterstop&command=valve&msgnumber=1&token=${_tokenData}&parameter=open`,
                         );
                         await this.setState('WaterStopStatus', val.data.parameter, true);
                     } catch {
@@ -957,7 +964,7 @@ class judoisoftControll extends utils.Adapter {
                 if (state) {
                     try {
                         await await this.getAxiosData(
-                            `${baseUrl}waterstop&command=standby&msgnumber=1&token=${_tokenData}&parameter=start`
+                            `${baseUrl}waterstop&command=standby&msgnumber=1&token=${_tokenData}&parameter=start`,
                         );
                     } catch {
                         this.log.error('set StandBy Local start ERROR');
@@ -965,7 +972,7 @@ class judoisoftControll extends utils.Adapter {
                 } else {
                     try {
                         await await this.getAxiosData(
-                            `${baseUrl}waterstop&command=standby&msgnumber=1&token=${_tokenData}&parameter=stop`
+                            `${baseUrl}waterstop&command=standby&msgnumber=1&token=${_tokenData}&parameter=stop`,
                         );
                     } catch {
                         this.log.error('set StandBy Local stop ERROR');
@@ -974,7 +981,7 @@ class judoisoftControll extends utils.Adapter {
                 //StandByValue
                 {
                     const valSt = await this.getAxiosData(
-                        `${baseUrl}waterstop&command=standby&msgnumber=1&token=${_tokenData}`
+                        `${baseUrl}waterstop&command=standby&msgnumber=1&token=${_tokenData}`,
                     );
                     await this.setState(`StandByValue`, Number(valSt.data.data), true);
                 }
@@ -987,7 +994,7 @@ class judoisoftControll extends utils.Adapter {
                     await this.getAxiosData(
                         `${baseUrl}settings&command=residual%20hardness&msgnumber=1&token=${_tokenData}&parameter=${
                             state
-                        }`
+                        }`,
                     );
                 } catch {
                     this.log.error('set ResidualHardness Local ERROR');
@@ -1031,7 +1038,7 @@ class judoisoftControll extends utils.Adapter {
                     //Serial only local
                     if (!this.config.cloud) {
                         const serResult = await this.getAxiosData(
-                            `${baseUrl}register&command=show&msgnumber=2&token=${token}`
+                            `${baseUrl}register&command=show&msgnumber=2&token=${token}`,
                         );
 
                         this.log.debug(`getSerialnumber : ${JSON.stringify(serResult.data)}`);
@@ -1049,7 +1056,7 @@ class judoisoftControll extends utils.Adapter {
                         const conResult = await this.getAxiosData(
                             `${baseUrl}register&command=connect&msgnumber=1&token=${token}&parameter=${
                                 wtuType
-                            }&serial%20number=${serialN}`
+                            }&serial%20number=${serialN}`,
                         );
                         this.log.debug(`connect Result: ${JSON.stringify(conResult.data)}`);
 
@@ -1655,7 +1662,7 @@ if (module.parent) {
     /**
      * @param {Partial<utils.AdapterOptions>} [options] - Adapter initialization options.
      */
-    module.exports = (options) => new judoisoftControll(options);
+    module.exports = options => new judoisoftControll(options);
 } else {
     // otherwise start the instance directly
     new judoisoftControll();
