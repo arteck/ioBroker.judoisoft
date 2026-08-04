@@ -25,6 +25,11 @@ This uses the local interface `http://<ip>/api/rest/...` (Basic Auth).
 
 ## Changelog
 
+### **WORK IN PROGRESS**
+
+- Add device selection for cloud connection - #194
+- Fix issues detected by repository checker
+
 ### 1.1.3 (2026-07-18)
 
 - (copilot) Adapter requires node.js >= 22 now
