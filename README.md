@@ -25,6 +25,15 @@ This uses the local interface `http://<ip>/api/rest/...` (Basic Auth).
 
 ## Changelog
 
+### **WORK IN PROGRESS**
+
+- (arteck) fix: guard clearInterval call against null handle
+- (arteck) fix: remove redundant getAxiosData call
+- (arteck) fix: resolve requestTimeout/this binding issues
+- (arteck) Add device index selector for cloud connections with multiple devices
+- (arteck) fix: update axios to ^1.18.0 to address proxy vulnerability (CVE)
+- (arteck) fix: address repository checker issues
+
 ### 1.1.3 (2026-07-18)
 
 - (copilot) Adapter requires node.js >= 22 now
