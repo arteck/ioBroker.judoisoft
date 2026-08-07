@@ -316,6 +316,21 @@ class judoisoftControll extends utils.Adapter {
                     this.log.debug(`-> Battery${batt[0]}`);
                 }
 
+                // Cloud Register 137 mirrors local REST command 4300 on this i-dos eco.
+                const statusDataHexCloud = device.data[0].data[137]?.data;
+                if (typeof statusDataHexCloud === 'string') {
+                    const statusData = restData.decodeStatusData(statusDataHexCloud);
+                    if (statusData) {
+                        await this.setState('StatusData.RemainingAmountInTank', statusData.remainingAmountInTank, true);
+                        await this.setState(
+                            'StatusData.RemainingAmountInTankPercent',
+                            statusData.remainingAmountInTankPercent,
+                            true,
+                        );
+                        await this.setState('StatusData.Raw', statusDataHexCloud, true);
+                    }
+                }
+
                 await this.setState('lastInfoUpdate', Date.now(), true);
 
                 if (!_requestInterval) {
@@ -676,9 +691,22 @@ class judoisoftControll extends utils.Adapter {
             type: 'state',
             common: {
                 name: `Restmenge im Behälter`,
-                type: 'string',
+                type: 'number',
                 read: true,
                 write: false,
+                unit: 'l',
+            },
+            native: {},
+        });
+
+        await this.extendObject(`StatusData.RemainingAmountInTankPercent`, {
+            type: 'state',
+            common: {
+                name: `Restmenge im Behälter (%)`,
+                type: 'number',
+                read: true,
+                write: false,
+                unit: '%',
             },
             native: {},
         });
@@ -773,6 +801,11 @@ class judoisoftControll extends utils.Adapter {
                 await this.setState('StatusData.DosingAmount', statusData.dosingAmount, true);
                 await this.setState('StatusData.CurrentWaterFlow', statusData.currentWaterFlow, true);
                 await this.setState('StatusData.RemainingAmountInTank', statusData.remainingAmountInTank, true);
+                await this.setState(
+                    'StatusData.RemainingAmountInTankPercent',
+                    statusData.remainingAmountInTankPercent,
+                    true,
+                );
                 await this.setState('StatusData.WaterConsumption', statusData.waterConsumption, true);
 
                 const dosageHex = await this.getRestData('6300');
@@ -1187,6 +1220,51 @@ class judoisoftControll extends utils.Adapter {
                     write: false,
                     def: 0,
                     role: 'info',
+                    unit: '%',
+                },
+                native: {},
+            });
+
+            // Cloud register 137 contains i-dos eco status payload.
+            await this.extendObjectAsync(`StatusData`, {
+                type: 'channel',
+                common: {
+                    name: `StatusData`,
+                },
+                native: {},
+            });
+
+            await this.extendObjectAsync(`StatusData.Raw`, {
+                type: 'state',
+                common: {
+                    name: `Raw value of cloud status data`,
+                    type: 'string',
+                    read: true,
+                    write: false,
+                    expert: true,
+                },
+                native: {},
+            });
+
+            await this.extendObjectAsync(`StatusData.RemainingAmountInTank`, {
+                type: 'state',
+                common: {
+                    name: `Restmenge im Behälter`,
+                    type: 'number',
+                    read: true,
+                    write: false,
+                    unit: 'l',
+                },
+                native: {},
+            });
+
+            await this.extendObjectAsync(`StatusData.RemainingAmountInTankPercent`, {
+                type: 'state',
+                common: {
+                    name: `Restmenge im Behälter (%)`,
+                    type: 'number',
+                    read: true,
+                    write: false,
                     unit: '%',
                 },
                 native: {},
