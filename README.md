@@ -26,8 +26,7 @@ This uses the local interface `http://<ip>/api/rest/...` (Basic Auth).
 Cloud login takes precedence: when it is enabled, the REST API option is hidden and ignored.
 
 ## Changelog
-
-### **WORK IN PROGRESS**
+### 1.1.4 (2026-09-04)
 
 - Add device selection for cloud connection - #194
 - Fix issues detected by repository checker
@@ -54,12 +53,6 @@ Cloud login takes precedence: when it is enabled, the REST API option is hidden 
 ### 1.1.0 (2023-10-27)
 
 - (arteck) switch to intervall
-
-### 1.0.15 (2022-05-30)
-
-- (arteck) new error handling
-
-[Older changelogs can be found there](CHANGELOG_OLD.md)
 
 ## License
 

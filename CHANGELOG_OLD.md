@@ -1,4 +1,9 @@
 # Older changes
+## 1.0.15 (2022-05-30)
+
+- (arteck) new error handling
+
+[Older changelogs can be found there](CHANGELOG_OLD.md)
 
 ## 1.0.11 (2021-11-07)
 
