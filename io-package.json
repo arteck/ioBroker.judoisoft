@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "judoisoft",
-    "version": "1.1.4",
+    "version": "1.1.5",
     "news": {
+      "1.1.5": {
+        "en": "fix release",
+        "de": "Fix Release",
+        "ru": "исправить релиз",
+        "pt": "versão fixa",
+        "nl": "release repareren",
+        "fr": "fix release",
+        "it": "fix release",
+        "es": "fix release",
+        "pl": "poprawiono wydanie",
+        "uk": "виправлення випуску",
+        "zh-cn": "修复版本"
+      },
       "1.1.4": {
         "en": "Add device selection for cloud connection - #194\nFix issues detected by repository checker\nDerive `info.connection` from the active mode (local REST vs cloud) - #212\nCloud login takes precedence over REST API when both are enabled",
         "de": "Geräteauswahl für Cloud hinzufügen - #194\nRepository-Checker erkennt Probleme\n`info.connection` vom Aktivmodus ableiten (lokal REST vs. Cloud) - #212\nCloud-Login hat Vorrang vor REST API, wenn beide aktiviert sind",

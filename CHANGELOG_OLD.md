@@ -1,4 +1,8 @@
 # Older changes
+## 1.1.0 (2023-10-27)
+
+- (arteck) switch to intervall
+
 ## 1.0.15 (2022-05-30)
 
 - (arteck) new error handling
