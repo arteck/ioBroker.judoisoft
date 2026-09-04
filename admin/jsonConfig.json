@@ -30,6 +30,7 @@
         "restApi": {
             "type": "checkbox",
             "label": "restapi_label",
+            "hidden": "data.cloud",
             "xs": 12,
             "sm": 12,
             "md": 6,
