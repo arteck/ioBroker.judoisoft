@@ -26,6 +26,9 @@ This uses the local interface `http://<ip>/api/rest/...` (Basic Auth).
 Cloud login takes precedence: when it is enabled, the REST API option is hidden and ignored.
 
 ## Changelog
+### **WORK IN PROGRESS**
+- fix #216
+
 ### 1.1.5 (2026-09-04)
 - fix release
 
