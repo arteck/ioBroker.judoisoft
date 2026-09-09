@@ -1,4 +1,8 @@
 # Older changes
+## 1.1.2 (2025-01-04)
+
+- (arteck) corr some errors
+
 ## 1.1.1 (2024-09-26)
 
 - (arteck) corr cloud connection

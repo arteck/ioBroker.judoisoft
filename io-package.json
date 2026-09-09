@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "judoisoft",
-    "version": "1.1.6",
+    "version": "1.1.7",
     "news": {
+      "1.1.7": {
+        "en": "try fix release\nAdd Node.js 26 to CI test matrix - #218",
+        "de": "Try Fix Release\nFüge Node.js 26 zur CI-Testmatrix hinzu - #218",
+        "ru": "попробуйте исправить релиз\nДобавьте Node.js 26 в тестовую матрицу CI - #218",
+        "pt": "tente o Fix Release\nAdicione Node.js 26 à matriz CI - #218",
+        "nl": "probeer release te repareren\nNode.js 26 toevoegen aan de CI-testmatrix - #218",
+        "fr": "essayez Fix Release\nAjouter Node.js 26 au CI Test Matrix - #218",
+        "it": "prova fix release\nAggiungi Node.js 26 a CI Test Matrix - #218",
+        "es": "try fix release\nAñada Node.js 26 a CI Test Matrix - #218",
+        "pl": "spróbuj naprawić wydanie\nDodaj Node.js 26 do macierzy testowej CI - #218",
+        "uk": "спробуйте виправити випуск\nДодайте Node.js 26 до тестової матриці CI - #218",
+        "zh-cn": "尝试修复版本\n将 Node.js 26 添加到 CI 测试矩阵-#218"
+      },
       "1.1.6": {
         "en": "fix #216",
         "de": "fix #216",
@@ -80,19 +93,6 @@
         "pl": "poprawiono połączenie z chmurą",
         "uk": "хмарний зв'язок",
         "zh-cn": "corr 云连接"
-      },
-      "1.1.0": {
-        "en": "switch to intervall",
-        "de": "wechsel in intervall",
-        "ru": "перейти к интервалу",
-        "pt": "mudar para intervalo",
-        "nl": "wisselen naar intervall",
-        "fr": "commutation à intervalles",
-        "it": "passare all'intervallo",
-        "es": "cambiar a intervalo",
-        "pl": "przełączać się",
-        "uk": "вимикач на інтервал",
-        "zh-cn": "a. 转换到间隔"
       }
     },
     "titleLang": {
