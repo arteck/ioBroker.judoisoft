@@ -1,4 +1,8 @@
 # Older changes
+## 1.1.1 (2024-09-26)
+
+- (arteck) corr cloud connection
+
 ## 1.1.0 (2023-10-27)
 
 - (arteck) switch to intervall

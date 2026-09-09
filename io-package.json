@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "judoisoft",
-    "version": "1.1.5",
+    "version": "1.1.6",
     "news": {
+      "1.1.6": {
+        "en": "fix #216",
+        "de": "fix #216",
+        "ru": "исправить #216",
+        "pt": "fix #216",
+        "nl": "repareren #216",
+        "fr": "fix #216",
+        "it": "fix #216",
+        "es": "fix #216",
+        "pl": "naprawa #216",
+        "uk": "виправлення #216",
+        "zh-cn": "修复 #216"
+      },
       "1.1.5": {
         "en": "fix release",
         "de": "Fix Release",
