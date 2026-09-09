@@ -28,6 +28,7 @@ Cloud login takes precedence: when it is enabled, the REST API option is hidden 
 ## Changelog
 ### **WORK IN PROGRESS**
 - try fix release
+- Add Node.js 26 to CI test matrix - #218
 
 ### 1.1.6 (2026-09-09)
 - fix #216
